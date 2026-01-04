@@ -64,8 +64,8 @@ Output style
 
 Process
 
-- Start each pass with a discovery sweep: list top-level folders, skim README/contributing docs, and note manifest/technology indicators (for example `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `build.gradle`, `Makefile`).
-- Always run the architecture prompts sequentially: `01-repo-map`, `02-component-catalogue`, `03-runtime-flows`.
+- Start each pass with a discovery sweep: list top-level folders, skim README/contributing docs, note manifest/technology indicators (for example `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `build.gradle`, `Makefile`), and record preliminary findings directly in `docs/codebase-overview/repo-map.md`.
+- Always run the architecture prompts sequentially: `codebase-01-repository-map`, `codebase-02-component-catalogue`, `codebase-03-runtime-flows`.
 - After each prompt run, review the generated Markdown under `docs/codebase-overview/` and iterate rather than starting from scratch.
 - Keep `README.md` as the canonical landing page; link every new component or flow document from it.
 - Capture uncertainties explicitly in an **Unknowns / to verify** section so follow-up passes know what to investigate next, and record follow-up actions alongside each unknown.
@@ -93,7 +93,7 @@ Purpose: creates one Markdown file per major component under `docs/codebase-over
 
 File: `.github/prompts/codebase-03-runtime-flows.prompt.md`
 
-Purpose: documents 3–6 critical flows inside `docs/codebase-overview/flows/runtime-flows.md`, beginning with a discovery scan of orchestrators/jobs, then applying the runtime-flow template (narrative, Mermaid diagram, error handling, evidence/unknowns) before linking the flows from `README.md`.
+Purpose: documents 5–8 critical flows inside `docs/codebase-overview/flows/runtime-flows.md`, beginning with a discovery scan of orchestrators/jobs, then applying the runtime-flow template (narrative, Mermaid diagram, error handling, evidence/unknowns) before linking the flows from `README.md`.
 
 ---
 

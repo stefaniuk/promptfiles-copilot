@@ -18,7 +18,7 @@ Steps:
 2. Identify primary entry points (apps/services, main functions, server start-up, CLI entry points).
 3. Identify build/deploy processes and artefacts (Makefile, Dockerfile, Terraform, respective GitHub workflows and actions, and CI/CD pipelines).
 4. Identify key external dependencies (package manifests, lock files, major frameworks and libraries, languages and technologies, cloud managed services).
-5. For each major statement, add **Evidence** section with file paths + symbols/config keys.
+5. For each major statement, add **Evidence** section with file paths (only URL must be prefixed with `/` for the link to resolve correctly) + symbols/config keys.
 6. When a required artefact cannot be found, record **Unknown from code - {action}** in the repository map.
 
 Template snippet to reuse inside `repository-map.md`:

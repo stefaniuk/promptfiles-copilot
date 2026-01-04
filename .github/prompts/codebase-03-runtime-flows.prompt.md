@@ -20,7 +20,7 @@ Steps:
    - A short narrative covering the trigger, main steps, and outcome.
    - A Mermaid sequence diagram of the collaborating components.
    - Error handling, retries, and idempotency notes where the code documents them.
-   - Evidence section (file paths + symbols/config keys).
+   - Evidence section, file paths (only URL must be prefixed with `/` for the link to resolve correctly) + symbols/config keys.
 3. Mark anything unclear as **Unknown from code - {action}** so it can be verified later.
 4. Write the file and keep it concise while preserving the evidence-first rule.
 5. Iterate, create a first draft, search for more evidence, then refine links and unknowns while keeping the document readable and practical.

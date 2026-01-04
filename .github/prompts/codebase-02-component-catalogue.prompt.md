@@ -23,8 +23,8 @@ Steps:
    - Key inbound/outbound interfaces (HTTP routes, messaging topics, queues, events)
    - Data structures
    - Config and feature flags (if any)
-   - Observability (logging/metrics/tracing)
-   - Evidence section (file paths + symbols/config keys)
+   - Observability, logging/metrics/tracing
+   - Evidence section, file paths (only URL must be prefixed with `/` for the link to resolve correctly) + symbols/config keys
 3. For any field without supporting code, add **Unknown from code — {action}** so gaps remain visible.
 4. Write the file and keep it concise while preserving the evidence-first rule.
 5. Iterate, create a first draft, search for more evidence, then refine links and unknowns while keeping the document readable and practical.
