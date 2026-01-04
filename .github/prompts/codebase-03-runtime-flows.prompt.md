@@ -109,6 +109,23 @@ Write a short narrative that includes:
 
 Capture a brief, evidence-based view of how data moves through the flow.
 
+##### Data flow diagram (Mermaid flowchart)
+
+- Use a Mermaid `flowchart LR` (left-to-right) diagram showing data movement.
+- Show:
+  - Input data sources (files, requests, messages)
+  - Processing/transformation steps
+  - Data stores (reads and writes)
+  - Output destinations (responses, events, files)
+- Use subgraphs to group related elements (e.g., `subgraph Input`, `subgraph Transform`, `subgraph Output`).
+- Use different node shapes:
+  - `[text]` for processes/transforms
+  - `[(text)]` for databases/stores
+  - `([text])` for external systems
+  - `>text]` for files/documents
+
+##### Data lineage summary
+
 - **Key data elements:** {entities/messages/files involved}
 - **Read points:** {what is read, from where, and by which component}
 - **Write points:** {what is written, to where, and by which component}
@@ -198,6 +215,30 @@ sequenceDiagram
 
 ## Data flow and lineage (only if evidenced)
 
+```mermaid
+flowchart LR
+  subgraph Input
+    A[Request/Message]
+  end
+  subgraph Transform
+    B[Validation]
+    C[Business Logic]
+  end
+  subgraph Storage
+    D[(Primary Store)]
+    E[(Cache)]
+  end
+  subgraph Output
+    F([External System])
+    G[Response/Event]
+  end
+  A --> B --> C
+  C --> D
+  C --> E
+  C --> F
+  C --> G
+```
+
 - Key data elements: ...
 - Read points: ...
 - Write points: ...
@@ -225,5 +266,5 @@ sequenceDiagram
 
 ---
 
-> **Version**: 1.2.6
+> **Version**: 1.2.7
 > **Last Amended**: 2026-01-04
