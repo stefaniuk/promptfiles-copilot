@@ -51,6 +51,7 @@ You are producing a design overview for this codebase.
   - [codebase-02-component-catalogue](../../prompts/codebase-02-component-catalogue.prompt.md)
   - [codebase-03-runtime-flows](../../prompts/codebase-03-runtime-flows.prompt.md)
   - [codebase-04-domain-analysis](../../prompts/codebase-04-domain-analysis.prompt.md)
+  - [codebase-05-c4-structurizr](../../prompts/codebase-05-c4-structurizr.prompt.md)
 
 ### Iteration rules
 
@@ -67,5 +68,5 @@ You are producing a design overview for this codebase.
 
 ---
 
-> **Version**: 1.2.6
+> **Version**: 1.2.7
 > **Last Amended**: 2026-01-04
