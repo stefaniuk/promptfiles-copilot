@@ -50,6 +50,7 @@ You are producing a design overview for this codebase.
   - [codebase-01-repository-map](../../prompts/codebase-01-repository-map.prompt.md)
   - [codebase-02-component-catalogue](../../prompts/codebase-02-component-catalogue.prompt.md)
   - [codebase-03-runtime-flows](../../prompts/codebase-03-runtime-flows.prompt.md)
+  - [codebase-04-domain-analysis](../../prompts/codebase-04-domain-analysis.prompt.md)
 
 ### Iteration rules
 
@@ -66,5 +67,5 @@ You are producing a design overview for this codebase.
 
 ---
 
-> **Version**: 1.2.5
+> **Version**: 1.2.6
 > **Last Amended**: 2026-01-04
