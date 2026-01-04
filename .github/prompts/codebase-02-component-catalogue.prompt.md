@@ -69,7 +69,7 @@ For each component, create:
 
 Where:
 
-- `[XXX]` is a stable numeric order (e.g. `010`, `020`, `030` …) so links don’t churn
+- `[XXX]` is a stable numeric order (e.g. `001`, `002`, `003`, ...) so links don't churn
 - `[name]` is short and meaningful (kebab-case)
 
 For each component document, capture:
@@ -96,7 +96,7 @@ For each component document, capture:
 #### 2D. Interfaces (split and explicit)
 
 - **Inbound interfaces** (how other things call it)
-  - HTTP routes (include route patterns and where they’re registered)
+  - HTTP routes (include route patterns and where they're registered)
   - Events/topics/queues consumed
   - CLI commands (if applicable)
   - Scheduled triggers (cron/schedules) (if applicable)
@@ -242,5 +242,5 @@ Update: [codebase overview](../../docs/codebase-overview/README.md) with a **Com
 
 ---
 
-> **Version**: 1.2.5
+> **Version**: 1.2.6
 > **Last Amended**: 2026-01-04

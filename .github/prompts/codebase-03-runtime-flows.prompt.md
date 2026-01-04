@@ -72,7 +72,7 @@ For each flow, create:
 
 Where:
 
-- `[XXX]` is a stable numeric order (e.g. `010`, `020`, `030` …) so links don’t churn
+- `[XXX]` is a stable numeric order (e.g. `001`, `002`, `003`, ...) so links don't churn
 - `[name]` is short and meaningful (kebab-case)
 - Use the same component names as in `component-*.md` (consistency rule)
 
@@ -225,5 +225,5 @@ sequenceDiagram
 
 ---
 
-> **Version**: 1.2.5
+> **Version**: 1.2.6
 > **Last Amended**: 2026-01-04
