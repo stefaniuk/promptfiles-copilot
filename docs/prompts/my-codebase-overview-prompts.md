@@ -19,8 +19,8 @@ Produce a codebase overview that is:
 
 Create the following:
 
-- `docs/architecture/`
-  - `architecture-overview.md`
+- `docs/codebase-overview/`
+  - `README.md`
   - `repo-map.md`
   - `glossary.md`
   - `components/`
@@ -29,10 +29,10 @@ Create the following:
 
 Recommended minimum set:
 
-- `docs/architecture/architecture-overview.md`
-- `docs/architecture/repo-map.md`
-- `docs/architecture/components/` (one file per major component)
-- `docs/architecture/flows/runtime-flows.md`
+- `docs/codebase-overview/README.md`
+- `docs/codebase-overview/repo-map.md`
+- `docs/codebase-overview/components/` (one file per major component)
+- `docs/codebase-overview/flows/runtime-flows.md`
 
 ---
 
@@ -51,7 +51,7 @@ Hard rules
 
 - Stay grounded in the repository. If you are unsure, say "Unknown from code" and list what you would need to check.
 - Prefer evidence: reference file paths and symbols (functions/classes/config keys). Do not invent components.
-- Work iteratively: write/update Markdown files under docs/architecture/ as you learn more.
+- Work iteratively: write/update Markdown files under docs/codebase-overview/ as you learn more.
 - Keep language simple and use British English.
 - Avoid reading huge files end-to-end. Use workspace search to find entry points, then read only relevant sections.
 - Exclude generated/vendor folders (e.g. node_modules, dist, build, coverage, .venv, vendor).
@@ -65,8 +65,8 @@ Output style
 Process
 
 - Always run the architecture prompts sequentially: `01-repo-map`, `02-component-catalogue`, `03-runtime-flows`.
-- After each prompt run, review the generated Markdown under `docs/architecture/` and iterate rather than starting from scratch.
-- Keep `architecture-overview.md` as the canonical landing page; link every new component or flow document from it.
+- After each prompt run, review the generated Markdown under `docs/codebase-overview/` and iterate rather than starting from scratch.
+- Keep `README.md` as the canonical landing page; link every new component or flow document from it.
 - Capture uncertainties explicitly in an **Unknowns / to verify** section so follow-up passes know what to investigate next.
 ```
 
@@ -80,19 +80,19 @@ Prompt files live under `.github/prompts/` and already import the `codebase-insi
 
 File: `.github/prompts/01-repo-map.prompt.md`
 
-Purpose: orchestrates creation of `docs/architecture/repo-map.md`, capturing folder structure, entry points, build/deploy artefacts, and dependencies with **Evidence** bullets.
+Purpose: orchestrates creation of `docs/codebase-overview/repo-map.md`, capturing folder structure, entry points, build/deploy artefacts, and dependencies with **Evidence** bullets.
 
 ### 2) Component catalogue prompt
 
 File: `.github/prompts/02-component-catalogue.prompt.md`
 
-Purpose: creates one Markdown file per major component under `docs/architecture/components/`, updates `architecture-overview.md` with a catalogue, and enforces evidence-backed descriptions of responsibilities, interfaces, data, config, and observability.
+Purpose: creates one Markdown file per major component under `docs/codebase-overview/components/`, updates `README.md` with a catalogue, and enforces evidence-backed descriptions of responsibilities, interfaces, data, config, and observability.
 
 ### 3) Runtime flows prompt
 
 File: `.github/prompts/03-runtime-flows.prompt.md`
 
-Purpose: documents 3–6 critical flows inside `docs/architecture/flows/runtime-flows.md`, including narratives, Mermaid sequence diagrams, error-handling notes, and evidence references; also reminds authors to flag unknowns explicitly.
+Purpose: documents 3–6 critical flows inside `docs/codebase-overview/flows/runtime-flows.md`, including narratives, Mermaid sequence diagrams, error-handling notes, and evidence references; also reminds authors to flag unknowns explicitly.
 
 ---
 
@@ -110,7 +110,7 @@ Expected working pattern:
 
 - Search the workspace for entry points and key modules
 - Read only the relevant sections of code/config
-- Write/update Markdown under `docs/architecture/`
+- Write/update Markdown under `docs/codebase-overview/`
 - Repeat until each artefact is solid
 
 ---
@@ -123,7 +123,7 @@ Apply these checks as you go:
   No architecture claim without an "Evidence" bullet that points to file paths and symbols/config keys.
 
 - Unknowns list
-  Keep a section in `docs/architecture/architecture-overview.md` called **Unknowns / to verify**.
+  Keep a section in `docs/codebase-overview/README.md` called **Unknowns / to verify**.
 
 - Scope boundaries
   Each component document should state what it _does_ and what it _does not_ own.
@@ -138,9 +138,9 @@ Apply these checks as you go:
 
 ---
 
-## Suggested outline for architecture-overview.md
+## Suggested outline for README.md
 
-After the component pass, ensure `docs/architecture/architecture-overview.md` contains:
+After the component pass, ensure `docs/codebase-overview/README.md` contains:
 
 - Purpose of the system
 - High-level architecture (short summary)
@@ -161,7 +161,7 @@ After the component pass, ensure `docs/architecture/architecture-overview.md` co
 Once the basics are in place, add one or more of these:
 
 - C4-style diagrams (Context / Container / Component) using Mermaid
-- ADRs for key decisions (write into `docs/architecture/decisions/`)
+- ADRs for key decisions (write into `docs/codebase-overview/adr/`)
 - Threat model sketch (trust boundaries + key risks)
 - Tech debt register (grounded in issues and code hotspots)
 
@@ -174,5 +174,5 @@ You are "done" when:
 - `repo-map.md` lets a new engineer find the main moving parts quickly
 - Each component file clearly explains responsibilities and interfaces with evidence
 - `runtime-flows.md` covers the most important flows and failure cases
-- `architecture-overview.md` reads coherently end-to-end and links to everything
+- `README.md` reads coherently end-to-end and links to everything
 - Unknowns are explicitly listed, not guessed
