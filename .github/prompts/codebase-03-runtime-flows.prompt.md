@@ -105,7 +105,21 @@ Write a short narrative that includes:
   - Datastore interactions
   - Published events / queued work
 
-#### 2D. Reliability and failure behaviour (only if evidenced)
+#### 2D. Data flow and lineage (only if evidenced)
+
+Capture a brief, evidence-based view of how data moves through the flow.
+
+- **Key data elements:** {entities/messages/files involved}
+- **Read points:** {what is read, from where, and by which component}
+- **Write points:** {what is written, to where, and by which component}
+- **Transformations:** {validation/enrichment/mapping steps and where they happen}
+- **Lineage notes:** {origin → transformations → destinations} (1–3 bullets)
+
+If any item cannot be supported by code/config, record:
+
+- **Unknown from code – {action}**
+
+#### 2E. Reliability and failure behaviour (only if evidenced)
 
 - Validation and error mapping (where errors become responses/messages)
 - Retries and backoff (where configured)
@@ -113,7 +127,7 @@ Write a short narrative that includes:
 - Timeouts / circuit breakers (if present)
 - Compensation / rollback (transactions, sagas, compensating actions) if present
 
-#### 2E. Evidence (mandatory)
+#### 2F. Evidence (mandatory)
 
 - Evidence bullets with:
   - File paths (URLs must be prefixed with `/` so links resolve correctly)
@@ -181,6 +195,14 @@ sequenceDiagram
   C-->>B: ...
   B-->>A: ...
 ```
+
+## Data flow and lineage (only if evidenced)
+
+- Key data elements: ...
+- Read points: ...
+- Write points: ...
+- Transformations: ...
+- Lineage notes: ...
 
 ## Reliability and failure behaviour
 
