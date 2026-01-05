@@ -1,6 +1,6 @@
 ---
 agent: agent
-description: Pull request review (diff vs main + codebase overview context)
+description: Pull request review using codebase overview context
 ---
 
 **Mandatory preparation:** read [codebase overview](../instructions/include/codebase-overview.md) in full and follow strictly its rules before executing any step below.
@@ -57,7 +57,23 @@ Where evidence cannot be found, record **Unknown from code – {action}**.
 
 If the diff cannot be produced, record **Unknown from code – run git diff against main** and stop.
 
-### C. Run quality signals (only what is available in the repo)
+### C. Detect prior reviews and new commits (incremental review)
+
+1. Define the review output file path for today:
+   - `docs/pr-review-YYYY-MM-DD.md` (use today's date)
+2. If the file already exists:
+   - Read it fully.
+   - Treat it as the previous review baseline for this branch.
+   - Identify which previous findings may already be addressed and which remain open.
+   - Detect whether there are additional changes since that review by re-running the diff against `main` and comparing it to the files/areas previously discussed.
+   - Focus the new review on:
+     - Newly changed files/behaviour
+     - Previously raised issues that are still present
+     - Previously raised issues that appear fixed (mark as **Resolved** with evidence)
+3. If the file does not exist:
+   - Proceed with a full review and create it at the end.
+
+### D. Run quality signals (only what is available in the repo)
 
 1. Identify how the project expects checks to run (e.g. `Makefile`, task runner scripts, CI workflows).
 2. Run the standard local checks if feasible and quick:
@@ -160,7 +176,22 @@ Use the following checklist and report findings with evidence links and file pat
 
 ### 3) Produce the review output (structured, evidence-first)
 
-Provide:
+Write all review output to:
+
+- `docs/pr-review-YYYY-MM-DD.md` (use today's date)
+
+If the file exists, update it by appending a new section:
+
+- `## Review update – YYYY-MM-DD – HH:MM`
+
+and include:
+
+- Newly changed areas since the last review
+- Resolved findings (with evidence)
+- Remaining findings (still present)
+- New findings introduced by new commits
+
+The review content must include:
 
 1. **High-level summary** (3–7 bullets)
 2. **Risk assessment**:
@@ -199,9 +230,8 @@ Use this snippet for each significant finding:
 - Prefer specific, small actionable recommendations.
 - Do not speculate; use **Unknown from code – {action}** when evidence is missing.
 - Use the same component names as in `component-*.md`.
-- Include a **Last Amended** footer.
 
 ---
 
-> **Version**: 1.0.0
+> **Version**: 1.1.0
 > **Last Amended**: 2026-01-05
