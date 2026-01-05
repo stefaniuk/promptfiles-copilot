@@ -70,13 +70,13 @@ In your response, provide updated versions of each as separate, downloadable fil
 
 ## TODO
 
+- if gocloc is present run it and store the result
 - new instructions
   - github workflow/actions pipelines
   - docker
   - markdown
 - new prompts
   - my-diagrams-review.prompt (C4 model diagrams, data flows, infrastructure)
-  - codebase summary
   - architecture-review.prompt (architect for flow)
   - migrate from [tech A] to [tech B]
 - **Add new prompts (spec-kit workflow support)**
