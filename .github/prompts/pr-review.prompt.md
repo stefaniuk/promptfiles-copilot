@@ -69,7 +69,7 @@ If the diff cannot be produced, record **Unknown from code – run git diff agai
    - Focus the new review on:
      - Newly changed files/behaviour
      - Previously raised issues that are still present
-     - Previously raised issues that appear fixed (mark as **Resolved** with evidence)
+     - Previously raised issues that appear fixed (mark as **✅ Resolved** with evidence)
 3. If the file does not exist:
    - Proceed with a full review and create it at the end.
 
@@ -174,36 +174,39 @@ Use the following checklist and report findings with evidence links and file pat
 - Are changelog/release notes needed (if the repo uses them)?
 - Are commit messages/PR description clear enough for future readers?
 
-### 3) Produce the review output (structured, evidence-first)
+### 3) Write the review file (required)
 
 Write all review output to:
 
 - `docs/pr-review-YYYY-MM-DD.md` (use today's date)
 
-If the file exists, update it by appending a new section:
+If the file exists, append a new section:
 
 - `## Review update – YYYY-MM-DD – HH:MM`
 
 and include:
 
 - Newly changed areas since the last review
-- Resolved findings (with evidence)
-- Remaining findings (still present)
-- New findings introduced by new commits
+- ✅ Resolved findings (with evidence)
+- 🔴 Remaining findings (still present)
+- 🆕 New findings introduced by new commits
 
-The review content must include:
+### 4) Review output format (use emojis for quick scanning)
 
-1. **High-level summary** (3–7 bullets)
-2. **Risk assessment**:
-   - Risk level: Low / Medium / High
-   - Why (evidence-based)
-3. **Findings** grouped by severity:
-   - Must-fix
-   - Should-fix
-   - Nice-to-have
-4. **Questions for the author** (clear, actionable)
-5. **Suggested follow-ups** (tests, docs, refactors, ADRs)
-6. **Evidence** for key findings (paths + symbols/config keys)
+Structure the review content using these sections:
+
+- **✅ Good practices** — what is done well (keep this brief but real)
+- **🔴 Must-fix** — issues that should block merge
+- **🟡 Should-fix** — important improvements to consider before merge
+- **🟢 Nice-to-have** — optional improvements / polish
+- **❓ Questions** — anything that needs author clarification
+- **📌 Follow-ups** — suggested next steps (tests, docs, ADRs)
+
+For each item, include:
+
+- What you observed and why it matters
+- A specific recommendation
+- Evidence (path + symbol/config key)
 
 Use this snippet for each significant finding:
 
@@ -230,8 +233,9 @@ Use this snippet for each significant finding:
 - Prefer specific, small actionable recommendations.
 - Do not speculate; use **Unknown from code – {action}** when evidence is missing.
 - Use the same component names as in `component-*.md`.
+- Include a **Last Amended** footer in the review file.
 
 ---
 
-> **Version**: 1.1.0
+> **Version**: 1.2.0
 > **Last Amended**: 2026-01-05

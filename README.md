@@ -70,15 +70,14 @@ In your response, provide updated versions of each as separate, downloadable fil
 
 ## TODO
 
-- include date of the report; if gocloc is present run it and store the result
-- new instructions
-  - github workflow/actions pipelines
-  - docker
-  - markdown
 - new prompts
   - my-diagrams-review.prompt (C4 model diagrams, data flows, infrastructure)
   - architecture-review.prompt (architect for flow)
   - migrate from [tech A] to [tech B]
+- new instructions
+  - github workflow/actions pipelines
+  - docker
+  - markdown
 - **Add new prompts (spec-kit workflow support)**
   - **Conventional Commits (spec-linked)**
     - Draft commit messages that reference the relevant spec identifiers, include breaking-change notation where required, and keep scope tight to the current feature.
