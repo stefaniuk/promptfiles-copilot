@@ -3,7 +3,7 @@ agent: agent
 description: Domain analysis (DDD) to document bounded contexts, language, and context map
 ---
 
-**Mandatory preparation:** read [codebase overview](../instructions/include/codebase-overview.md) in full and follow strictly its rules before executing any step below.
+**Mandatory preparation:** read [codebase overview](../instructions/include/codebase-overview.md) instructions in full and follow strictly its rules before executing any step below.
 
 ## Goal
 
@@ -15,7 +15,7 @@ Create (or update) these domain analysis documents (evidence-first):
 - [domain events catalogue](../../docs/codebase-overview/domain-04-domain-events.md)
 - [boundary and modelling notes](../../docs/codebase-overview/domain-05-boundary-notes.md)
 
-Also ensure they are linked from: [codebase overview](../../docs/codebase-overview/README.md)
+Also ensure they are linked from: [codebase overview](../../docs/codebase-overview/README.md) output
 
 ---
 
@@ -212,5 +212,5 @@ flowchart LR
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-01-04
+> **Version**: 1.0.1
+> **Last Amended**: 2026-01-05

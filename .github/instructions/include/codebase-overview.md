@@ -34,6 +34,13 @@ You are producing a design overview for this codebase.
 - Prefer bullet lists over long prose.
 - Keep statements specific (names, routes, topics, schedules, config keys).
 - Use Mermaid diagrams where they clarify interactions.
+- Include a **Last Amended** footer in every file you produce, using this format:
+
+```plaintext
+---
+
+> **Last Amended**: YYYY-MM-DD
+```
 
 ## Working method
 
@@ -68,5 +75,5 @@ You are producing a design overview for this codebase.
 
 ---
 
-> **Version**: 1.2.7
-> **Last Amended**: 2026-01-04
+> **Version**: 1.2.8
+> **Last Amended**: 2026-01-05

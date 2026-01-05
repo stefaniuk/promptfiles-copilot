@@ -3,13 +3,13 @@ agent: agent
 description: Document key runtime flows with diagrams
 ---
 
-**Mandatory preparation:** read [codebase overview](../instructions/include/codebase-overview.md) in full and follow strictly its rules before executing any step below.
+**Mandatory preparation:** read [codebase overview](../instructions/include/codebase-overview.md) instructions in full and follow strictly its rules before executing any step below.
 
 ## Goal
 
 Create (or update): [runtime flows](../../docs/codebase-overview/runtime-flow-*.md)
 
-Also ensure they are linked from: [codebase overview](../../docs/codebase-overview/README.md)
+Also ensure they are linked from: [codebase overview](../../docs/codebase-overview/README.md) output
 
 ---
 
@@ -266,5 +266,5 @@ flowchart LR
 
 ---
 
-> **Version**: 1.2.7
-> **Last Amended**: 2026-01-04
+> **Version**: 1.2.8
+> **Last Amended**: 2026-01-05

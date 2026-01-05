@@ -3,7 +3,7 @@ agent: agent
 description: Produce C4 model diagrams (Context, Container, Component) in Structurizr DSL
 ---
 
-**Mandatory preparation:** read [codebase overview](../instructions/include/codebase-overview.md) in full and follow strictly its rules before executing any step below.
+**Mandatory preparation:** read [codebase overview](../instructions/include/codebase-overview.md) instructions in full and follow strictly its rules before executing any step below.
 
 ## Goal
 
@@ -13,7 +13,7 @@ Create (or update) Structurizr DSL files under `docs/codebase-overview/c4/`:
 - `docs/codebase-overview/c4/02-container.dsl`
 - `docs/codebase-overview/c4/03-component-*.dsl` (one per container/context as needed)
 
-Also ensure they are linked from: [codebase overview](../../docs/codebase-overview/README.md)
+Also ensure they are linked from: [codebase overview](../../docs/codebase-overview/README.md) output
 
 ---
 
@@ -282,5 +282,5 @@ workspace "System - Components" "Component diagram for one container." {
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-01-04
+> **Version**: 1.0.1
+> **Last Amended**: 2026-01-05

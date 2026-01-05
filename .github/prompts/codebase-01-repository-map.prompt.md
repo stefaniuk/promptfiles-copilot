@@ -3,13 +3,13 @@ agent: agent
 description: Build a repository map to document the architecture
 ---
 
-**Mandatory preparation:** read [codebase overview](../instructions/include/codebase-overview.md) in full and follow strictly its rules before executing any step below.
+**Mandatory preparation:** read [codebase overview](../instructions/include/codebase-overview.md) instructions in full and follow strictly its rules before executing any step below.
 
 ## Goal
 
 Create (or update): [repository map](../../docs/codebase-overview/repository-map.md)
 
-Also ensure it is linked from: [codebase overview](../../docs/codebase-overview/README.md)
+Also ensure it is linked from: [codebase overview](../../docs/codebase-overview/README.md) output
 
 ---
 
@@ -25,6 +25,10 @@ Also ensure it is linked from: [codebase overview](../../docs/codebase-overview/
    - **Tests** (unit/integration/e2e/performance)
    - **Generated/vendor** (ignore for mapping unless referenced by build)
 2. Record which directories appear to be **generated/vendor** and should be treated as _non-authoritative_.
+3. Run `make clean` (if present), followed by `gocloc .` from the repository root to capture a lines-of-code breakdown by language.
+   - Store the raw output in `docs/codebase-overview/loc-report.txt`.
+   - Summarise the top languages (by lines) in `repository-map.md` under a short **Size and language mix** section.
+   - If `gocloc` is not available, record **Unknown from code – install gocloc or provide equivalent LOC output** and continue.
 
 ### B. Read context documents (non-authoritative)
 
@@ -142,5 +146,5 @@ Use the following snippet inside `repository-map.md`:
 
 ---
 
-> **Version**: 1.2.5
-> **Last Amended**: 2026-01-04
+> **Version**: 1.3.6
+> **Last Amended**: 2026-01-05

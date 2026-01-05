@@ -3,13 +3,13 @@ agent: agent
 description: Create component-level summaries
 ---
 
-**Mandatory preparation:** read [codebase overview](../instructions/include/codebase-overview.md) in full and follow strictly its rules before executing any step below.
+**Mandatory preparation:** read [codebase overview](../instructions/include/codebase-overview.md) instructions in full and follow strictly its rules before executing any step below.
 
 ## Goal
 
 Create (or update): [component catalogue](../../docs/codebase-overview/component-*.md)
 
-Also ensure they are linked from:[codebase overview](../../docs/codebase-overview/README.md)
+Also ensure they are linked from:[codebase overview](../../docs/codebase-overview/README.md) output
 
 ---
 
@@ -242,5 +242,5 @@ Update: [codebase overview](../../docs/codebase-overview/README.md) with a **Com
 
 ---
 
-> **Version**: 1.2.6
-> **Last Amended**: 2026-01-04
+> **Version**: 1.2.7
+> **Last Amended**: 2026-01-05
