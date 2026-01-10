@@ -1,5 +1,5 @@
 ---
-applyTo: "**/*.{ts,tsx}"
+applyTo: "**/*.{js,ts,tsx}"
 ---
 
 # TypeScript Engineering Instructions (CLI + API + UI, framework-agnostic) 🟦
@@ -55,6 +55,7 @@ These principles extend [constitution.md §3](../../.specify/memory/constitution
 - [TS-OP-007] Prefer **type-driven design**: make illegal states unrepresentable, validate at boundaries, keep domain logic pure.
 - [TS-OP-008] Avoid heavyweight work at import/module-load time (slow startup, surprises in tests). Initialise heavy resources lazily or behind explicit entrypoints.
 - [TS-OP-009] Keep global state minimal and explicit. Prefer dependency injection and explicit wiring over hidden module-level singletons.
+- [TS-OP-010] Record design trade-offs and assumptions when behaviour is not obvious so future engineers understand the intent.
 
 ---
 
@@ -146,7 +147,7 @@ Define clear tiers with predictable markers/commands:
 
 ## 3. Mandatory local quality gates ✅
 
-Per [constitution.md §7.8](../../.specify/memory/constitution.md#78-mandatory-local-quality-gates), after making **any** change to implementation code or tests, you must run the repository’s **canonical** quality gates:
+Per [constitution.md §7.8](../../.specify/memory/constitution.md#78-mandatory-local-quality-gates), after making **any** change to implementation code or tests, you must run the repository's **canonical** quality gates:
 
 1. Prefer:
 
@@ -159,6 +160,7 @@ Per [constitution.md §7.8](../../.specify/memory/constitution.md#78-mandatory-l
 
 - [TS-QG-005] You must continue iterating until all checks complete successfully with **no errors or warnings**. Do this automatically, without requiring an additional prompt.
 - [TS-QG-006] Warnings must be treated as defects unless explicitly waived in an ADR (rationale + expiry).
+- [TS-QG-007] Use the repository-provided build, lint, typecheck, and test scripts/targets; avoid ad-hoc commands unless the specification demands it.
 
 ---
 
@@ -267,6 +269,18 @@ TypeScript projects have contracts, even when they are "just code"; treat every 
 - [TS-TSC-007] Use TypeScript project references where it materially improves build performance and layering.
 - [TS-TSC-008] Avoid circular references between packages; treat them as architecture defects.
 
+### 5.4 Language target and emit
+
+- [TS-TSC-009] Default to TypeScript 5.x compiling to an ES2022 output baseline unless the runtime explicitly requires a different target; document any deviation.
+- [TS-TSC-010] Prefer native platform features over polyfills; if down-level transpilation is required, record the trade-off and the surface it affects.
+- [TS-TSC-011] Use pure ES modules for new code and bundling paths; do not emit `require`, `module.exports`, or other CommonJS helpers unless an ADR captures the exception.
+
+### 5.5 Type system usage patterns
+
+- [TS-TSC-012] Model real-time events, finite states, and workflows with discriminated unions so illegal states remain unrepresentable.
+- [TS-TSC-013] Centralise shared contracts and DTOs instead of duplicating structural types in multiple modules.
+- [TS-TSC-014] Use expressive utility types (`Readonly`, `Partial`, `Record`, etc.) to document intent and reduce bespoke helper types.
+
 ---
 
 ## 6. Linting, formatting, and code style ✍️
@@ -294,6 +308,12 @@ TypeScript projects have contracts, even when they are "just code"; treat every 
   - incorrect equality / coercions
   - implicit any / unsafe casts
 - [TS-LINT-008] Avoid rules that only enforce personal preference unless the repo agrees.
+
+### 6.4 Style discipline
+
+- [TS-LINT-009] Match the repository's indentation, quote, and trailing comma rules; do not override formatter intent locally.
+- [TS-LINT-010] Keep functions and methods tightly scoped; extract helpers when branches or responsibilities multiply.
+- [TS-LINT-011] Favour immutable data structures and pure functions when practical to keep reasoning simple.
 
 ---
 
@@ -396,6 +416,14 @@ TypeScript projects have contracts, even when they are "just code"; treat every 
 - [TS-BEH-028] All outbound calls must have explicit timeouts.
 - [TS-BEH-029] Avoid unbounded waits in request/response flows.
 
+### 7.6 Async workflow hygiene
+
+- [TS-BEH-030] Use `async/await` flows with explicit `try/catch` blocks so errors map to the structured logging/telemetry strategy.
+- [TS-BEH-031] Guard edge cases at the top of functions to avoid deeply nested control flow.
+- [TS-BEH-032] Route errors through the shared logging, tracing, and notification utilities instead of ad-hoc `console` calls.
+- [TS-BEH-033] Surface user-facing failures via the repository's standard notification pattern so behaviour stays consistent across features.
+- [TS-BEH-034] Debounce configuration-driven updates and dispose acquired resources deterministically to avoid leaks.
+
 ---
 
 ## 8. Configuration and precedence ⚙️
@@ -421,6 +449,13 @@ Define and document precedence. Prefer this order:
 - [TS-CFG-005] Document each variable and how it maps to flags/options.
 - [TS-CFG-006] Default local configuration must be safe: do not require real cloud credentials, and do not enable destructive behaviour unless explicitly requested.
 
+### 8.4 Configuration helpers and documentation
+
+- [TS-CFG-007] Reach configuration through the repository's shared helpers/utilities instead of scattering direct `process.env` access.
+- [TS-CFG-008] Validate configuration objects with schemas or dedicated validators so `undefined`/invalid values are caught immediately.
+- [TS-CFG-009] Guard optional config and secret reads with explicit error messages rather than letting them flow as `undefined`.
+- [TS-CFG-010] Document any new configuration key (and update corresponding tests) whenever you introduce it.
+
 ---
 
 ## 9. External integrations without slowing local dev 🔌
@@ -434,6 +469,9 @@ If the system depends on external services (cloud APIs, databases, third-party s
   3. **Real cloud** (only for explicit integration runs)
 - [TS-EXT-003] Use dependency injection / adapters so the system can swap implementations cleanly.
 - [TS-EXT-004] Tests must not hit real cloud by default.
+- [TS-EXT-005] Instantiate external clients outside hot paths and inject them so tests can swap implementations cheaply.
+- [TS-EXT-006] Apply retries, backoff, and cancellation policies to network or IO calls according to the specification.
+- [TS-EXT-007] Normalise third-party responses and map their errors to domain-level shapes before they leak deeper into the system.
 
 ---
 
@@ -631,6 +669,17 @@ Observability is non-negotiable.
 - [TS-SEC-017] Prefer short-lived tokens and least-privilege scopes.
 - [TS-SEC-018] Keep security headers and transport rules consistent across environments.
 
+### 13.5 Secure coding patterns
+
+- [TS-SEC-019] Validate and sanitise external inputs with schema validators or type guards before they reach domain logic.
+- [TS-SEC-020] Avoid dynamic code execution or untrusted template rendering; when templating is required, stick to vetted, sandboxed engines.
+- [TS-SEC-021] Encode or escape untrusted content before rendering HTML, even on the server.
+- [TS-SEC-022] Use parameterised queries or prepared statements for all persistence access to block injection.
+- [TS-SEC-023] Keep secrets in managed storage, rotate them regularly, and request only least-privilege scopes.
+- [TS-SEC-024] Prefer immutable data flows and defensive copies for sensitive information so downstream code cannot mutate it accidentally.
+- [TS-SEC-025] Use vetted cryptography libraries; never hand-roll crypto primitives.
+- [TS-SEC-026] Patch dependencies promptly and monitor advisory feeds; treat high/critical advisories as blocking until resolved.
+
 ---
 
 ## 14. File, I/O, and boundary behaviour 🧱
@@ -678,6 +727,13 @@ Per [constitution.md §3.6](../../.specify/memory/constitution.md#36-design-for-
 - [TS-TST-006] Use Playwright for browser end-to-end tests where applicable.
 - [TS-TST-007] For UI component testing, prefer user-centric testing practices over implementation detail tests.
 
+### 15.3 Additional expectations
+
+- [TS-TST-008] Add or update unit tests whenever behaviour changes, following the repository's naming and layout conventions.
+- [TS-TST-009] Expand integration or end-to-end suites when work spans multiple modules or touches external platforms.
+- [TS-TST-010] Run targeted test commands for fast feedback before submitting larger suites, then finish with the canonical quality gates.
+- [TS-TST-011] Avoid brittle timing assertions; use fake timers or injected clocks to keep async flows deterministic.
+
 ---
 
 ## 16. Code organisation and maintainability ✍️
@@ -699,6 +755,15 @@ Per [constitution.md §7](../../.specify/memory/constitution.md#7-code-quality-g
   - [TS-CODE-006c] helpers near the behaviour they support
   - [TS-CODE-006d] shared utilities clearly grouped
 - [TS-CODE-007] Keep framework objects at the edges: do not let request/response objects leak into domain or use-case logic.
+- [TS-CODE-008] Follow the repository's established folder and responsibility layout; extend existing abstractions before inventing new ones.
+- [TS-CODE-009] Use kebab-case filenames (for example `user-session.ts`) unless the repository explicitly chooses a different convention.
+- [TS-CODE-010] Keep related tests, types, and helpers near their implementation when it improves discovery without bloating modules.
+- [TS-CODE-011] Reuse or extend shared utilities before adding a new helper; document the rationale when a new abstraction is unavoidable.
+- [TS-CODE-012] Use PascalCase for classes, interfaces, enums, and type aliases; camelCase for functions, variables, and instances.
+- [TS-CODE-013] Skip interface prefixes such as `I`; rely on descriptive names instead.
+- [TS-CODE-014] Name modules and symbols for the behaviour or domain meaning they deliver, not the underlying implementation detail.
+- [TS-CODE-015] Follow the repository's dependency injection/composition approach so modules stay single-purpose and testable.
+- [TS-CODE-016] Respect initialise/dispose sequences and provide lifecycle hooks (plus targeted tests) when wiring new services.
 
 ---
 
@@ -737,6 +802,10 @@ Per [constitution.md §7](../../.specify/memory/constitution.md#7-code-quality-g
 - [TS-PERF-003] Prefer streaming/pagination for large datasets.
 - [TS-PERF-004] Avoid unbounded concurrency; cap parallelism where relevant.
 - [TS-PERF-005] Make performance characteristics explicit and testable where relevant.
+- [TS-PERF-006] Lazy-load heavy dependencies and dispose them when no longer needed.
+- [TS-PERF-007] Defer expensive computation until a user or downstream system actually needs it.
+- [TS-PERF-008] Batch or debounce high-frequency events to avoid thrashing the runtime and backend services.
+- [TS-PERF-009] Track resource lifetimes (files, sockets, observers, timers) to prevent leaks.
 
 ---
 
@@ -916,7 +985,18 @@ This section defines a **framework-agnostic** baseline for building maintainable
   - support pluralisation and date/number formatting
 - [TS-UI-052] Do not couple UI layout to English-only text lengths.
 
+### 20.10 UI orchestration patterns
+
+- [TS-UI-053] Keep UI layers thin; push heavyweight business logic into services or state managers that can be tested independently.
+- [TS-UI-054] Use messaging or event channels to decouple UI components from business logic so changes stay isolated.
+
+## 21. Documentation and comments 📝
+
+- [TS-DOC-001] Add JSDoc (with `@remarks`/`@example` where useful) to public APIs so intent stays clear to both humans and tools.
+- [TS-DOC-002] Write comments that capture intent and trade-offs; remove or update them whenever the behaviour changes.
+- [TS-DOC-003] Update architecture/design documentation when you introduce notable patterns, lifecycle hooks, or dependencies so the wider system view stays current.
+
 ---
 
-> **Version**: 1.2.0
-> **Last Amended**: 2026-01-03
+> **Version**: 1.3.0
+> **Last Amended**: 2026-01-10
