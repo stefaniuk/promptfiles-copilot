@@ -76,14 +76,15 @@ If `make` is not used, provide an equivalent task runner with the same intent an
 
 - [PY-LCL-007] Pin the Python version (for example `.python-version` and/or project metadata).
 - [PY-LCL-008] Use deterministic dependency management (lock file preferred).
-- [PY-LCL-009] Prefer `uv` where adopted by the repo:
-  - [PY-LCL-009a] `uv sync` for installs
-  - [PY-LCL-009b] `uv run ...` for commands
+- [PY-LCL-009] Use `uv` as the canonical Python project and package manager (lock file, installs, scripted commands) unless an ADR formally documents a different choice:
+  - [PY-LCL-009a] `uv sync` for deterministic installs across laptops and CI
+  - [PY-LCL-009b] `uv run ...` for invoking tools and project commands
+  - [PY-LCL-009c] If a repo must deviate from `uv`, record the exception (scope + expiry) in an ADR before merging
 - [PY-LCL-010] Keep the developer toolchain minimal and fast.
 
 Repository defaults (unless the repository explicitly documents an alternative):
 
-- [PY-LCL-011] Ruff for lint + format
+- [PY-LCL-011] Ruff is the mandatory linter/formatter; configure `ruff check` and `ruff format` as the defaults for `make lint` / CI quality gates
 - [PY-LCL-012] Pytest for tests
 - [PY-LCL-013] mypy (or the repository-approved static type checker) for deterministic type analysis
 
@@ -922,6 +923,9 @@ Additional Python-specific testing guidance:
   - [PY-TST-002c] avoid real network by default (use stubs/mocks/emulators)
   - [PY-TST-002d] do not depend on external services unless explicitly treated as an integration test
 - [PY-TST-003] Prefer behaviour-focused tests over implementation-coupled tests.
+- [PY-TST-006] Cover edge cases explicitly (empty inputs, invalid data types, large datasets, boundary values) and document the expected outcome for each.
+- [PY-TST-007] Add concise docstrings or comments to test cases that explain what scenario is being validated and why it matters.
+- [PY-TST-008] When tests rely on fixtures or external dependencies, note those dependencies in comments so reviewers understand the setup constraints.
 
 ### 14.1 Golden tests (snapshot) 📸
 
@@ -954,6 +958,7 @@ Per [constitution.md §7](../../.specify/memory/constitution.md#7-code-quality-g
   - [PY-CODE-007d] shared utilities clearly grouped
 - [PY-CODE-008] Add type hints at module and boundary surfaces (public functions, use-case interfaces, adapters). Use a pragmatic level of typing that improves change safety without slowing iteration.
 - [PY-CODE-009] Keep framework objects at the edges: do not let request/response objects leak into domain or use-case logic ([PY-IO-008], [PY-CODE-001]).
+- [PY-CODE-010] Break complex functions into smaller, intention-revealing helpers so each unit has a single responsibility and remains easy to test.
 
 ---
 
@@ -1021,5 +1026,23 @@ Per [constitution.md §3.5](../../.specify/memory/constitution.md#35-ai-assisted
 
 ---
 
-> **Version**: 1.2.0
-> **Last Amended**: 2026-01-03
+## 19. Documentation, readability, and style ✏️
+
+- [PY-DOC-001] Provide PEP 257-compliant docstrings for modules, public classes, and functions; include parameters, return values, and behavioural notes where ambiguity exists.
+- [PY-DOC-002] Write clear comments that explain the _why_ behind design decisions, algorithm choices, and non-obvious trade-offs rather than restating code.
+- [PY-DOC-003] Reference any external libraries or services used in a module/function, noting their role and reasoning if it is not obvious from the code.
+- [PY-DOC-004] For algorithm-heavy code paths, include a short explanation of the approach, complexity considerations, and any constraints being enforced.
+- [PY-DOC-005] Prioritise readability and maintainability over cleverness; when in doubt, choose the clearer construct even if it is slightly longer.
+- [PY-DOC-006] Use descriptive function, method, and variable names. Where the domain language is known, mirror it consistently.
+- [PY-DOC-007] Apply type hints from the `typing` module (for example `List[str]`, `Dict[str, int]`, `tuple[str, ...]`) across public interfaces and complex internal helpers to make contracts explicit.
+- [PY-DOC-008] Mention notable edge cases or behavioural quirks directly above the code that enforces them so future readers understand the rationale.
+- [PY-STYLE-001] Follow PEP 8 for formatting, spacing, and naming; keep indentation at four spaces and avoid tabs.
+- [PY-STYLE-002] Keep lines within 79 characters where practical; when longer lines are unavoidable (for example long URLs), document the exception with a lint pragma if required.
+- [PY-STYLE-003] Place docstrings immediately after the `def` or `class` statement, using triple double-quotes.
+- [PY-STYLE-004] Separate top-level classes and functions with two blank lines, and use blank lines inside functions to group related logic for readability.
+- [PY-STYLE-005] When a function/class grows beyond what fits comfortably on screen, refactor or split it before adding more behaviour.
+
+---
+
+> **Version**: 1.3.1
+> **Last Amended**: 2026-01-10
