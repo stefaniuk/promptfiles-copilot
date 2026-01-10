@@ -1,5 +1,4 @@
 ---
-agent: agent
 description: Generate conventional commit message and summary from the current changes diff
 ---
 
@@ -29,10 +28,10 @@ All artefacts must be fully backed by the diff between `main` and the current `H
    - `git diff --stat main...HEAD`
    - `git diff --name-status main...HEAD`
 3. Inspect the full diff (`git diff main...HEAD`).
-4. If no changes exist, output **"No diff vs main – nothing to commit."** and stop.
-5. Capture working tree and branch context:
+4. You must capture working tree and branch context:
    - `git status -sb` (shows staged/unstaged files and current branch name).
    - `git rev-parse --abbrev-ref HEAD` (confirms branch or detached `HEAD`).
+5. If no changes exist, output **"No diff vs main – nothing to commit."** and stop.
 6. Capture tone/context:
    - `git log -3 --oneline` (read the latest three commit messages to mirror tone and level of detail).
 
@@ -116,5 +115,5 @@ Return content exactly in this shape for easy copy/paste:
 
 ---
 
-> **Version**: 1.0.1
+> **Version**: 1.0.2
 > **Last Amended**: 2026-01-10
