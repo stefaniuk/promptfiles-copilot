@@ -96,7 +96,7 @@ Provide repository-standard targets so an engineer can operate the repo quickly:
 - [MK-STR-006] When multiple included modules contribute to the same target, use **double-colon** rules so modules can extend safely:
   - `clean::` for cleanup steps
   - `config::` for environment configuration steps
-- [MK-STR-007] Each module’s contribution to `clean::` and `config::` must be independently safe and not depend on another module having run first.
+- [MK-STR-007] Each module's contribution to `clean::` and `config::` must be independently safe and not depend on another module having run first.
 
 ---
 

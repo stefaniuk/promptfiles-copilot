@@ -49,9 +49,11 @@ For CLI invocations (especially long-running ones):
 ## 5. Diagnostics & sampling
 
 - Default logging level for services is `info`; enable `debug` only when explicitly requested (flag/env var) and clearly documented.
+- When verbose or debug logging is enabled, emit a single function/method entry log for **every** call path, capturing the operation name and a sanitised summary of arguments (masking or omitting anything covered by §3). This keeps diagnostic runs self-explanatory without leaking secrets.
 - For noisy components, support sampling (for example only log 1/N successes but 100% of errors).
 - When sampling, log the sampling rate so downstream systems can extrapolate.
 - Keep log size bounded: truncate oversized payloads with a clear `truncated=true` flag.
+- Every exception, whether the software can recover or not, must trigger exactly one `ERROR`-level log entry that includes the `error_code`, correlation identifiers, and (server-side only) the stack trace; never downgrade exception logs just because the failure was handled.
 
 ## 6. Testing & validation
 
@@ -61,5 +63,5 @@ For CLI invocations (especially long-running ones):
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-01-04
+> **Version**: 1.1.0
+> **Last Amended**: 2026-01-10

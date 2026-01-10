@@ -32,9 +32,9 @@ This section exists so humans and AI assistants can reliably apply the most impo
 - [PY-QR-005] **Validate at boundaries** and reject ambiguous inputs ([PY-DATA-001]–[PY-DATA-003]).
 - [PY-QR-006] **Deterministic outputs**: stable ordering, stable field naming, no hidden randomness ([PY-OP-003], [PY-CTR-007]).
 - [PY-QR-007] **Correct CLI streams**: stdout for primary output, stderr for diagnostics ([PY-BEH-008]–[PY-BEH-011]).
-- [PY-QR-008] **No secrets in args or logs**: use env vars or secure prompts; never print secrets ([PY-SEC-001]–[PY-SEC-004], [PY-OBS-012]).
+- [PY-QR-008] **No secrets in args or logs**: use env vars or secure prompts; never print secrets ([PY-SEC-001]–[PY-SEC-004], [PY-OBS-013]).
 - [PY-QR-009] **Local by default**: no real cloud/network by default; use fakes/emulators; explicit integration mode switches ([PY-EXT-001]–[PY-EXT-007]).
-- [PY-QR-010] **Operational visibility**: correlation IDs and structured logs for APIs; controlled diagnostics only ([PY-OBS-003]–[PY-OBS-009], [PY-OBS-014]–[PY-OBS-038], [PY-ERR-013]).
+- [PY-QR-010] **Operational visibility**: correlation IDs and structured logs for APIs; controlled diagnostics only ([PY-OBS-004]–[PY-OBS-010], [PY-OBS-015]–[PY-OBS-026], [PY-ERR-013]).
 
 ---
 
@@ -449,80 +449,81 @@ Observability is non-negotiable.
 
 ### 10.0 Minimum baseline (apply everywhere) ✅
 
-- [PY-OBS-000] Treat this as the minimum bar:
-  - CLIs: run identity + sane stderr diagnostics ([PY-OBS-001]–[PY-OBS-002], [PY-OBS-010]–[PY-OBS-013])
-  - APIs: correlation IDs + structured logs + request start/end lifecycle logs ([PY-OBS-003]–[PY-OBS-009], [PY-OBS-014]–[PY-OBS-038])
+- [PY-OBS-001] Treat this as the minimum bar:
+  - CLIs: run identity + sane stderr diagnostics ([PY-OBS-002]–[PY-OBS-003], [PY-OBS-011]–[PY-OBS-014])
+  - APIs: correlation IDs + structured logs + request start/end lifecycle logs ([PY-OBS-004]–[PY-OBS-010], [PY-OBS-015]–[PY-OBS-026])
 
 ### 10.1 CLI run identity and correlation 🧾
 
 For CLIs:
 
-- [PY-OBS-001] Generate a `run_id` for each invocation (UUID or equivalent).
-- [PY-OBS-002] Include `run_id` in:
-  - [PY-OBS-002a] debug/verbose logs
-  - [PY-OBS-002b] error output
-  - [PY-OBS-002c] structured outputs (when relevant, as metadata)
+- [PY-OBS-002] Generate a `run_id` for each invocation (UUID or equivalent).
+- [PY-OBS-003] Include `run_id` in:
+  - [PY-OBS-003a] debug/verbose logs
+  - [PY-OBS-003b] error output
+  - [PY-OBS-003c] structured outputs (when relevant, as metadata)
 
 ### 10.2 API correlation and request identity 🧾
 
 For APIs, every request must have stable identifiers that flow through the whole call chain:
 
-- [PY-OBS-003] Accept an inbound correlation id (prefer `X-Request-Id`) **or generate one** if missing.
-- [PY-OBS-004] Accept an inbound W3C trace context (`traceparent` / `tracestate`) where present.
-- [PY-OBS-005] Return the correlation id in every response header (at minimum `X-Request-Id`).
-- [PY-OBS-006] Propagate correlation and trace context to all outbound calls (HTTP, AWS SDK calls, queues/events where supported).
+- [PY-OBS-004] Accept an inbound correlation id (prefer `X-Request-Id`) **or generate one** if missing.
+- [PY-OBS-005] Accept an inbound W3C trace context (`traceparent` / `tracestate`) where present.
+- [PY-OBS-006] Return the correlation id in every response header (at minimum `X-Request-Id`).
+- [PY-OBS-007] Propagate correlation and trace context to all outbound calls (HTTP, AWS SDK calls, queues/events where supported).
 
 Rules:
 
-- [PY-OBS-007] Do not overwrite inbound ids unless they are invalid.
-- [PY-OBS-008] If you create a new id, log it once early and attach it everywhere.
-- [PY-OBS-009] Ensure correlation ids are included in:
-  - [PY-OBS-009a] every log record (as a structured field)
-  - [PY-OBS-009b] error responses (`correlation_id`)
-  - [PY-OBS-009c] traces (as attributes)
+- [PY-OBS-008] Do not overwrite inbound ids unless they are invalid.
+- [PY-OBS-009] If you create a new id, log it once early and attach it everywhere.
+- [PY-OBS-010] Ensure correlation ids are included in:
+  - [PY-OBS-010a] every log record (as a structured field)
+  - [PY-OBS-010b] error responses (`correlation_id`)
+  - [PY-OBS-010c] traces (as attributes)
 
 ### 10.3 Logging rules (CLI and API) 🧱
 
 For CLIs:
 
-- [PY-OBS-010] Default behaviour:
-  - [PY-OBS-010a] minimal logs to stderr
-  - [PY-OBS-010b] no noisy debug output
-- [PY-OBS-011] Structured logging (JSON) should be available when useful:
-  - [PY-OBS-011a] `--log-format json` (or equivalent)
-  - [PY-OBS-011b] `--log-level` (INFO/WARNING/ERROR/DEBUG)
-- [PY-OBS-012] When emitting structured output, include the CLI invocation fields defined in the [Structured Logging Baseline](./include/observability-logging-baseline.md#2-required-fields-clis) and never log secrets, tokens, credentials, or raw personal data.
-- [PY-OBS-013] Prefer event-style logs with stable names:
-  - [PY-OBS-013a] `command.start`, `command.end`, `step.start`, `step.end`, `dependency.call`, `dependency.error`
+- [PY-OBS-011] Default behaviour:
+  - [PY-OBS-011a] minimal logs to stderr
+  - [PY-OBS-011b] no noisy debug output
+- [PY-OBS-012] Structured logging (JSON) should be available when useful:
+  - [PY-OBS-012a] `--log-format json` (or equivalent)
+  - [PY-OBS-012b] `--log-level` (INFO/WARNING/ERROR/DEBUG)
+- [PY-OBS-013] When emitting structured output, include the CLI invocation fields defined in the [Structured Logging Baseline](./include/observability-logging-baseline.md#2-required-fields-clis) and never log secrets, tokens, credentials, or raw personal data.
+- [PY-OBS-014] Prefer event-style logs with stable names:
+  - [PY-OBS-014a] `command.start`, `command.end`, `step.start`, `step.end`, `dependency.call`, `dependency.error`
 
 For APIs (mandatory structured logging):
 
 Logs must be structured (prefer JSON), queryable, and consistent.
 
-- [PY-OBS-014] Service/API logs must include the required fields defined in the [Structured Logging Baseline](./include/observability-logging-baseline.md#1-required-fields-services-apis); do not fork or trim that list locally.
-- [PY-OBS-015] HTTP metadata (method, path template, status code) and timing/outcome fields from the baseline are mandatory for every request log entry.
-- [PY-OBS-016] Apply the baseline secrecy rules ([section 3](./include/observability-logging-baseline.md#3-sensitive-data--secrecy-rules)): never log secrets, credentials, or raw personal data; mask or truncate payloads when logging is explicitly required.
-- [PY-OBS-017] Use the baseline event taxonomy ([section 4](./include/observability-logging-baseline.md#4-event-naming--taxonomy)) so request/dependency events stay searchable across repos.
-- [PY-OBS-018] Prefer high-signal logs only:
-  - [PY-OBS-018a] start/end of request (one each)
-  - [PY-OBS-018b] key domain decision points (not every line)
-  - [PY-OBS-018c] boundary calls (DB, AWS, HTTP)
-  - [PY-OBS-018d] errors (once, with structured context)
+- [PY-OBS-015] Service/API logs must include the required fields defined in the [Structured Logging Baseline](./include/observability-logging-baseline.md#1-required-fields-services-apis); do not fork or trim that list locally.
+- [PY-OBS-016] HTTP metadata (method, path template, status code) and timing/outcome fields from the baseline are mandatory for every request log entry.
+- [PY-OBS-017] Apply the baseline secrecy rules ([section 3](./include/observability-logging-baseline.md#3-sensitive-data--secrecy-rules)): never log secrets, credentials, or raw personal data; mask or truncate payloads when logging is explicitly required.
+- [PY-OBS-018] Use the baseline event taxonomy ([section 4](./include/observability-logging-baseline.md#4-event-naming--taxonomy)) so request/dependency events stay searchable across repos.
+- [PY-OBS-019] Prefer high-signal logs only:
+  - [PY-OBS-019a] start/end of request (one each)
+  - [PY-OBS-019b] key domain decision points (not every line)
+  - [PY-OBS-019c] boundary calls (DB, AWS, HTTP)
+  - [PY-OBS-019d] errors (once, with structured context)
+  - [PY-OBS-019e] When `DEBUG`/diagnostic logging is enabled, emit a single function/method entry log for every call path, capturing the operation name and a sanitised summary of arguments per the [Structured Logging Baseline §5](./include/observability-logging-baseline.md#5-diagnostics--sampling); never include sensitive data.
 
 Log level policy:
 
-- [PY-OBS-032] `DEBUG`: only for local/dev or explicitly enabled diagnostics (never required in normal production operation)
-- [PY-OBS-033] `INFO`: normal request lifecycle and major domain events
-- [PY-OBS-034] `WARNING`: degraded behaviour, retries, unexpected but handled conditions
-- [PY-OBS-035] `ERROR`: failed operations, exceptions, dependency failures
-- [PY-OBS-036] `CRITICAL`: data loss, security incidents, corruption, or systemic failure
+- [PY-OBS-020] `DEBUG`: only for local/dev or explicitly enabled diagnostics (never required in normal production operation)
+- [PY-OBS-021] `INFO`: normal request lifecycle and major domain events
+- [PY-OBS-022] `WARNING`: degraded behaviour, retries, unexpected but handled conditions
+- [PY-OBS-023] `ERROR`: failed operations, exceptions, dependency failures
+- [PY-OBS-024] `CRITICAL`: data loss, security incidents, corruption, or systemic failure
 
 ### 10.4 API request lifecycle logging (start/end) ⏱️
 
 For every API request, produce:
 
-- [PY-OBS-037] exactly one `request.start` log (minimal fields)
-- [PY-OBS-038] exactly one `request.end` log (must include `status_code` and `duration_ms`)
+- [PY-OBS-025] exactly one `request.start` log (minimal fields)
+- [PY-OBS-026] exactly one `request.end` log (must include `status_code` and `duration_ms`)
 
 Ensure the end log happens even on exceptions.
 
@@ -530,44 +531,44 @@ Ensure the end log happens even on exceptions.
 
 All external boundary calls must be observable:
 
-- [PY-OBS-039] Emit a `dependency.call` log with:
-  - [PY-OBS-039a] dependency name (`dynamodb`, `aurora`, `s3`, `http.<service>`, etc.)
-  - [PY-OBS-039b] operation (for example `GetItem`, `SELECT`, `POST /v1/payments`)
-  - [PY-OBS-039c] `duration_ms`
-  - [PY-OBS-039d] outcome
-- [PY-OBS-040] On failure, emit `dependency.error` with:
-  - [PY-OBS-040a] `error_class`, `error_code` (where mapped), and retry intention
-- [PY-OBS-041] Do not leak sensitive query parameters or payloads.
-- [PY-OBS-042] For database queries, log:
-  - [PY-OBS-042a] query name / prepared statement id (not raw SQL unless explicitly safe)
-  - [PY-OBS-042b] row count (if cheap)
-  - [PY-OBS-042c] slow query warnings with thresholds
+- [PY-OBS-027] Emit a `dependency.call` log with:
+  - [PY-OBS-027a] dependency name (`dynamodb`, `aurora`, `s3`, `http.<service>`, etc.)
+  - [PY-OBS-027b] operation (for example `GetItem`, `SELECT`, `POST /v1/payments`)
+  - [PY-OBS-027c] `duration_ms`
+  - [PY-OBS-027d] outcome
+- [PY-OBS-028] On failure, emit `dependency.error` with:
+  - [PY-OBS-028a] `error_class`, `error_code` (where mapped), and retry intention
+- [PY-OBS-029] Do not leak sensitive query parameters or payloads.
+- [PY-OBS-030] For database queries, log:
+  - [PY-OBS-030a] query name / prepared statement id (not raw SQL unless explicitly safe)
+  - [PY-OBS-030b] row count (if cheap)
+  - [PY-OBS-030c] slow query warnings with thresholds
 
 ### 10.6 Distributed tracing (services and methods) 🧵
 
 Tracing must be supported using standard trace context:
 
-- [PY-OBS-043] Prefer OpenTelemetry semantics (even if the backend is AWS X-Ray, Jaeger, etc.).
-- [PY-OBS-044] Create spans for:
-  - [PY-OBS-044a] request handler / entrypoint
-  - [PY-OBS-044b] major internal operations (use-cases)
-  - [PY-OBS-044c] each boundary call (DB, AWS SDK, HTTP)
-- [PY-OBS-045] Attach attributes to spans:
-  - [PY-OBS-045a] `request_id`, `user_role` (never PII), `operation`
-  - [PY-OBS-045b] dependency name and operation
-  - [PY-OBS-045c] outcome and `error_code` when applicable
+- [PY-OBS-031] Prefer OpenTelemetry semantics (even if the backend is AWS X-Ray, Jaeger, etc.).
+- [PY-OBS-032] Create spans for:
+  - [PY-OBS-032a] request handler / entrypoint
+  - [PY-OBS-032b] major internal operations (use-cases)
+  - [PY-OBS-032c] each boundary call (DB, AWS SDK, HTTP)
+- [PY-OBS-033] Attach attributes to spans:
+  - [PY-OBS-033a] `request_id`, `user_role` (never PII), `operation`
+  - [PY-OBS-033b] dependency name and operation
+  - [PY-OBS-033c] outcome and `error_code` when applicable
 
 Propagation rules:
 
-- [PY-OBS-046] Always propagate trace context to outbound HTTP calls.
-- [PY-OBS-047] For async/event-driven flows:
-  - [PY-OBS-047a] preserve correlation ids in message attributes/metadata
-  - [PY-OBS-047b] include trace context where supported
+- [PY-OBS-034] Always propagate trace context to outbound HTTP calls.
+- [PY-OBS-035] For async/event-driven flows:
+  - [PY-OBS-035a] preserve correlation ids in message attributes/metadata
+  - [PY-OBS-035b] include trace context where supported
 
 Sampling rules:
 
-- [PY-OBS-048] Use sensible sampling in production.
-- [PY-OBS-049] Ensure errors are traceable even when sampling is low (for example error-biased sampling where available).
+- [PY-OBS-036] Use sensible sampling in production.
+- [PY-OBS-037] Ensure errors are traceable even when sampling is low (for example error-biased sampling where available).
 
 ### 10.7 Metrics (the signals that drive action) 📈
 
@@ -575,72 +576,73 @@ Metrics must support operational decisions and alerting.
 
 At minimum, record:
 
-- [PY-OBS-050] request rate (by `operation` and response class `2xx/4xx/5xx`)
-- [PY-OBS-051] error rate (by `error_code` and class)
-- [PY-OBS-052] latency (p50/p95/p99 per `operation`)
-- [PY-OBS-053] saturation signals (queue depth, concurrency, connection pool usage where applicable)
-- [PY-OBS-054] dependency metrics (latency and error rate per dependency)
+- [PY-OBS-038] request rate (by `operation` and response class `2xx/4xx/5xx`)
+- [PY-OBS-039] error rate (by `error_code` and class)
+- [PY-OBS-040] latency (p50/p95/p99 per `operation`)
+- [PY-OBS-041] saturation signals (queue depth, concurrency, connection pool usage where applicable)
+- [PY-OBS-042] dependency metrics (latency and error rate per dependency)
 
 Cardinality rules:
 
-- [PY-OBS-055] Do not put raw ids (user ids, request ids) into metric labels.
-- [PY-OBS-056] Keep labels stable and bounded (use route templates and coarse categories).
+- [PY-OBS-043] Do not put raw ids (user ids, request ids) into metric labels.
+- [PY-OBS-044] Keep labels stable and bounded (use route templates and coarse categories).
 
 ### 10.8 Error capture, debugging, and "fast diagnosis" 🧠
 
 Error handling must support rapid diagnosis without exposing internals to clients:
 
-- [PY-OBS-057] Map errors to stable `error_code`s and HTTP statuses.
-- [PY-OBS-058] Log the exception once, with:
-  - [PY-OBS-058a] `error_code`, `error_class`, `request_id`, `trace_id`
-  - [PY-OBS-058b] a stack trace (server logs only)
-  - [PY-OBS-058c] relevant safe context (operation, dependency, validation details)
-- [PY-OBS-059] Avoid duplicate logging:
-  - [PY-OBS-059a] do not log and then re-log the same exception at multiple layers unless each log adds new information.
-- [PY-OBS-060] Provide a safe client message; never expose stack traces to clients.
-- [PY-OBS-061] Support a controlled "diagnostic mode":
-  - [PY-OBS-061a] enabled by configuration, not code changes
-  - [PY-OBS-061b] increases logging detail without changing behaviour
-  - [PY-OBS-061c] still must not leak secrets or personal data
+- [PY-OBS-045] Map errors to stable `error_code`s and HTTP statuses.
+- [PY-OBS-046] Log the exception once, with:
+  - [PY-OBS-046a] `error_code`, `error_class`, `request_id`, `trace_id`
+  - [PY-OBS-046b] a stack trace (server logs only)
+  - [PY-OBS-046c] relevant safe context (operation, dependency, validation details)
+  - [PY-OBS-046d] Set the severity to `ERROR` for every exception log, even if the software can recover, so operators can see the failure signal.
+- [PY-OBS-047] Avoid duplicate logging:
+  - [PY-OBS-047a] do not log and then re-log the same exception at multiple layers unless each log adds new information.
+- [PY-OBS-048] Provide a safe client message; never expose stack traces to clients.
+- [PY-OBS-049] Support a controlled "diagnostic mode":
+  - [PY-OBS-049a] enabled by configuration, not code changes
+  - [PY-OBS-049b] increases logging detail without changing behaviour
+  - [PY-OBS-049c] still must not leak secrets or personal data
 
 ### 10.9 Runbook hooks and actionable outputs 🧭
 
 Where an error is operationally meaningful:
 
-- [PY-OBS-062] include a `runbook` link or reference key (for example `RUN-API-012`) in logs for `ERROR`/`CRITICAL` events.
-- [PY-OBS-063] ensure the log fields are sufficient to:
-  - [PY-OBS-063a] reproduce the issue locally (inputs summarised safely)
-  - [PY-OBS-063b] identify the failing dependency and operation
-  - [PY-OBS-063c] understand whether it is transient vs persistent
+- [PY-OBS-050] include a `runbook` link or reference key (for example `RUN-API-012`) in logs for `ERROR`/`CRITICAL` events.
+- [PY-OBS-051] ensure the log fields are sufficient to:
+  - [PY-OBS-051a] reproduce the issue locally (inputs summarised safely)
+  - [PY-OBS-051b] identify the failing dependency and operation
+  - [PY-OBS-051c] understand whether it is transient vs persistent
 
 ### 10.10 Audit and security event logging 🛡️
 
 Security-relevant actions must produce explicit audit logs:
 
-- [PY-OBS-064] authentication events (success/failure)
-- [PY-OBS-065] authorisation denials (`403`)
-- [PY-OBS-066] privileged operations
-- [PY-OBS-067] configuration changes
-- [PY-OBS-068] data export / bulk operations (where applicable)
+- [PY-OBS-052] authentication events (success/failure)
+- [PY-OBS-053] authorisation denials (`403`)
+- [PY-OBS-054] privileged operations
+- [PY-OBS-055] configuration changes
+- [PY-OBS-056] data export / bulk operations (where applicable)
 
 Audit log rules:
 
-- [PY-OBS-069] never log credentials or raw tokens
-- [PY-OBS-070] include who/what/when:
-  - [PY-OBS-070a] actor type (service/user), role (not identity), operation, outcome, request_id
-- [PY-OBS-071] ensure audit events are distinguishable from application logs (`event: security.audit`)
+- [PY-OBS-057] never log credentials or raw tokens
+- [PY-OBS-058] include who/what/when:
+  - [PY-OBS-058a] actor type (service/user), role (not identity), operation, outcome, request_id
+- [PY-OBS-059] ensure audit events are distinguishable from application logs (`event: security.audit`)
 
 ### 10.11 Serverless notes (Lambda) ☁️
 
 When running in AWS Lambda:
 
-- [PY-OBS-072] Always log with correlation ids that map to:
-  - [PY-OBS-072a] API Gateway request ids where available
-  - [PY-OBS-072b] Lambda `aws_request_id`
-- [PY-OBS-073] Ensure cold start visibility:
-  - [PY-OBS-073a] log a one-time `cold_start` event per container lifecycle (best effort)
-- [PY-OBS-074] Prefer structured logs for CloudWatch and ensure they are parseable.
-- [PY-OBS-075] Ensure timeouts and downstream retries are visible and measurable.
+- [PY-OBS-060] Always log with correlation ids that map to:
+  - [PY-OBS-060a] API Gateway request ids where available
+  - [PY-OBS-060b] Lambda `aws_request_id`
+- [PY-OBS-061] Ensure cold start visibility:
+  - [PY-OBS-061a] log a one-time `cold_start` event per container lifecycle (best effort)
+- [PY-OBS-062] Prefer structured logs for CloudWatch and ensure they are parseable.
+- [PY-OBS-063] Ensure timeouts and downstream retries are visible and measurable.
 
 ---
 
@@ -923,17 +925,17 @@ Additional Python-specific testing guidance:
   - [PY-TST-002c] avoid real network by default (use stubs/mocks/emulators)
   - [PY-TST-002d] do not depend on external services unless explicitly treated as an integration test
 - [PY-TST-003] Prefer behaviour-focused tests over implementation-coupled tests.
-- [PY-TST-006] Cover edge cases explicitly (empty inputs, invalid data types, large datasets, boundary values) and document the expected outcome for each.
-- [PY-TST-007] Add concise docstrings or comments to test cases that explain what scenario is being validated and why it matters.
-- [PY-TST-008] When tests rely on fixtures or external dependencies, note those dependencies in comments so reviewers understand the setup constraints.
+- [PY-TST-004] Cover edge cases explicitly (empty inputs, invalid data types, large datasets, boundary values) and document the expected outcome for each.
+- [PY-TST-005] Add concise docstrings or comments to test cases that explain what scenario is being validated and why it matters.
+- [PY-TST-006] When tests rely on fixtures or external dependencies, note those dependencies in comments so reviewers understand the setup constraints.
 
 ### 14.1 Golden tests (snapshot) 📸
 
-- [PY-TST-004] Snapshot/golden tests are allowed for CLI output when:
-  - [PY-TST-004a] output is deterministic
-  - [PY-TST-004b] snapshots are small and readable
-  - [PY-TST-004c] differences are meaningful
-- [PY-TST-005] Prefer structured output snapshots (JSON) over free-form text.
+- [PY-TST-007] Snapshot/golden tests are allowed for CLI output when:
+  - [PY-TST-007a] output is deterministic
+  - [PY-TST-007b] snapshots are small and readable
+  - [PY-TST-007c] differences are meaningful
+- [PY-TST-008] Prefer structured output snapshots (JSON) over free-form text.
 
 ---
 
@@ -1044,5 +1046,5 @@ Per [constitution.md §3.5](../../.specify/memory/constitution.md#35-ai-assisted
 
 ---
 
-> **Version**: 1.3.1
+> **Version**: 1.3.2
 > **Last Amended**: 2026-01-10

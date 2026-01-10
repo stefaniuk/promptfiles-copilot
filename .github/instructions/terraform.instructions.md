@@ -26,15 +26,15 @@ This section exists so humans and AI assistants can reliably apply the most impo
 
 - [TF-QR-001] **Specification first**: if a requirement is not specified (or agreed), do not invent it ([TF-OP-005]).
 - [TF-QR-002] **Small, safe changes**: prefer incremental evolution over big rewrites ([TF-OP-003]).
-- [TF-QR-003] **Deterministic and reproducible**: the same inputs must produce the same plan ([TF-OP-002], [TF-OP-007]–[TF-OP-008]).
+- [TF-QR-003] **Deterministic and reproducible**: the same inputs must produce the same plan ([TF-OP-002], [TF-OP-008]–[TF-OP-009]).
 - [TF-QR-004] **Run the quality gates** after any Terraform change and iterate to clean ([TF-QG-001]–[TF-QG-008]).
 - [TF-QR-005] **Plan-first discipline**: all changes must be reviewed via `terraform plan` output ([TF-BEH-001]–[TF-BEH-003]).
 - [TF-QR-006] **London-only residency**: all infrastructure must be in `eu-west-2`; no other region without an ADR ([TF-REG-001]–[TF-REG-002]).
-- [TF-QR-007] **Secure-by-default**: least privilege, encryption, auditable changes ([TF-OP-004], [TF-SEC-001]–[TF-SEC-021]).
+- [TF-QR-007] **Secure-by-default**: least privilege, encryption, auditable changes ([TF-OP-004], [TF-SEC-001]–[TF-SEC-026]).
 - [TF-QR-008] **No snowflakes**: no manual changes in the AWS Console that are not represented in Terraform ([TF-OP-006]).
 - [TF-QR-009] **Remote state, isolated per environment**: encrypted, versioned, access-controlled ([TF-STATE-001]–[TF-STATE-008]).
 - [TF-QR-010] **Observability baseline**: CloudWatch logs, metrics, alarms, dashboards, and runbook references ([TF-OBS-001]–[TF-OBS-067]).
-- [TF-QR-011] **IaC or nothing**: every AWS change must flow through Terraform under version control ([TF-OP-009]).
+- [TF-QR-011] **IaC or nothing**: every AWS change must flow through Terraform under version control ([TF-OP-007]).
 
 ---
 
@@ -48,14 +48,14 @@ These principles extend [constitution.md §3](../../.specify/memory/constitution
 - [TF-OP-004] **Secure-by-default**: least privilege, encryption, auditable changes, and safe failure semantics.
 - [TF-OP-005] **Specification-first where it exists**: if a requirement is not specified (or agreed), do not invent it.
 - [TF-OP-006] **No snowflakes**: no manual changes in the AWS Console that are not represented in Terraform (except break-glass with a follow-up fix).
-- [TF-OP-009] Keep all Terraform configuration under version control with code review; no unmanaged state or local-only configuration files.
+- [TF-OP-007] Keep all Terraform configuration under version control with code review; no unmanaged state or local-only configuration files.
 
 Determinism notes (how to avoid accidental drift):
 
-- [TF-OP-007] Prefer **pinned and versioned inputs** over lookups that can change:
+- [TF-OP-008] Prefer **pinned and versioned inputs** over lookups that can change:
   - avoid "latest" AMI lookups unless explicitly required and justified
   - prefer versioned artefacts (AMI IDs, container tags/digests, module versions)
-- [TF-OP-008] Treat non-deterministic resources/providers (for example `random_*`) as part of the contract:
+- [TF-OP-009] Treat non-deterministic resources/providers (for example `random_*`) as part of the contract:
   - scope them carefully
   - document where they are used and why
 
@@ -144,23 +144,23 @@ Terraform is an interface contract just like an API/CLI: callers depend on it.
 - [TF-CTR-002] Breaking changes must be intentional, documented, and reviewable.
 - [TF-CTR-003] Prefer additive evolution (new optional variables/outputs) over breaking changes.
 - [TF-CTR-004] Mark sensitive outputs as `sensitive = true` and avoid exposing secrets via outputs.
-- [TF-CTR-008] Use `output` blocks to publish the minimum integration data consumers need, keeping structured names and descriptions aligned with the specification.
-- [TF-CTR-009] Avoid surfacing sensitive values via outputs; when an output must exist for operational reasons, mark it `sensitive` and document the consumer and rotation policy.
+- [TF-CTR-005] Use `output` blocks to publish the minimum integration data consumers need, keeping structured names and descriptions aligned with the specification.
+- [TF-CTR-006] Avoid surfacing sensitive values via outputs; when an output must exist for operational reasons, mark it `sensitive` and document the consumer and rotation policy.
 
 ### 4.2 Environment contracts and safety boundaries
 
-- [TF-CTR-005] Environment boundaries must be explicit and repeatable (see §9 and §7):
+- [TF-CTR-007] Environment boundaries must be explicit and repeatable (see §9 and §7):
   - one state per environment
   - explicit credentials and account targeting
   - explicit region controls
-- [TF-CTR-006] The "apply path" must be clear and auditable (see §5.2):
+- [TF-CTR-008] The "apply path" must be clear and auditable (see §5.2):
   - who/what applies
   - where plans live
   - what approvals are required
 
 ### 4.3 Documentation as part of the contract
 
-- [TF-CTR-007] Every stack/module must have enough documentation for a new engineer to:
+- [TF-CTR-009] Every stack/module must have enough documentation for a new engineer to:
   - understand what it provisions and why
   - know how to run plan safely
   - know how to recover/roll back (where applicable)
@@ -275,14 +275,14 @@ Dependencies must be explicit and versioned. No floating versions.
 - [TF-VER-002] Pin **providers** with explicit constraints.
 - [TF-VER-003] Run `terraform init -upgrade` deliberately and review provider changes.
 - [TF-VER-004] Do not rely on floating versions.
-- [TF-VER-009] Regularly refresh pinned Terraform and provider versions to the latest stable release, capturing security patches and recording any blockers when you cannot upgrade immediately.
+- [TF-VER-005] Regularly refresh pinned Terraform and provider versions to the latest stable release, capturing security patches and recording any blockers when you cannot upgrade immediately.
 
 ### 8.2 Modules
 
-- [TF-VER-005] Treat modules as **versioned products**.
-- [TF-VER-006] Prefer small, single-responsibility modules with clear inputs/outputs.
-- [TF-VER-007] Avoid "mega-modules" that provision unrelated concerns.
-- [TF-VER-008] Do not fork upstream modules unless necessary; if you do, record the reason and a review date in an ADR.
+- [TF-VER-006] Treat modules as **versioned products**.
+- [TF-VER-007] Prefer small, single-responsibility modules with clear inputs/outputs.
+- [TF-VER-008] Avoid "mega-modules" that provision unrelated concerns.
+- [TF-VER-009] Do not fork upstream modules unless necessary; if you do, record the reason and a review date in an ADR.
 - [TF-VER-010] Avoid wrapping single resources in modules unless they add shared policy, tagging, or abstractions; prefer direct resources for trivial cases.
 - [TF-VER-011] Keep module hierarchies shallow and avoid unnecessary nesting that obscures the apply graph.
 - [TF-VER-012] Prevent circular module dependencies; treat them as architecture defects that require refactoring.
@@ -337,15 +337,15 @@ Rules:
 - [TF-STR-001] Keep **environment composition** separate from **module implementation**.
 - [TF-STR-002] Avoid deep nesting that makes navigation hard.
 - [TF-STR-003] Keep each stack small enough to review confidently (split by domain/boundary when needed).
-- [TF-STR-007] Split large estates into separate stacks/projects per major component so plans remain fast, isolated, and reviewable.
-- [TF-STR-008] Group related resources in files with predictable names (for example `providers.tf`, `network.tf`, `ecs.tf`) so discovery is consistent across stacks.
-- [TF-STR-009] Co-locate tests, variables, and helper modules near the stacks they protect when it improves comprehension, while keeping shared utilities centralised.
+- [TF-STR-004] Split large estates into separate stacks/projects per major component so plans remain fast, isolated, and reviewable.
+- [TF-STR-005] Group related resources in files with predictable names (for example `providers.tf`, `network.tf`, `ecs.tf`) so discovery is consistent across stacks.
+- [TF-STR-006] Co-locate tests, variables, and helper modules near the stacks they protect when it improves comprehension, while keeping shared utilities centralised.
 
 Practical organisation guidance (recommended):
 
-- [TF-STR-004] Use `locals {}` for naming and derived values, but keep them small and readable.
-- [TF-STR-005] Prefer explicit modules over copy-pasting resources across stacks.
-- [TF-STR-006] Keep provider configuration and backend configuration in predictable, easy-to-find places.
+- [TF-STR-007] Use `locals {}` for naming and derived values, but keep them small and readable.
+- [TF-STR-008] Prefer explicit modules over copy-pasting resources across stacks.
+- [TF-STR-009] Keep provider configuration and backend configuration in predictable, easy-to-find places.
 - [TF-STR-010] Follow Terraform's style guide: two-space indentation, blank lines between logical sections, and alphabetical ordering of resources, variables, providers, and outputs within files where reasonable.
 - [TF-STR-011] Group related resources within a file and keep required attributes ahead of optional ones so reviewers can scan intent quickly.
 - [TF-STR-012] Place `depends_on` (when needed) at the top of a resource block, followed by `for_each`/`count`, so evaluation order is explicit; keep `lifecycle {}` blocks at the end.
@@ -403,36 +403,36 @@ Security is part of the infrastructure contract. **Secure-by-default is non-nego
   - [TF-SEC-008a] Secrets Manager
   - [TF-SEC-008b] SSM Parameter Store (SecureString with KMS)
 - [TF-SEC-009] If a secret must be referenced, reference it by ARN/name and manage its lifecycle appropriately.
-- [TF-SEC-022] Load secrets into Terraform via environment variables or injected files that reference Secrets Manager/SSM values so sensitive data never lands in state.
-- [TF-SEC-023] Never commit credentials, state files, or generated secrets to version control; maintain `.gitignore` rules to enforce this and verify in code review.
-- [TF-SEC-024] Mark sensitive input variables (`variable "..." { sensitive = true }`) and outputs so Terraform redacts them from plans/applies.
-- [TF-SEC-025] Rotate secrets and IAM credentials regularly (and automate rotation where tooling allows); document the schedule per stack.
+- [TF-SEC-010] Load secrets into Terraform via environment variables or injected files that reference Secrets Manager/SSM values so sensitive data never lands in state.
+- [TF-SEC-011] Never commit credentials, state files, or generated secrets to version control; maintain `.gitignore` rules to enforce this and verify in code review.
+- [TF-SEC-012] Mark sensitive input variables (`variable "..." { sensitive = true }`) and outputs so Terraform redacts them from plans/applies.
+- [TF-SEC-013] Rotate secrets and IAM credentials regularly (and automate rotation where tooling allows); document the schedule per stack.
 
 ### 12.2 Networking and connectivity
 
-- [TF-SEC-010] Use clear VPC boundaries and documented CIDR plans.
-- [TF-SEC-011] Prefer private subnets for compute and data stores.
-- [TF-SEC-012] Internet access should be explicit (NAT gateways, egress controls).
-- [TF-SEC-013] Use security groups with minimal ingress/egress rules.
-- [TF-SEC-014] Avoid wide-open rules (`0.0.0.0/0`) unless explicitly required and documented.
-- [TF-SEC-015] For service-to-service connectivity, prefer private connectivity patterns:
-  - [TF-SEC-015a] VPC endpoints (Interface/Gateway endpoints)
-  - [TF-SEC-015b] PrivateLink where appropriate
-  - [TF-SEC-015c] internal load balancers for internal services
-- [TF-SEC-016] Document and test connectivity assumptions (DNS, routing, endpoints, firewall rules).
-- [TF-SEC-027] Apply network ACLs intentionally to enforce subnet-level guardrails, documenting why any broad rules exist.
+- [TF-SEC-014] Use clear VPC boundaries and documented CIDR plans.
+- [TF-SEC-015] Prefer private subnets for compute and data stores.
+- [TF-SEC-016] Internet access should be explicit (NAT gateways, egress controls).
+- [TF-SEC-017] Use security groups with minimal ingress/egress rules.
+- [TF-SEC-018] Avoid wide-open rules (`0.0.0.0/0`) unless explicitly required and documented.
+- [TF-SEC-019] For service-to-service connectivity, prefer private connectivity patterns:
+  - [TF-SEC-019a] VPC endpoints (Interface/Gateway endpoints)
+  - [TF-SEC-019b] PrivateLink where appropriate
+  - [TF-SEC-019c] internal load balancers for internal services
+- [TF-SEC-020] Document and test connectivity assumptions (DNS, routing, endpoints, firewall rules).
+- [TF-SEC-021] Apply network ACLs intentionally to enforce subnet-level guardrails, documenting why any broad rules exist.
 
 ### 12.3 Encryption and data protection
 
-- [TF-SEC-017] Encrypt data **at rest** and **in transit** by default.
-- [TF-SEC-018] Prefer customer-managed keys (KMS) when policy requires it.
-- [TF-SEC-019] Rotate keys according to policy and document rotation expectations.
-- [TF-SEC-020] Ensure TLS is enforced on:
-  - [TF-SEC-020a] load balancers
-  - [TF-SEC-020b] API endpoints
-  - [TF-SEC-020c] database connections where supported
-- [TF-SEC-021] Ensure logs and state are encrypted and access-controlled.
-- [TF-SEC-028] Explicitly enable encryption for EBS volumes, S3 buckets, RDS/Aurora instances, and any other managed data stores; document exceptions with compensating controls.
+- [TF-SEC-022] Encrypt data **at rest** and **in transit** by default.
+- [TF-SEC-023] Prefer customer-managed keys (KMS) when policy requires it.
+- [TF-SEC-024] Rotate keys according to policy and document rotation expectations.
+- [TF-SEC-025] Ensure TLS is enforced on:
+  - [TF-SEC-025a] load balancers
+  - [TF-SEC-025b] API endpoints
+  - [TF-SEC-025c] database connections where supported
+- [TF-SEC-026] Ensure logs and state are encrypted and access-controlled.
+- [TF-SEC-027] Explicitly enable encryption for EBS volumes, S3 buckets, RDS/Aurora instances, and any other managed data stores; document exceptions with compensating controls.
 
 ---
 

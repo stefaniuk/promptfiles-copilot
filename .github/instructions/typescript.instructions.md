@@ -531,6 +531,7 @@ If the system depends on external services (cloud APIs, databases, third-party s
 - [TS-ERR-007] Log exceptions once, close to the boundary:
   - include `error_code`, `correlation_id`, `trace_id` (if present)
   - include stack traces in server logs only (never in client responses)
+  - [TS-ERR-007a] Emit the exception log at `ERROR` level **even when the software can recover**, so operators always see the failure signal.
 - [TS-ERR-008] Avoid duplicate logging at multiple layers unless each log adds new information.
 
 ### 11.3a Error classification (applies to APIs; recommended for CLIs with structured output)
@@ -595,6 +596,7 @@ Observability is non-negotiable.
 - [TS-OBS-005] Service/API logs must include the required metadata from [section 1](./include/observability-logging-baseline.md#1-required-fields-services-apis); do not remove or rename those fields locally.
 - [TS-OBS-006] CLI/worker logs that emit structured output must include the CLI invocation fields from [section 2](./include/observability-logging-baseline.md#2-required-fields-clis).
 - [TS-OBS-007] Apply the secrecy and event taxonomy rules from [sections 3–4](./include/observability-logging-baseline.md#3-sensitive-data--secrecy-rules); never log secrets or personal data, and keep event names (`request.*`, `dependency.*`, etc.) stable for automation.
+  - [TS-OBS-007a] When verbose or debug logging is enabled, emit a single function/method entry log for every call path with the operation name and a sanitised summary of arguments per [section 5](./include/observability-logging-baseline.md#5-diagnostics--sampling); never include sensitive payloads.
 
 ### 12.3 Metrics
 
@@ -998,5 +1000,5 @@ This section defines a **framework-agnostic** baseline for building maintainable
 
 ---
 
-> **Version**: 1.3.0
+> **Version**: 1.3.1
 > **Last Amended**: 2026-01-10
