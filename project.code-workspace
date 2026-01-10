@@ -17,6 +17,10 @@
       "path": ".github/prompts/"
     },
     {
+      "name": "Copilot: Skills",
+      "path": ".github/skills/"
+    },
+    {
       "name": "Spec-kit: Constitution",
       "path": ".specify/memory/"
     },
@@ -35,6 +39,10 @@
     {
       "name": "Docs: Other Documentation",
       "path": "./docs/"
+    },
+    {
+      "name": "Code: Scripts",
+      "path": "./scripts/"
     }
   ]
 }

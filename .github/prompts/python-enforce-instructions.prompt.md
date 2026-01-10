@@ -32,11 +32,11 @@ Enumerate every Python artefact in the repository, detect any discrepancies agai
 
 ## Steps
 
-> **Note:** On subsequent runs, check whether the artefacts produced by earlier executions (for example `docs/python-inventory.md`, `docs/python-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
+> **Note:** On subsequent runs, check whether the artefacts produced by earlier executions (for example `docs/prompt-reports/python-inventory.md`, `docs/prompt-reports/python-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
 
 ### 1) Build the Python artefact matrix
 
-1. Produce a table (for example in `docs/python-inventory.md`) listing each Python file/folder, its role, and key instruction tags that apply.
+1. Produce a table (for example in `docs/prompt-reports/python-inventory.md`) listing each Python file/folder, its role, and key instruction tags that apply.
 2. Highlight high-risk areas (entrypoints, shared utilities, data models) where divergence is most likely.
 
 ### 2) Detect discrepancies against instructions
@@ -53,7 +53,7 @@ Enumerate every Python artefact in the repository, detect any discrepancies agai
    - Files to touch (with justification)
    - Specific instructions tags they satisfy
    - Order of execution (prioritise safety-critical fixes first)
-3. Store the plan in `docs/python-instructions-alignment-plan.md` for traceability.
+3. Store the plan in `docs/prompt-reports/python-instructions-alignment-plan.md` for traceability.
 
 ### 4) Implement the changes (iterative, safe batches)
 
@@ -69,7 +69,7 @@ Enumerate every Python artefact in the repository, detect any discrepancies agai
 
 ### 6) Summarise outcomes and next steps
 
-1. Produce a final enforcement report (append to `docs/python-instructions-alignment-plan.md`) covering:
+1. Produce a final enforcement report (append to `docs/prompt-reports/python-instructions-alignment-plan.md`) covering:
    - Resolved discrepancies (with references)
    - Remaining gaps / technical debt
    - Follow-up actions with owners and due dates
@@ -89,5 +89,5 @@ Enumerate every Python artefact in the repository, detect any discrepancies agai
 
 ---
 
-> **Version**: 1.0.0
+> **Version**: 1.0.1
 > **Last Amended**: 2026-01-10

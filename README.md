@@ -11,6 +11,7 @@ This repository is the central prompt-and-instruction library for specification-
   - [Prompt review backlog](#prompt-review-backlog)
   - [Automation snippets](#automation-snippets)
   - [Roadmap](#roadmap)
+  - [Links](#links)
 
 ## Quick start
 
@@ -101,3 +102,11 @@ Use the `/speckit.constitution` command set below whenever you need deterministi
   - **Pull request creation (spec-kit-ready):** produce PR descriptions that link to each feature's `spec.md`, summarise changes by identifier, list test evidence, call out risk/rollback steps, and surface a reviewer checklist tied to the constitution.
   - **Decision record prompt (ADR creation/update):** author or update ADRs referenced from the motivating spec section, including alternatives and consequences using consistent headings and filenames.
   - **Release notes prompt (identifier-driven):** create changelog entries grouped by spec identifiers and feature folders, emphasising behaviour changes and any backwards-incompatible impacts.
+
+## Links
+
+- [Custom prompts](https://code.visualstudio.com/docs/copilot/customization/prompt-files)
+- [Custom instructions](https://code.visualstudio.com/docs/copilot/customization/custom-instructions)
+- [Custom agents](https://code.visualstudio.com/docs/copilot/customization/custom-agents)
+- [Custom skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills)
+- [GitHub Awesome Copilot](https://github.com/github/awesome-copilot)
