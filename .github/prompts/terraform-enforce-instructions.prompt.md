@@ -63,7 +63,7 @@ Enumerate every Terraform artefact in the repository, detect any discrepancies a
 
 ### 5) Validate quality gates and behavioural parity
 
-1. After each batch, run `terraform fmt`, `terraform validate`, `terraform plan`, and the repository’s lint/scan targets (for example `make fmt`, `make validate`, `make plan`, `make lint`) until all pass with zero warnings per `[TF-QG-007]`.
+1. After each batch, run `terraform fmt`, `terraform validate`, `terraform plan`, and the repository's lint/scan targets (for example `make fmt`, `make validate`, `make plan`, `make lint`) until all pass with zero warnings per `[TF-QG-007]`.
 2. If additional checks exist (for example `make test`, `terraform test`, drift detectors, security scanners), run them when the touched areas require it.
 3. Document failures and fixes in the plan file; unresolved issues must be tracked as blockers.
 
