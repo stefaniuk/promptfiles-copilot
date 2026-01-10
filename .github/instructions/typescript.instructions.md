@@ -196,6 +196,8 @@ TypeScript projects have contracts, even when they are "just code"; treat every 
   - [TS-CTR-009d] exit codes
   - [TS-CTR-009e] stdout/stderr behaviour
   - [TS-CTR-009f] output formats
+- [TS-CTR-009g] CLI entrypoints must remain thin adapters per the shared [CLI contract](./include/cli-contract.md#5-wrappers-and-shared-libraries): parse + validate input, delegate to shared modules, and forward exit codes instead of duplicating business logic.
+- [TS-CTR-009h] When CLIs run inside managed runtimes (Lambda, Cloud Run, Functions), follow the [CLI contract cloud guidance](./include/cli-contract.md#6-cloud-and-serverless-workloads): keep stdout/stderr compact, avoid ANSI noise unless supported, and flush streams explicitly before exit.
 - [TS-CTR-010] Backwards-incompatible changes must be **intentional, documented, and reviewable**.
 
 #### Help, discoverability, and documentation
@@ -358,6 +360,7 @@ TypeScript projects have contracts, even when they are "just code"; treat every 
 - [TS-BEH-009] Prefer a consistent shape: `tool <command> <subcommand> [options]`.
 - [TS-BEH-010] Use subcommands to separate behaviours, not positional-argument tricks.
 - [TS-BEH-011] Keep commands single-responsibility; avoid "do everything" commands.
+- [TS-BEH-011a] If behaviour diverges between the CLI and its shared library implementation, refactor to restore a single source of truth before adding new features.
 
 #### Exit codes (must be consistent)
 
@@ -371,6 +374,7 @@ TypeScript projects have contracts, even when they are "just code"; treat every 
 - [TS-BEH-016] Follow the [CLI contract stream semantics](./include/cli-contract.md#2-stdout-vs-stderr-stream-semantics): emit primary outputs on `stdout`, diagnostics on `stderr`.
 - [TS-BEH-017] Diagnostics (progress, warnings, debug, human-readable errors) must never contaminate `stdout`.
 - [TS-BEH-018] Commands must behave correctly when stdout is piped or redirected; no diagnostic leakage to `stdout`.
+- [TS-BEH-018a] Flush `stdout`/`stderr` explicitly in short-lived serverless environments so hosted runtimes do not truncate diagnostics.
 
 #### Timeouts and cancellation
 
