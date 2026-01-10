@@ -1,0 +1,40 @@
+{
+  "folders": [
+    {
+      "name": "Repository",
+      "path": "."
+    },
+    {
+      "name": "Copilot: Agents",
+      "path": ".github/agents/"
+    },
+    {
+      "name": "Copilot: Instructions",
+      "path": ".github/instructions/"
+    },
+    {
+      "name": "Copilot: Prompts",
+      "path": ".github/prompts/"
+    },
+    {
+      "name": "Spec-kit: Constitution",
+      "path": ".specify/memory/"
+    },
+    {
+      "name": "Spec-kit: Specification",
+      "path": "./specs"
+    },
+    {
+      "name": "Docs: ADRs",
+      "path": "./docs/adr"
+    },
+    {
+      "name": "Docs: Codebase Overview",
+      "path": "./docs/codebase-overview"
+    },
+    {
+      "name": "Docs: Other Documentation",
+      "path": "./docs/"
+    }
+  ]
+}
