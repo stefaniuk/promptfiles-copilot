@@ -18,10 +18,13 @@ It exists to ensure:
 - Deterministic and testable behaviour
 - High-signal specifications suitable for automation
 - Safe, controlled evolution of the system
+- Fast, safe delivery in small increments ("flow") aligned to NHS engineering guidance ([GitHub][1])
 
 ---
 
 ## 2. Constitutional Status
+
+### 2.1 Authority and Scope
 
 - This document has higher authority than:
   - Feature specifications
@@ -30,6 +33,10 @@ It exists to ensure:
   - Implementation details
 - Any artefact that conflicts with this constitution is invalid.
 - Changes to this constitution must be explicit and deliberate and are treated as governance changes (see §11.3).
+
+### 2.2 External Organisational Requirements
+
+This constitution **must be applied alongside** relevant NHS organisational standards and policies (for example, NHS Architecture Manual requirements and security policies). Where an external requirement is mandatory, it is treated as a higher-order constraint within its scope. ([nhs.uk][2])
 
 ---
 
@@ -109,6 +116,44 @@ Tasks and plans must be structured to reflect this flow (test → implement → 
 
 ---
 
+### 3.7 Engineer for Flow, Led by User Needs
+
+This project adopts the NHS software engineering emphasis on **rapid, safe delivery of high-quality software**, with strong automation and continuous improvement. ([GitHub][1])
+
+Non-negotiables:
+
+- Engineering decisions must be led by **user needs and service outcomes**, not internal convenience. ([GitHub][1])
+- Delivery must be **iterative and incremental** ("small batches"), optimising for fast learning and low risk. ([GitHub][1])
+- Delivery teams must be **empowered and accountable** for what they build and run. ([GitHub][1])
+- Products must be **actively maintained for their whole lifecycle**, not treated as "done after release". ([GitHub][1])
+- Operational reliability is part of engineering ("everything fails"): operate, measure, improve. ([GitHub][1])
+- Prioritisation must be based on **data and evidence**, not sentiment. ([GitHub][1])
+
+---
+
+### 3.8 Architect for Flow
+
+Design architecture to enable fast, safe flow of change across independent value streams.
+
+This means intentionally shaping systems around:
+
+- Independent value streams
+- Stream-aligned teams
+- Clear bounded contexts
+- Loosely coupled services and products
+
+The primary goal is not theoretical purity or maximum reuse. The goal is fast flow: teams can deliver small, incremental changes frequently, with confidence.
+
+Key rules:
+
+- Prefer designs that minimise cross-team co-ordination and hand-offs.
+- Optimise for independent change and independent deployment where practical.
+- Align domain boundaries, team ownership, and interfaces (apply Conway’s Law deliberately).
+- Accept duplication where it reduces coupling and improves flow.
+- Avoid over-fragmentation: a well-structured modular monolith is valid when it improves cognitive load and operability.
+
+---
+
 ## 4. Architecture Guardrails
 
 ### 4.1 Separation of Concerns
@@ -128,6 +173,26 @@ Tasks and plans must be structured to reflect this flow (test → implement → 
 - Any component must be replaceable without rewriting the system.
 - External libraries must not become architectural dependencies that "define the system".
 - Replaceability must be preserved as the system evolves.
+
+### 4.4 Bounded Contexts and Domain Alignment
+
+- Split systems vertically by bounded context / domain, not purely by technical layers.
+- Avoid shared databases across bounded contexts; data ownership must be explicit.
+- Integration seams must be explicit, versioned, and testable.
+
+### 4.5 API-first and Consumer Parity
+
+- Where interfaces are exposed (internal or external), adopt API-first thinking.
+- Treat internal and external consumers equally: no "special hidden" internal-only behaviour.
+
+### 4.6 Architecture Decision Records
+
+- All architecture decisions must be captured as a lightweight Architecture (Any) Decision Record (ADR), with options considered and clear rationale. ([nhs.uk][2])
+- Decisions must be made at the lowest sensible level, with appropriate stakeholders involved. ([nhs.uk][2])
+
+### 4.7 Cloud Well-Architected Alignment
+
+- Where deployed to cloud platforms, follow the relevant cloud Well-Architected Framework and assess the solution against it. ([nhs.uk][2])
 
 ---
 
@@ -241,6 +306,16 @@ After making **any** change to implementation code or tests, you must run:
 
 You must continue iterating on the changes until **both commands complete successfully with no errors or warnings**. This is mandatory and must be done automatically as part of AI-assisted development, without requiring an additional prompt.
 
+### 7.9 Automated Quality Enforcement
+
+- Quality must be protected by **robust and comprehensive automation** (tests, checks, policies), not by hope or manual vigilance. ([GitHub][1])
+- Where CI exists, CI quality gates are authoritative for merge readiness; local gates must mirror them as closely as practical.
+
+### 7.10 Sensitive Data Must Not Leak
+
+- Sensitive data (including credentials, tokens, patient-identifiable data, or other secrets) must never be committed to source control.
+- Any suspected leak is treated as an incident: stop, contain, rotate/revoke, and record what happened. ([GitHub][1])
+
 ---
 
 ## 8. Performance and Scalability Principles
@@ -257,6 +332,11 @@ You must continue iterating on the changes until **both commands complete succes
 - Performance optimisations must not change observable behaviour.
 - Premature optimisation is prohibited.
 - Unbounded inefficiency is also prohibited.
+
+### 8.3 Flow-aware Trade-Offs
+
+- Flow must not compromise quality: automation, operability, and safety are mandatory.
+- "More services" is not automatically "better": avoid needless distribution that increases cognitive load and operational risk.
 
 ---
 
@@ -312,5 +392,8 @@ Any exception must be treated as a governance decision and recorded in the repos
 
 ---
 
-> **Version**: 1.2.2
-> **Last Amended**: 2026-01-02
+> **Version**: 1.3.0
+> **Last Amended**: 2026-01-10
+
+[1]: https://github.com/NHSDigital/software-engineering-quality-framework "GitHub - NHSDigital/software-engineering-quality-framework: ️ Shared best-practice guidance & tools to support software engineering teams"
+[2]: https://architecture.digital.nhs.uk/solution-architecture-framework/requirements "Requirements - NHS Architecture manual"
