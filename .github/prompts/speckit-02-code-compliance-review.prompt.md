@@ -42,6 +42,12 @@ You have access to:
 - After making any code change, you must run `make lint` and `make test`, and keep iterating until both complete successfully with no errors or warnings. Do this automatically, without requiring an additional prompt.
 - Use British English throughout.
 
+## Spec-kit Workflow Integration
+
+- Trigger this review once the documentation review in [.github/prompts/speckit-01-documentation-review.prompt.md](.github/prompts/speckit-01-documentation-review.prompt.md) has passed, the planning prompts ([.github/prompts/speckit.plan.prompt.md](.github/prompts/speckit.plan.prompt.md) and [.github/prompts/speckit.tasks.prompt.md](.github/prompts/speckit.tasks.prompt.md)) have produced an approved backlog, and the implementation prompt ([.github/prompts/speckit.implement.prompt.md](.github/prompts/speckit.implement.prompt.md)) has been executed.
+- Treat this review as the post-implementation gate: all findings here must be resolved (or formally tracked) before the checklist and release prompts ([.github/prompts/speckit.checklist.prompt.md](.github/prompts/speckit.checklist.prompt.md)) and the test automation quality review ([.github/prompts/speckit-03-test-automation-quality-review.prompt.md](.github/prompts/speckit-03-test-automation-quality-review.prompt.md)) can run.
+- When you discover specification gaps during this review, feed them back to the documentation review prompt to keep the upstream artefacts aligned; do not defer doc fixes until after the test automation stage.
+
 ---
 
 ## Objectives

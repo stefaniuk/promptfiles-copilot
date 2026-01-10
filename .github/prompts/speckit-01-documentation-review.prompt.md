@@ -54,6 +54,12 @@ All files in scope must be treated as a **single logical specification set**, wh
 
 When citing findings, always reference files with workspace-relative Markdown links (for example `[README.md](../../README.md#context)`) so downstream automation can trace the source precisely.
 
+## Spec-kit Workflow Integration
+
+- Run this review immediately after completing the specification and clarification cycle (see [.github/prompts/speckit.specify.prompt.md](.github/prompts/speckit.specify.prompt.md) and [.github/prompts/speckit.clarify.prompt.md](.github/prompts/speckit.clarify.prompt.md)) and **before** invoking planning/backlog prompts such as [.github/prompts/speckit.plan.prompt.md](.github/prompts/speckit.plan.prompt.md) and [.github/prompts/speckit.tasks.prompt.md](.github/prompts/speckit.tasks.prompt.md). Treat a clean outcome here as the gate that allows implementation work to begin, and repeat the review once more immediately before running [.github/prompts/speckit.implement.prompt.md](.github/prompts/speckit.implement.prompt.md) so implementation never starts from outdated documentation.
+- Capture every decision, rename, or identifier fix discovered here so that downstream prompts ([.github/prompts/speckit-02-code-compliance-review.prompt.md](.github/prompts/speckit-02-code-compliance-review.prompt.md) and [.github/prompts/speckit-03-test-automation-quality-review.prompt.md](.github/prompts/speckit-03-test-automation-quality-review.prompt.md)) inherit the corrected baseline when they compare code and tests against the specification set.
+- When this review uncovers blockers, feed them back into the specification artefacts and ADRs before proceeding; the planning and implementation prompts must never run on an inconsistent document set.
+
 ---
 
 ## Review Objectives
