@@ -5,8 +5,18 @@ description: Enforce repository-wide compliance with makefile.instructions.md
 
 **Mandatory preparation:**
 
-- Read [Makefile instructions](../instructions/makefile.instructions.md) in full and reference their identifiers (for example `[MK-QR-001]`).
-- If present, skim [codebase overview](../instructions/include/codebase-overview.md) for vocabulary, but treat tracked Makefiles and scripts as authoritative.
+- Read the [constitution](../../.specify/memory/constitution.md) for non-negotiable rules, if you have not done already.
+- Read the [Makefile instructions](../instructions/makefile.instructions.md).
+- Reference identifiers (for example `[MK-QR-001]`) as you must assess compliance against each of them across the codebase and remediate any deviations.
+- Read the [codebase overview instructions](../instructions/include/codebase-overview.md) and adopt the approach for gathering supporting evidence.
+
+## User Input
+
+```text
+$ARGUMENTS
+```
+
+You **MUST** consider the user input before proceeding (if not empty).
 
 ## Goal
 
@@ -42,8 +52,9 @@ Enumerate every Makefile (including included `*.mk` modules), detect discrepanci
 ### 2) Detect discrepancies against instructions
 
 1. For each artefact, scan for violations of the Makefile instruction tags (thin root requirement, help target, `.ONESHELL`, fail-fast shell flags, safe clean targets, CI reuse, etc.).
-2. Capture findings with precise evidence links, for example `- Evidence: [Makefile](Makefile#L5-L30) — violates [MK-UX-003] because public targets lack descriptions.`
-3. Record unknowns explicitly using **Unknown from code – {action}** (for example unclear bootstrap tooling or missing confirmation flags for destructive targets).
+2. Assess each artefact and file against compliance of each reference identifier (for example `[MK-QR-001]`) from the `makefile.instructions.md` file.
+3. Capture findings with precise evidence links, for example `- Evidence: [Makefile](Makefile#L5-L30) — violates [MK-UX-003] because public targets lack descriptions.`
+4. Record unknowns explicitly using **Unknown from code – {action}** (for example unclear bootstrap tooling or missing confirmation flags for destructive targets).
 
 ### 3) Plan refactoring and rework
 
@@ -87,7 +98,9 @@ Enumerate every Makefile (including included `*.mk` modules), detect discrepanci
 - Maintain ASCII-only text unless the repository already contains Unicode in the touched files.
 - When information is missing, record **Unknown from code – {suggested action}** instead of guessing.
 
+Context for prioritization: $ARGUMENTS
+
 ---
 
-> **Version**: 1.0.1
-> **Last Amended**: 2026-01-10
+> **Version**: 1.1.1
+> **Last Amended**: 2026-01-11

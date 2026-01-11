@@ -112,7 +112,7 @@ For any change that introduces or modifies behaviour, work must follow a test-fi
 - Implement the minimal change to make the test pass.
 - Refactor only after tests pass, preserving behaviour.
 
-Tasks and plans must be structured to reflect this flow (test → implement → refactor). Tests must not introduce behaviour that is not specified.
+Tasks and plans must be structured to reflect this flow: test → implement → refactor (🔴 RED → 🟢 GREEN → 🔵 REFACTOR). If they are not, they must be reworded to follow the TDD approach before implementation. Tests must not introduce behaviour that is not specified.
 
 ---
 
@@ -425,8 +425,8 @@ Any exception must be treated as a governance decision and recorded in the repos
 
 ---
 
-> **Version**: 1.4.0
-> **Last Amended**: 2026-01-10
+> **Version**: 1.4.1
+> **Last Amended**: 2026-01-11
 
 [1]: https://github.com/NHSDigital/software-engineering-quality-framework "GitHub - NHSDigital/software-engineering-quality-framework: ️ Shared best-practice guidance & tools to support software engineering teams"
 [2]: https://architecture.digital.nhs.uk/solution-architecture-framework/requirements "Requirements - NHS Architecture manual"

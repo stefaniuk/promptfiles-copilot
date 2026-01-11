@@ -5,9 +5,9 @@
 # Usage: ./scripts/apply.sh <destination-directory>
 #
 # Copies:
-#   - Agent files (excluding speckit.*)
+#   - Agent files
 #   - Instruction files
-#   - Prompt files (excluding speckit.*)
+#   - Prompt files
 #   - Skills files
 #   - copilot-instructions.md
 #   - constitution.md
@@ -67,7 +67,7 @@ copy_agents() {
     mkdir -p "${dest_agents}"
 
     info "Copying agent files to ${dest_agents}"
-    find "${AGENTS_DIR}" -maxdepth 1 -name "*.md" ! -name "speckit.*" -type f -exec cp {} "${dest_agents}/" \;
+    find "${AGENTS_DIR}" -maxdepth 1 -name "*.md" -type f -exec cp {} "${dest_agents}/" \;
 }
 
 copy_instructions() {
@@ -91,7 +91,7 @@ copy_prompts() {
     mkdir -p "${dest_prompts}"
 
     info "Copying prompt files to ${dest_prompts}"
-    find "${PROMPTS_DIR}" -maxdepth 1 -name "*.prompt.md" ! -name "speckit.*" -type f -exec cp {} "${dest_prompts}/" \;
+    find "${PROMPTS_DIR}" -maxdepth 1 -name "*.prompt.md" -type f -exec cp {} "${dest_prompts}/" \;
 }
 
 copy_skills() {

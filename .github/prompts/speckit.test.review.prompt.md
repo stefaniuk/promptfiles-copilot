@@ -56,7 +56,7 @@ Before performing any analysis:
 
 ## Spec-kit Workflow Integration
 
-- Run this prompt only after the upstream reviews have passed: the documentation set is aligned ([.github/prompts/speckit-01-documentation-review.prompt.md](.github/prompts/speckit-01-documentation-review.prompt.md)), the code compliance review in [.github/prompts/speckit-02-code-compliance-review.prompt.md](.github/prompts/speckit-02-code-compliance-review.prompt.md) reports no unresolved critical/major issues, and the checklist/release readiness prompts (for example [.github/prompts/speckit.checklist.prompt.md](.github/prompts/speckit.checklist.prompt.md)) have been updated.
+- Run this prompt only after the upstream reviews have passed: the documentation set is aligned ([.github/prompts/speckit.documentation.review.prompt.md](.github/prompts/speckit.documentation.review.prompt.md)), the code compliance review in [.github/prompts/speckit.code.review.prompt.md](.github/prompts/speckit.code.review.prompt.md) reports no unresolved critical/major issues, and the checklist/release readiness prompts (for example [.github/prompts/speckit.checklist.prompt.md](.github/prompts/speckit.checklist.prompt.md)) have been updated.
 - Treat this review as the final quality gate before release: its output should flow into [.github/prompts/speckit.analyze.prompt.md](.github/prompts/speckit.analyze.prompt.md) and any release/ADR updates, ensuring the entire test suite reflects the finalised specification and implementation.
 - When this review uncovers structural documentation gaps (for example missing identifiers or acceptance criteria that prevent testability), loop back to the documentation and code-compliance prompts before attempting another run; never accept partial coverage at this stage.
 

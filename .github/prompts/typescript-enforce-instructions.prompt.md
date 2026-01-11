@@ -5,8 +5,18 @@ description: Enforce repository-wide compliance with typescript.instructions.md
 
 **Mandatory preparation:**
 
-- Read [TypeScript instructions](../instructions/typescript.instructions.md) in full and reference their identifiers (for example `[TS-QR-001]`).
-- If present, skim [codebase overview](../instructions/include/codebase-overview.md) for vocabulary, but treat code/config as authoritative.
+- Read the [constitution](../../.specify/memory/constitution.md) for non-negotiable rules, if you have not done already.
+- Read the [TypeScript instructions](../instructions/typescript.instructions.md).
+- Reference identifiers (for example `[TS-QR-001]`) as you must assess compliance against each of them across the codebase and remediate any deviations.
+- Read the [codebase overview instructions](../instructions/include/codebase-overview.md) and adopt the approach for gathering supporting evidence.
+
+## User Input
+
+```text
+$ARGUMENTS
+```
+
+You **MUST** consider the user input before proceeding (if not empty).
 
 ## Goal
 
@@ -42,8 +52,9 @@ Enumerate every TypeScript artefact in the repository, detect any discrepancies 
 ### 2) Detect discrepancies against instructions
 
 1. For each artefact, scan for violations of instruction tags (CLI contract, async correctness, observability, security, accessibility, etc.).
-2. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [TS-CTR-014] because ...`.
-3. Record unknowns explicitly using **Unknown from code – {action}** (for example missing strict compiler flags or undocumented integration modes).
+2. Assess each artefact and file against compliance of each reference identifier (for example `[TS-QR-001]`) from the `typescript.instructions.md` file.
+3. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [TS-CTR-014] because ...`.
+4. Record unknowns explicitly using **Unknown from code – {action}** (for example missing strict compiler flags or undocumented integration modes).
 
 ### 3) Plan refactoring and rework
 
@@ -87,7 +98,9 @@ Enumerate every TypeScript artefact in the repository, detect any discrepancies 
 - Maintain ASCII-only text unless the repository already contains Unicode in the touched files.
 - When information is missing, record **Unknown from code – {suggested action}** instead of guessing.
 
+Context for prioritization: $ARGUMENTS
+
 ---
 
-> **Version**: 1.0.1
-> **Last Amended**: 2026-01-10
+> **Version**: 1.1.1
+> **Last Amended**: 2026-01-11

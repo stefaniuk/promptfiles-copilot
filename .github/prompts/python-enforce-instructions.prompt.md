@@ -5,8 +5,18 @@ description: Enforce repository-wide compliance with python.instructions.md
 
 **Mandatory preparation:**
 
-- Read [python instructions](../instructions/python.instructions.md) in full and reference their identifiers (for example `[PY-QR-001]`).
-- If present, skim [codebase overview](../instructions/include/codebase-overview.md) for vocabulary, but treat code/config as authoritative.
+- Read the [constitution](../../.specify/memory/constitution.md) for non-negotiable rules, if you have not done already.
+- Read the [Python instructions](../instructions/python.instructions.md).
+- Reference identifiers (for example `[PY-QR-001]`) as you must assess compliance against each of them across the codebase and remediate any deviations.
+- Read the [codebase overview instructions](../instructions/include/codebase-overview.md) and adopt the approach for gathering supporting evidence.
+
+## User Input
+
+```text
+$ARGUMENTS
+```
+
+You **MUST** consider the user input before proceeding (if not empty).
 
 ## Goal
 
@@ -41,9 +51,10 @@ Enumerate every Python artefact in the repository, detect any discrepancies agai
 
 ### 2) Detect discrepancies against instructions
 
-1. For each artefact, scan for violations of the instruction tags (CLI contract, quality gates, observability, security, etc.).
-2. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [PY-CTR-008] because ...`.
-3. Record unknowns explicitly using **Unknown from code – {action}** (for example missing `uv` lockfile or undocumented CLI modes).
+1. For each artefact and file, scan for violations of the instruction tags (CLI contract, quality gates, observability, security, etc.).
+2. Assess each artefact and file against compliance of each reference identifier (for example `[PY-QR-001]`) from the `python.instructions.md` file.
+3. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [PY-CTR-008] because ...`.
+4. Record unknowns explicitly using **Unknown from code – {action}** (for example missing `uv` lockfile or undocumented CLI modes).
 
 ### 3) Plan refactoring and rework
 
@@ -87,7 +98,9 @@ Enumerate every Python artefact in the repository, detect any discrepancies agai
 - Maintain ASCII-only text unless the repository already contains Unicode in the touched files.
 - When information is missing, record **Unknown from code – {suggested action}** instead of guessing.
 
+Context for prioritization: $ARGUMENTS
+
 ---
 
-> **Version**: 1.0.1
-> **Last Amended**: 2026-01-10
+> **Version**: 1.1.1
+> **Last Amended**: 2026-01-11

@@ -739,6 +739,7 @@ Per [constitution.md §3.6](../../.specify/memory/constitution.md#36-design-for-
 - [TS-TST-009] Expand integration or end-to-end suites when work spans multiple modules or touches external platforms.
 - [TS-TST-010] Run targeted test commands for fast feedback before submitting larger suites, then finish with the canonical quality gates.
 - [TS-TST-011] Avoid brittle timing assertions; use fake timers or injected clocks to keep async flows deterministic.
+- [TS-TST-012] UI implementation or behaviour changes must ship with both component-level tests using the framework's preferred runner and screen-level Playwright journeys that cover primary flows, validation, accessibility states, and keyboard navigation; document any new selectors/test IDs in the spec or plan before relying on them.
 
 ---
 
