@@ -105,6 +105,10 @@ Use the `/speckit.constitution` command set below whenever you need deterministi
   - **Pull request creation (spec-kit-ready):** produce PR descriptions that link to each feature's `spec.md`, summarise changes by identifier, list test evidence, call out risk/rollback steps, and surface a reviewer checklist tied to the constitution.
   - **Decision record prompt (ADR creation/update):** author or update ADRs referenced from the motivating spec section, including alternatives and consequences using consistent headings and filenames.
   - **Release notes prompt (identifier-driven):** create changelog entries grouped by spec identifiers and feature folders, emphasising behaviour changes and any backwards-incompatible impacts.
+  - Fix
+    - Characters: “ ” ’
+    - [README.md](../../README.md#context)
+    - Check British English
 
 ## How to use these prompts
 
