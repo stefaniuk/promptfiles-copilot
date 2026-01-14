@@ -24,6 +24,7 @@ apply: # Copy prompt files assets to a destination repository; mandatory: dest=[
 	./scripts/apply.sh "$(dest)"
 
 clean:: # Remove project-specific generated files (main) @Operations
+	rm -rf .github/skills/repository-template/assets
 	find . \( \
 		-name ".coverage" -o \
 		-name ".env" -o \
