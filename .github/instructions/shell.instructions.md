@@ -36,7 +36,8 @@ This section exists so humans and AI assistants can reliably apply the most impo
 - [SH-QR-007] **`is-arg-true()` helper**: use a standard boolean-parsing helper for environment flags ([SH-VAR-006]).
 - [SH-QR-008] **VERBOSE toggle**: support `VERBOSE=true` to enable `set -x` for debugging ([SH-DBG-001]–[SH-DBG-003]).
 - [SH-QR-009] **Exit 0 at end**: scripts must end with `exit 0` after successful execution ([SH-ERR-005]).
-- [SH-QR-010] **Avoid common anti-patterns**: unquoted variables, `cd` without error handling, hardcoded paths (§11).
+- [SH-QR-010] **Test suite patterns**: use Arrange-Act-Assert structure, setup/teardown functions, and summary reporting ([SH-TST-001]–[SH-TST-015]).
+- [SH-QR-011] **Avoid common anti-patterns**: unquoted variables, `cd` without error handling, hardcoded paths (§12).
 
 ---
 
@@ -475,7 +476,285 @@ Per [constitution.md §7.8](../../.specify/memory/constitution.md#78-mandatory-l
 
 ---
 
-## 11. Anti-patterns (recognise and avoid) 🚫
+## 11. Test suite patterns 🧪
+
+Shell script libraries and complex scripts should have accompanying test suites to ensure correctness and prevent regressions.
+
+### 11.1 Test file structure
+
+- [SH-TST-001] Test files should follow the naming convention `<library>.test.sh` or `<script>.test.sh`.
+- [SH-TST-002] Place test files in a `tests/` subdirectory adjacent to the code being tested.
+- [SH-TST-003] Test files must include the standard header structure (shebang, WARNING, `set -euo pipefail`, description block).
+- [SH-TST-004] Use shellcheck disable directives at the top when testing patterns require it:
+
+  ```bash
+  #!/bin/bash
+  # shellcheck disable=SC1091,SC2034,SC2317
+  ```
+
+### 11.2 Test suite organisation
+
+- [SH-TST-005] Use a `main()` function to orchestrate the test suite:
+
+  ```bash
+  function main() {
+
+    cd "$(git rev-parse --show-toplevel)"
+    source ./scripts/docker/docker.lib.sh
+    cd ./scripts/docker/tests
+
+    # Set up test fixtures
+    DOCKER_IMAGE=repository-template/docker-test
+    DOCKER_TITLE="Repository Template Docker Test"
+
+    test-suite-setup
+    tests=( \
+      test-feature-one \
+      test-feature-two \
+      test-feature-three \
+    )
+    local status=0
+    for test in "${tests[@]}"; do
+      {
+        echo -n "$test"
+        # shellcheck disable=SC2015
+        $test && echo " PASS" || { echo " FAIL"; ((status++)); }
+      }
+    done
+    echo "Total: ${#tests[@]}, Passed: $(( ${#tests[@]} - status )), Failed: $status"
+    test-suite-teardown
+    [ $status -gt 0 ] && return 1 || return 0
+  }
+  ```
+
+- [SH-TST-006] Define tests as an array of function names for easy iteration and reporting.
+- [SH-TST-007] Track pass/fail counts and print a summary at the end.
+
+### 11.3 Setup and teardown functions
+
+- [SH-TST-008] Provide `test-suite-setup()` and `test-suite-teardown()` functions for suite-level fixtures:
+
+  ```bash
+  function test-suite-setup() {
+
+    # Create test fixtures, temporary files, mock data
+    :
+  }
+
+  function test-suite-teardown() {
+
+    # Clean up test fixtures, remove temporary files
+    :
+  }
+  ```
+
+- [SH-TST-009] Use `:` (no-op) as a placeholder when setup/teardown is not required.
+- [SH-TST-010] Always call teardown even if tests fail to prevent resource leaks.
+
+### 11.4 Test function structure (Arrange-Act-Assert)
+
+- [SH-TST-011] Name test functions with `test-` prefix followed by the feature being tested:
+
+  - ✅ `test-docker-build`
+  - ✅ `test-version-file`
+  - ✅ `test-docker-get-image-version-and-pull`
+  - ❌ `testDockerBuild` (camelCase)
+  - ❌ `test_docker_build` (snake_case)
+
+- [SH-TST-012] Structure each test function using the Arrange-Act-Assert pattern with comments:
+
+  ```bash
+  function test-docker-build() {
+
+    # Arrange
+    export BUILD_DATETIME="2023-09-04T15:46:34+0000"
+    # Act
+    docker-build > /dev/null 2>&1
+    # Assert
+    docker image inspect "${DOCKER_IMAGE}:$(_get-effective-version)" > /dev/null 2>&1 && return 0 || return 1
+  }
+  ```
+
+- [SH-TST-013] Return `0` for pass and `1` (or non-zero) for fail.
+
+### 11.5 Assertion patterns
+
+- [SH-TST-014] Use common assertion patterns:
+
+  ```bash
+  # String contains check
+  echo "$output" | grep -q "expected" && return 0 || return 1
+
+  # Regex match check
+  echo "$output" | grep -Eq "Python [0-9]+\.[0-9]+\.[0-9]+" && return 0 || return 1
+
+  # File content check
+  grep -q "FROM python:.*-alpine.*@sha256:.*" Dockerfile.effective && return 0 || return 1
+
+  # Multiple conditions (all must pass)
+  (
+    cat .version | grep -q "expected-1" &&
+    cat .version | grep -q "expected-2"
+  ) && return 0 || return 1
+
+  # Command existence check
+  docker image inspect "${IMAGE}:${VERSION}" > /dev/null 2>&1 && return 0 || return 1
+
+  # Inverse check (command should fail)
+  docker image inspect "${IMAGE}:${VERSION}" > /dev/null 2>&1 && return 1 || return 0
+  ```
+
+- [SH-TST-015] Suppress output during tests using `> /dev/null 2>&1` when the output is not being checked.
+
+### 11.6 Test execution and output
+
+- [SH-TST-016] Print test name before execution and result (PASS/FAIL) after:
+
+  ```bash
+  echo -n "$test"
+  $test && echo " PASS" || { echo " FAIL"; ((status++)); }
+  ```
+
+- [SH-TST-017] Print a summary line at the end showing total, passed, and failed counts:
+
+  ```bash
+  echo "Total: ${#tests[@]}, Passed: $(( ${#tests[@]} - status )), Failed: $status"
+  ```
+
+- [SH-TST-018] Exit with non-zero status if any test failed:
+
+  ```bash
+  [ $status -gt 0 ] && return 1 || return 0
+  ```
+
+### 11.7 Testing library functions
+
+- [SH-TST-019] Source the library being tested at the start of `main()`:
+
+  ```bash
+  source ./scripts/docker/docker.lib.sh
+  ```
+
+- [SH-TST-020] Change to the test directory before running tests to isolate test fixtures:
+
+  ```bash
+  cd ./scripts/docker/tests
+  ```
+
+- [SH-TST-021] Set up required environment variables as test fixtures:
+
+  ```bash
+  DOCKER_IMAGE=repository-template/docker-test
+  DOCKER_TITLE="Repository Template Docker Test"
+  TOOL_VERSIONS="$(git rev-parse --show-toplevel)/scripts/docker/tests/.tool-versions.test"
+  ```
+
+### 11.8 Test suite template
+
+Use this template when creating test suites:
+
+```bash
+#!/bin/bash
+# shellcheck disable=SC1091,SC2034,SC2317
+
+# WARNING: Please DO NOT edit this file! It is maintained in the [repository name] (https://github.com/org/repo). Raise a PR instead.
+
+set -euo pipefail
+
+# Test suite for <library/script> functions.
+#
+# Usage:
+#   $ ./<library>.test.sh
+#
+# Arguments (provided as environment variables):
+#   VERBOSE=true  # Show all the executed commands, default is 'false'
+
+# ==============================================================================
+
+function main() {
+
+  cd "$(git rev-parse --show-toplevel)"
+  source ./path/to/library.lib.sh
+  cd ./path/to/tests
+
+  # Test fixtures
+  FIXTURE_VAR="test-value"
+
+  test-suite-setup
+  tests=( \
+    test-feature-one \
+    test-feature-two \
+  )
+  local status=0
+  for test in "${tests[@]}"; do
+    {
+      echo -n "$test"
+      # shellcheck disable=SC2015
+      $test && echo " PASS" || { echo " FAIL"; ((status++)); }
+    }
+  done
+  echo "Total: ${#tests[@]}, Passed: $(( ${#tests[@]} - status )), Failed: $status"
+  test-suite-teardown
+  [ $status -gt 0 ] && return 1 || return 0
+}
+
+# ==============================================================================
+
+function test-suite-setup() {
+
+  :
+}
+
+function test-suite-teardown() {
+
+  :
+}
+
+# ==============================================================================
+
+function test-feature-one() {
+
+  # Arrange
+  local input="test-input"
+  # Act
+  output=$(some-function "$input")
+  # Assert
+  echo "$output" | grep -q "expected" && return 0 || return 1
+}
+
+function test-feature-two() {
+
+  # Arrange
+  export SOME_VAR="value"
+  # Act
+  some-other-function > /dev/null 2>&1
+  # Assert
+  [ -f "expected-file" ] && return 0 || return 1
+}
+
+# ==============================================================================
+
+function is-arg-true() {
+
+  if [[ "$1" =~ ^(true|yes|y|on|1|TRUE|YES|Y|ON)$ ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+# ==============================================================================
+
+is-arg-true "${VERBOSE:-false}" && set -x
+
+main "$@"
+
+exit 0
+```
+
+---
+
+## 12. Anti-patterns (recognise and avoid) 🚫
 
 These patterns cause recurring issues in shell scripts. Avoid them unless an ADR documents a justified exception.
 
@@ -494,10 +773,12 @@ These patterns cause recurring issues in shell scripts. Avoid them unless an ADR
 - [SH-ANT-013] **Inconsistent function naming** — mixing camelCase, snake_case, and kebab-case; use kebab-case consistently.
 - [SH-ANT-014] **Giant scripts without functions** — hard to test and maintain; break into functions.
 - [SH-ANT-015] **Forgetting `exit 0`** — script exit code may be non-zero from last command; explicitly exit 0.
+- [SH-ANT-016] **Tests without Arrange-Act-Assert comments** — harder to understand test intent; always include the three comments.
+- [SH-ANT-017] **Missing test summary** — no visibility into overall results; always print total/passed/failed counts.
 
 ---
 
-## 12. AI-assisted change expectations 🤖
+## 13. AI-assisted change expectations 🤖
 
 Per [constitution.md §3.5](../../.specify/memory/constitution.md#35-ai-assisted-development-discipline--change-governance), when you create or modify shell scripts:
 
@@ -510,7 +791,7 @@ Per [constitution.md §3.5](../../.specify/memory/constitution.md#35-ai-assisted
 
 ---
 
-## 13. Script template 📝
+## 14. Script template 📝
 
 Use this template when creating new scripts:
 
@@ -597,5 +878,5 @@ exit 0
 
 ---
 
-> **Version**: 1.0.0
+> **Version**: 1.0.1
 > **Last Amended**: 2026-01-14
