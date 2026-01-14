@@ -1373,25 +1373,15 @@ All source files are located in the [`example/`](example/) directory. Copy them 
 
 ---
 
-## Updating from Template
+## Updating from the template repository
 
-To pull updates from the upstream template:
+To pull updates from the upstream run the following command:
 
 ```bash
-# First time: add as subtree
-git subtree add \
-  --prefix=.github/skills/repository-template/example \
-  https://github.com/nhs-england-tools/repository-template.git \
-  main --squash
-
-# Subsequent updates
-git subtree pull \
-  --prefix=.github/skills/repository-template/example \
-  https://github.com/nhs-england-tools/repository-template.git \
-  main --squash
+.github/skills/repository-template/scripts/git-clone-repository-template.sh
 ```
 
-Then selectively copy updated files to your repository.
+Then selectively copy relevant files to your repository.
 
 ---
 
