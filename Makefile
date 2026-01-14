@@ -34,6 +34,7 @@ clean:: # Remove project-specific generated files (main) @Operations
 
 config:: # Configure development environment (main) @Configuration
 	make _install-dependencies
+	.github/skills/repository-template/scripts/git-clone-repository-template.sh
 
 # ==============================================================================
 
