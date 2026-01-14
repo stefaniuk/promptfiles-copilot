@@ -7,7 +7,7 @@
 
 ## Non-negotiable Rules (Mandatory)
 
-- [ ] Adhere to the [constitution](../.specify/memory/constitution.md) at all times
+- [ ] Read and adhere to the [constitution](../.specify/memory/constitution.md) at all times
 
 ## Quality Gates (Mandatory)
 
@@ -20,5 +20,5 @@ After any source code change:
 
 ---
 
-> **Version**: 1.2.0
-> **Last Amended**: 2026-01-11
+> **Version**: 1.2.1
+> **Last Amended**: 2026-01-13

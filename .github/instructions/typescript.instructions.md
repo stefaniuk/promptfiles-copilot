@@ -153,7 +153,7 @@ Per [constitution.md §7.8](../../.specify/memory/constitution.md#78-mandatory-l
 
 1. Prefer:
 
-   - [TS-QG-001] `make fmt`
+   - [TS-QG-001] `make format`
    - [TS-QG-002] `make lint`
    - [TS-QG-003] `make typecheck`
    - [TS-QG-004] `make test`
@@ -1027,5 +1027,5 @@ This section defines a **framework-agnostic** baseline for building maintainable
 
 ---
 
-> **Version**: 1.4.0
-> **Last Amended**: 2026-01-11
+> **Version**: 1.4.1
+> **Last Amended**: 2026-01-14

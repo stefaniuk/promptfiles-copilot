@@ -27,15 +27,16 @@ This section exists so humans and AI assistants can reliably apply the most impo
 
 - [PY-QR-001] **Specification first**: treat the specification as the source of truth for behaviour ([PY-OP-001]).
 - [PY-QR-002] **Small, safe changes**: prefer small, explicit, testable changes ([PY-OP-002], [PY-OP-006]).
-- [PY-QR-003] **Fast feedback**: local development and tests must be quick and confidence-building ([PY-OP-007], [PY-LCL-001]–[PY-LCL-006]).
-- [PY-QR-004] **Run the quality gates** after any code/test change and iterate to clean ([PY-QG-001]–[PY-QG-004]).
+- [PY-QR-003] **Fast feedback**: local development and tests must be quick and confidence-building ([PY-OP-007], [PY-LCL-001]–[PY-LCL-008]).
+- [PY-QR-004] **Run the quality gates** after any code/test change and iterate to clean ([PY-QG-001]–[PY-QG-005]).
 - [PY-QR-005] **Validate at boundaries** and reject ambiguous inputs ([PY-DATA-001]–[PY-DATA-003]).
 - [PY-QR-006] **Deterministic outputs**: stable ordering, stable field naming, no hidden randomness ([PY-OP-003], [PY-CTR-007]).
 - [PY-QR-007] **Correct CLI streams**: stdout for primary output, stderr for diagnostics ([PY-BEH-008]–[PY-BEH-011]).
 - [PY-QR-008] **No secrets in args or logs**: use env vars or secure prompts; never print secrets ([PY-SEC-001]–[PY-SEC-004], [PY-OBS-013]).
 - [PY-QR-009] **Local by default**: no real cloud/network by default; use fakes/emulators; explicit integration mode switches ([PY-EXT-001]–[PY-EXT-007]).
 - [PY-QR-010] **Operational visibility**: correlation IDs and structured logs for APIs; controlled diagnostics only ([PY-OBS-004]–[PY-OBS-010], [PY-OBS-015]–[PY-OBS-026], [PY-ERR-013]).
-- [PY-QR-011] **Avoid common anti-patterns**: bare `except`, mutable defaults, `assert` for validation, global mutable state (§20).
+- [PY-QR-011] **Static typing is mandatory**: type hints + static analysis (mypy) are the critical safety net for AI-generated code; enforce in CI ([PY-TYP-001]–[PY-TYP-012]).
+- [PY-QR-012] **Avoid common anti-patterns**: bare `except`, mutable defaults, `assert` for validation, global mutable state, untyped public APIs (§6, §21).
 
 ---
 
@@ -65,38 +66,40 @@ The system must be **fully developable and testable locally**, even when it inte
 Provide repository-standard commands so an engineer can do the following quickly:
 
 - [PY-LCL-001] Bootstrap: `make deps` — installs tooling and dependencies, and prepares a usable local environment
-- [PY-LCL-002] Lint/format: `make lint`
-- [PY-LCL-003] Test (fast lane): `make test` — must run quickly (aim: < 10 seconds, provide another make target for slower tests) and deterministically
-- [PY-LCL-004] Full suite: `make test-all` — includes integration/e2e tiers
-- [PY-LCL-005] Run CLI locally: `make run` — runs with safe defaults (**no cloud dependencies by default**)
-- [PY-LCL-006] Run API locally: `make up` / `make down` — starts/stops local dependency stack (if applicable)
+- [PY-LCL-002] Format: `make format`
+- [PY-LCL-003] Lint: `make lint`
+- [PY-LCL-004] Type-check: `make typecheck` — runs mypy (or the repository-approved static type checker) as a blocking gate
+- [PY-LCL-005] Test (fast lane): `make test` — must run quickly (aim: < 10 seconds, provide another make target for slower tests) and deterministically
+- [PY-LCL-006] Full suite: `make test-all` — includes integration/e2e tiers
+- [PY-LCL-007] Run CLI locally: `make run` — runs with safe defaults (**no cloud dependencies by default**)
+- [PY-LCL-008] Run API locally: `make up` / `make down` — starts/stops local dependency stack (if applicable)
 
 If `make` is not used, provide an equivalent task runner with the same intent and predictable names.
 
 ### 2.2 Reproducible toolchain (avoid "works on my machine")
 
-- [PY-LCL-007] Pin the Python version (for example `.python-version` and/or project metadata).
-- [PY-LCL-008] Use deterministic dependency management (lock file preferred).
-- [PY-LCL-009] Use `uv` as the canonical Python project and package manager (lock file, installs, scripted commands) unless an ADR formally documents a different choice:
-  - [PY-LCL-009a] `uv sync` for deterministic installs across laptops and CI
-  - [PY-LCL-009b] `uv run ...` for invoking tools and project commands
-  - [PY-LCL-009c] If a repo must deviate from `uv`, record the exception (scope + expiry) in an ADR before merging
-- [PY-LCL-010] Keep the developer toolchain minimal and fast.
+- [PY-LCL-009] Pin the Python version (for example `.python-version` and/or project metadata).
+- [PY-LCL-010] Use deterministic dependency management (lock file preferred).
+- [PY-LCL-011] Use `uv` as the canonical Python project and package manager (lock file, installs, scripted commands) unless an ADR formally documents a different choice:
+  - [PY-LCL-011a] `uv sync` for deterministic installs across laptops and CI
+  - [PY-LCL-011b] `uv run ...` for invoking tools and project commands
+  - [PY-LCL-011c] If a repo must deviate from `uv`, record the exception (scope + expiry) in an ADR before merging
+- [PY-LCL-012] Keep the developer toolchain minimal and fast.
 
 Repository defaults (unless the repository explicitly documents an alternative):
 
-- [PY-LCL-011] Ruff is the mandatory linter/formatter; configure `ruff check` and `ruff format` as the defaults for `make lint` / CI quality gates
-- [PY-LCL-012] Pytest for tests
-- [PY-LCL-013] mypy (or the repository-approved static type checker) for deterministic type analysis
+- [PY-LCL-013] Ruff is the mandatory linter/formatter; configure `ruff check` and `ruff format` as the defaults for `make format` and `make lint` / CI quality gates
+- [PY-LCL-014] Pytest for tests
+- [PY-LCL-015] mypy (or the repository-approved static type checker) is **mandatory** for static type analysis; run in CI as a blocking gate (see §6)
 
 ### 2.3 Pre-commit hooks (strongly recommended)
 
 Provide a `pre-commit` configuration that runs the same checks as CI in a fast, local-friendly way:
 
-- [PY-LCL-014] formatting (Ruff)
-- [PY-LCL-015] linting (Ruff)
-- [PY-LCL-016] basic type checks (where fast enough)
-- [PY-LCL-017] secret scanning (for example gitleaks)
+- [PY-LCL-016] formatting (Ruff)
+- [PY-LCL-017] linting (Ruff)
+- [PY-LCL-018] type checks (mypy); run at least on changed files — this is the primary safety net for AI-generated code
+- [PY-LCL-019] secret scanning (for example gitleaks)
 
 Hooks must be quick; heavy checks belong in CI and explicit local targets.
 
@@ -104,42 +107,42 @@ Hooks must be quick; heavy checks belong in CI and explicit local targets.
 
 Provide an OCI-based option so behaviour is consistent across laptops and CI:
 
-- [PY-LCL-018] A lightweight dev image that includes:
-  - [PY-LCL-018a] Python + locked dependencies
-  - [PY-LCL-018b] lint/test tooling
-  - [PY-LCL-018c] any required system packages
-- [PY-LCL-019] Provide one command to use it:
-  - [PY-LCL-019a] `make docker-test` / `make docker-run` (or Dev Containers), etc.
+- [PY-LCL-020] A lightweight dev image that includes:
+  - [PY-LCL-020a] Python + locked dependencies
+  - [PY-LCL-020b] lint/test tooling
+  - [PY-LCL-020c] any required system packages
+- [PY-LCL-021] Provide one command to use it:
+  - [PY-LCL-021a] `make docker-test` / `make docker-run` (or Dev Containers), etc.
 
 Rules:
 
-- [PY-LCL-020] OCI support must be **optional** (native dev still works), but it must be maintained.
-- [PY-LCL-021] Never bake secrets into images.
-- [PY-LCL-022] The same commands (`make lint`, `make test`) must work inside and outside the container.
+- [PY-LCL-022] OCI support must be **optional** (native dev still works), but it must be maintained.
+- [PY-LCL-023] Never bake secrets into images.
+- [PY-LCL-024] The same commands (`make format`, `make lint`, `make typecheck`, `make test`) must work inside and outside the container.
 
 ### 2.5 Fast iteration patterns (recommended)
 
-- [PY-LCL-023] Support watch mode when feasible (for example `make test-watch`).
-- [PY-LCL-024] Support parallel tests where safe: `pytest -n auto` (pytest-xdist).
-- [PY-LCL-025] Provide clear test markers and commands:
-  - [PY-LCL-025a] `make test-unit`
-  - [PY-LCL-025b] `make test-integration`
-  - [PY-LCL-025c] `make test-e2e`
+- [PY-LCL-025] Support watch mode when feasible (for example `make test-watch`).
+- [PY-LCL-026] Support parallel tests where safe: `pytest -n auto` (pytest-xdist).
+- [PY-LCL-027] Provide clear test markers and commands:
+  - [PY-LCL-027a] `make test-unit`
+  - [PY-LCL-027b] `make test-integration`
+  - [PY-LCL-027c] `make test-e2e`
 
 ### 2.6 Test tiers (must adopt)
 
 Define clear tiers with predictable markers/commands:
 
-- [PY-LCL-026] Unit (default): no network, no containers
-- [PY-LCL-027] Integration: uses containers/emulators; still local and repeatable
-- [PY-LCL-028] End-to-end (few): critical journeys only; time-boxed
+- [PY-LCL-028] Unit (default): no network, no containers
+- [PY-LCL-029] Integration: uses containers/emulators; still local and repeatable
+- [PY-LCL-030] End-to-end (few): critical journeys only; time-boxed
 
 ### 2.7 System dependencies and runtime parity (recommended, but often decisive)
 
-- [PY-LCL-029] If the project needs OS/system packages (for example `libpq`, `libmagic`, `openssl`), pin and document them (Dev Container, OCI dev image, or a clear install script).
-- [PY-LCL-030] Keep local defaults safe: local dev must not require real cloud credentials, and must not mutate real cloud resources by default.
-- [PY-LCL-031] Document the supported runtime execution modes (local native, containerised, CI) and keep the core commands consistent across them ([PY-LCL-028]).
-- [PY-LCL-032] Where supported by your tooling, provide a single "environment check" command (for example `make doctor`) that confirms local prerequisites and surfaces actionable fixes.
+- [PY-LCL-031] If the project needs OS/system packages (for example `libpq`, `libmagic`, `openssl`), pin and document them (Dev Container, OCI dev image, or a clear install script).
+- [PY-LCL-032] Keep local defaults safe: local dev must not require real cloud credentials, and must not mutate real cloud resources by default.
+- [PY-LCL-033] Document the supported runtime execution modes (local native, containerised, CI) and keep the core commands consistent across them ([PY-LCL-024]).
+- [PY-LCL-034] Where supported by your tooling, provide a single "environment check" command (for example `make doctor`) that confirms local prerequisites and surfaces actionable fixes.
 
 ---
 
@@ -150,12 +153,13 @@ Per [constitution.md §7.8](../../.specify/memory/constitution.md#78-mandatory-l
 1. Prefer:
 
    - [PY-QG-001] `make lint`
-   - [PY-QG-002] `make test`
+   - [PY-QG-002] `make typecheck`
+   - [PY-QG-003] `make test`
 
-2. If `make` targets do not exist, discover and run the project's equivalent commands (for example `uv run ruff check .`, `uv run ruff format .`, `uv run pytest`, `python -m pytest`, or framework-specific test runners).
+2. If `make` targets do not exist, discover and run the project's equivalent commands (for example `uv run ruff check .`, `uv run ruff format .`, `uv run mypy .`, `uv run pytest`, `python -m pytest`, or framework-specific test runners).
 
-   - [PY-QG-003] You must continue iterating until all checks complete successfully with **no errors or warnings**. Do this automatically, without requiring an additional prompt.
-   - [PY-QG-004] Warnings must be treated as defects unless explicitly waived in an ADR (rationale + expiry).
+   - [PY-QG-004] You must continue iterating until all checks complete successfully with **no errors or warnings**. Do this automatically, without requiring an additional prompt.
+   - [PY-QG-005] Warnings must be treated as defects unless explicitly waived in an ADR (rationale + expiry).
 
 ---
 
@@ -306,9 +310,48 @@ Python projects have contracts, even when they are "just code"; treat every boun
 
 ---
 
-## 6. Configuration and precedence ⚙️
+## 6. Static typing (mandatory safety net) 🛡️
 
-### 6.1 Precedence order (must be explicit)
+Python is dynamically typed at runtime, but **static typing via type hints is mandatory** for this project. Type hints combined with static analysis (mypy) form the critical safety net — especially when AI-assisted tools generate or modify code.
+
+### 6.1 Why typing is non-negotiable
+
+Per [PEP 484](https://peps.python.org/pep-0484/), type hints make code a **shared contract** between humans, frameworks, and AI:
+
+- [PY-TYP-001] AI increases the volume of code you did not write. Types are your safety net for catching wrong argument types, wrong return shapes, and `Optional` / non-optional mismatches **before** they become runtime bugs.
+- [PY-TYP-002] Types make "what goes where" unambiguous: clearer function signatures, fewer "mystery dicts", more explicit models.
+- [PY-TYP-003] Most LLM-generated errors in statically typed languages are type-check failures. In Python, the same class of errors becomes **runtime errors** or subtle bugs unless caught by a static checker.
+
+### 6.2 Type hint requirements
+
+- [PY-TYP-004] **All public APIs must be typed**: every public function, method, and class must have complete type annotations for parameters and return values.
+- [PY-TYP-005] **Data models must be typed**: use `dataclasses`, `TypedDict`, Pydantic models, or attrs — never untyped dicts for structured data at boundaries.
+- [PY-TYP-006] **Internal code should be typed**: type hints are strongly recommended throughout; the more code is typed, the more value static analysis provides.
+- [PY-TYP-007] **Prefer modern syntax**: use built-in generics (`list[str]`, `dict[str, int]`) instead of `typing.List`, `typing.Dict` for Python 3.9+. Use `X | Y` union syntax for Python 3.10+.
+
+### 6.3 Static analysis enforcement
+
+- [PY-TYP-008] **Run mypy (or equivalent) in CI**: type checking must be a **blocking gate** — code with type errors must not merge.
+- [PY-TYP-009] **Use strict mode where feasible**: enable `--strict` or incrementally adopt strict flags (`--disallow-untyped-defs`, `--disallow-any-generics`, `--warn-return-any`).
+- [PY-TYP-010] **Pre-commit hooks must include type checks**: run mypy on at least changed files to catch issues before push.
+
+### 6.4 Escape hatches (use sparingly)
+
+- [PY-TYP-011] **Avoid `Any`**: using `Any` defeats the purpose of typing. Prefer `object`, `Unknown` (via `typing_extensions`), protocol types, or properly constrained generics. Every use of `Any` must be justified with a comment.
+- [PY-TYP-012] **`# type: ignore` requires explanation**: never silence type errors without a reason comment (e.g., `# type: ignore[arg-type] — third-party stub is incorrect`). Treat these as technical debt to be resolved.
+
+### 6.5 Third-party library typing
+
+- Third-party library typing quality varies. Where stubs are missing or inaccurate:
+  - Use `types-*` stub packages from typeshed where available
+  - Create local stubs (`.pyi` files) for critical dependencies
+  - Document workarounds in ADRs when typing limitations block progress
+
+---
+
+## 7. Configuration and precedence ⚙️
+
+### 7.1 Precedence order (must be explicit)
 
 Define and document precedence. Prefer this order:
 
@@ -317,7 +360,7 @@ Define and document precedence. Prefer this order:
 3. Configuration file(s)
 4. Built-in defaults
 
-### 6.2 Configuration file support
+### 7.2 Configuration file support
 
 - [PY-CFG-001] If configuration files are used, prefer a predictable location and format.
 - [PY-CFG-002] Ensure config is:
@@ -325,7 +368,7 @@ Define and document precedence. Prefer this order:
   - [PY-CFG-002b] backwards-compatible where possible
   - [PY-CFG-002c] explicit about defaults
 
-### 6.3 Environment variables
+### 7.3 Environment variables
 
 - [PY-CFG-003] Use a consistent prefix (for example `TOOL_...`).
 - [PY-CFG-004] Document each variable and how it maps to flags/options.
@@ -333,9 +376,9 @@ Define and document precedence. Prefer this order:
 
 ---
 
-## 7. Data validation and modelling 🧱
+## 8. Data validation and modelling 🧱
 
-### 7.1 Validation (mandatory at boundaries, non-negotiable)
+### 8.1 Validation (mandatory at boundaries, non-negotiable)
 
 - [PY-DATA-001] Validate inputs at the boundary.
   - [PY-DATA-001a] For CLIs: flags/args, config files, environment variables, file paths
@@ -343,7 +386,7 @@ Define and document precedence. Prefer this order:
 - [PY-DATA-002] Validation rules must be **deterministic, explicit, and testable**.
 - [PY-DATA-003] Avoid silent coercion. If inputs are ambiguous, reject them with a clear validation error.
 
-### 7.2 Model separation (APIs and non-trivial CLIs)
+### 8.2 Model separation (APIs and non-trivial CLIs)
 
 Keep these concepts separate:
 
@@ -353,14 +396,14 @@ Keep these concepts separate:
 
 Do not expose persistence models directly through an API.
 
-### 7.3 Stable data contracts (APIs and structured CLI outputs)
+### 8.3 Stable data contracts (APIs and structured CLI outputs)
 
 - [PY-DATA-007] Use explicit field names, types, and optionality.
 - [PY-DATA-008] Prefer additive changes (new optional fields) over breaking changes.
 
 ---
 
-## 8. External integrations without slowing local dev 🔌
+## 9. External integrations without slowing local dev 🔌
 
 If the system depends on cloud services (AWS, HTTP APIs, databases), local feedback must still be fast.
 
@@ -390,15 +433,15 @@ Suggested emulator choices (pick what matches the system):
 
 ---
 
-## 9. Error handling and failure semantics 🧯
+## 10. Error handling and failure semantics 🧯
 
-### 9.1 Fail explicitly, not silently (non-negotiable)
+### 10.1 Fail explicitly, not silently (non-negotiable)
 
 - [PY-ERR-001] Silent failure is forbidden.
 - [PY-ERR-002] Partial success must be explicit (and specified).
 - [PY-ERR-003] Do not return `200` with an embedded error.
 
-### 9.2 CLI error messages (human-first) ⌨️
+### 10.2 CLI error messages (human-first) ⌨️
 
 - [PY-ERR-004] Error output must be:
   - [PY-ERR-004a] concise
@@ -410,7 +453,7 @@ Suggested emulator choices (pick what matches the system):
   - [PY-ERR-006b] a short "next steps" hint
   - [PY-ERR-006c] a reference to documentation/runbook (if available)
 
-### 9.3 API error responses (consistent and machine-parseable) 🌐
+### 10.3 API error responses (consistent and machine-parseable) 🌐
 
 All error responses must be consistent and machine-parseable. Prefer this structure:
 
@@ -419,7 +462,7 @@ All error responses must be consistent and machine-parseable. Prefer this struct
 - [PY-ERR-009] `details`: optional structured details (for example field validation issues)
 - [PY-ERR-010] `correlation_id`: request id / trace id when available
 
-### 9.4 Error classification (applies to APIs; recommended for CLIs with structured output)
+### 10.4 Error classification (applies to APIs; recommended for CLIs with structured output)
 
 - [PY-ERR-011] Distinguish between:
   - [PY-ERR-011a] validation errors
@@ -430,7 +473,7 @@ All error responses must be consistent and machine-parseable. Prefer this struct
   - [PY-ERR-011f] dependency/boundary errors (database, AWS, network)
 - [PY-ERR-012] Do not leak sensitive internals in error messages.
 
-### 9.5 Debugging modes 🪲
+### 10.5 Debugging modes 🪲
 
 - [PY-ERR-013] Support controlled diagnostics:
   - [PY-ERR-013a] `--verbose` increases detail
@@ -439,26 +482,26 @@ All error responses must be consistent and machine-parseable. Prefer this struct
 
 ---
 
-## 10. Observability and operational readiness 🔭
+## 11. Observability and operational readiness 🔭
 
 Observability is non-negotiable.
 
 **Section summary (key subsections):**
 
-- 10.0 Minimum baseline — the bar that applies everywhere
-- 10.1–10.2 Correlation IDs — CLI run identity and API request identity
-- 10.3 Logging rules — structured logs, what to include, what never to log
-- 10.4–10.5 Request lifecycle and dependency visibility
-- 10.6–10.7 Distributed tracing and metrics
-- 10.8–10.11 Error capture, runbooks, audit logs, Lambda notes
+- 11.0 Minimum baseline — the bar that applies everywhere
+- 11.1–11.2 Correlation IDs — CLI run identity and API request identity
+- 11.3 Logging rules — structured logs, what to include, what never to log
+- 11.4–11.5 Request lifecycle and dependency visibility
+- 11.6–11.7 Distributed tracing and metrics
+- 11.8–11.11 Error capture, runbooks, audit logs, Lambda notes
 
-### 10.0 Minimum baseline (apply everywhere) ✅
+### 11.0 Minimum baseline (apply everywhere) ✅
 
 - [PY-OBS-001] Treat this as the minimum bar:
   - CLIs: run identity + sane stderr diagnostics ([PY-OBS-002]–[PY-OBS-003], [PY-OBS-011]–[PY-OBS-014])
   - APIs: correlation IDs + structured logs + request start/end lifecycle logs ([PY-OBS-004]–[PY-OBS-010], [PY-OBS-015]–[PY-OBS-026])
 
-### 10.1 CLI run identity and correlation 🧾
+### 11.1 CLI run identity and correlation 🧾
 
 For CLIs:
 
@@ -468,7 +511,7 @@ For CLIs:
   - [PY-OBS-003b] error output
   - [PY-OBS-003c] structured outputs (when relevant, as metadata)
 
-### 10.2 API correlation and request identity 🧾
+### 11.2 API correlation and request identity 🧾
 
 For APIs, every request must have stable identifiers that flow through the whole call chain:
 
@@ -486,7 +529,7 @@ Rules:
   - [PY-OBS-010b] error responses (`correlation_id`)
   - [PY-OBS-010c] traces (as attributes)
 
-### 10.3 Logging rules (CLI and API) 🧱
+### 11.3 Logging rules (CLI and API) 🧱
 
 For CLIs:
 
@@ -523,7 +566,7 @@ Log level policy:
 - [PY-OBS-023] `ERROR`: failed operations, exceptions, dependency failures
 - [PY-OBS-024] `CRITICAL`: data loss, security incidents, corruption, or systemic failure
 
-### 10.4 API request lifecycle logging (start/end) ⏱️
+### 11.4 API request lifecycle logging (start/end) ⏱️
 
 For every API request, produce:
 
@@ -532,7 +575,7 @@ For every API request, produce:
 
 Ensure the end log happens even on exceptions.
 
-### 10.5 Dependency call visibility (DB, HTTP, AWS) 🔌
+### 11.5 Dependency call visibility (DB, HTTP, AWS) 🔌
 
 All external boundary calls must be observable:
 
@@ -549,7 +592,7 @@ All external boundary calls must be observable:
   - [PY-OBS-030b] row count (if cheap)
   - [PY-OBS-030c] slow query warnings with thresholds
 
-### 10.6 Distributed tracing (services and methods) 🧵
+### 11.6 Distributed tracing (services and methods) 🧵
 
 Tracing must be supported using standard trace context:
 
@@ -575,7 +618,7 @@ Sampling rules:
 - [PY-OBS-036] Use sensible sampling in production.
 - [PY-OBS-037] Ensure errors are traceable even when sampling is low (for example error-biased sampling where available).
 
-### 10.7 Metrics (the signals that drive action) 📈
+### 11.7 Metrics (the signals that drive action) 📈
 
 Metrics must support operational decisions and alerting.
 
@@ -592,7 +635,7 @@ Cardinality rules:
 - [PY-OBS-043] Do not put raw ids (user ids, request ids) into metric labels.
 - [PY-OBS-044] Keep labels stable and bounded (use route templates and coarse categories).
 
-### 10.8 Error capture, debugging, and "fast diagnosis" 🧠
+### 11.8 Error capture, debugging, and "fast diagnosis" 🧠
 
 Error handling must support rapid diagnosis without exposing internals to clients:
 
@@ -610,7 +653,7 @@ Error handling must support rapid diagnosis without exposing internals to client
   - [PY-OBS-049b] increases logging detail without changing behaviour
   - [PY-OBS-049c] still must not leak secrets or personal data
 
-### 10.9 Runbook hooks and actionable outputs 🧭
+### 11.9 Runbook hooks and actionable outputs 🧭
 
 Where an error is operationally meaningful:
 
@@ -620,7 +663,7 @@ Where an error is operationally meaningful:
   - [PY-OBS-051b] identify the failing dependency and operation
   - [PY-OBS-051c] understand whether it is transient vs persistent
 
-### 10.10 Audit and security event logging 🛡️
+### 11.10 Audit and security event logging 🛡️
 
 Security-relevant actions must produce explicit audit logs:
 
@@ -637,7 +680,7 @@ Audit log rules:
   - [PY-OBS-058a] actor type (service/user), role (not identity), operation, outcome, request_id
 - [PY-OBS-059] ensure audit events are distinguishable from application logs (`event: security.audit`)
 
-### 10.11 Serverless notes (Lambda) ☁️
+### 11.11 Serverless notes (Lambda) ☁️
 
 When running in AWS Lambda:
 
@@ -651,14 +694,14 @@ When running in AWS Lambda:
 
 ---
 
-## 11. Security defaults 🔐
+## 12. Security defaults 🔐
 
 **Section summary (key subsections):**
 
-- 11.1 CLI security rules — secrets, file paths, remote calls
-- 11.2 API security rules — core rules, AuthN, AuthZ, service-to-service, secrets, headers, testing
+- 12.1 CLI security rules — secrets, file paths, remote calls
+- 12.2 API security rules — core rules, AuthN, AuthZ, service-to-service, secrets, headers, testing
 
-### 11.1 CLI security rules (applies to CLIs)
+### 12.1 CLI security rules (applies to CLIs)
 
 - [PY-SEC-001] Do not accept secrets via command-line args unless unavoidable (they leak via shell history and process lists).
   - [PY-SEC-001a] Prefer environment variables or secure prompts.
@@ -669,7 +712,7 @@ When running in AWS Lambda:
   - [PY-SEC-004b] retries/backoff (when safe)
   - [PY-SEC-004c] clear failure reporting
 
-### 11.2 API security rules (applies to APIs) 🔐
+### 12.2 API security rules (applies to APIs) 🔐
 
 Security is part of the API contract. **Authentication and authorisation are not optional.** If an endpoint is not explicitly declared as public, it is private.
 
@@ -854,9 +897,9 @@ Security is behaviour and must be tested.
 
 ---
 
-## 12. File, I/O, and boundary behaviour 🧱
+## 13. File, I/O, and boundary behaviour 🧱
 
-### 12.1 File and I/O behaviour (CLI focus; applies generally)
+### 13.1 File and I/O behaviour (CLI focus; applies generally)
 
 - [PY-IO-001] Use atomic writes for output files:
   - [PY-IO-001a] write to a temp file and rename on success
@@ -867,7 +910,7 @@ Security is behaviour and must be tested.
   - [PY-IO-004b] define ordering rules (deterministic)
   - [PY-IO-004c] define error strategy (fail-fast vs continue-with-report) explicitly
 
-### 12.2 Persistence and I/O boundaries (API focus; applies generally)
+### 13.2 Persistence and I/O boundaries (API focus; applies generally)
 
 - [PY-IO-005] Treat external dependencies as boundaries:
   - [PY-IO-005a] databases
@@ -882,16 +925,16 @@ Security is behaviour and must be tested.
 
 ---
 
-## 13. TUI and interactive behaviour 🖥️
+## 14. TUI and interactive behaviour 🖥️
 
-### 13.1 Non-interactive compatibility
+### 14.1 Non-interactive compatibility
 
 - [PY-TUI-001] Every interactive flow must have a non-interactive alternative:
   - [PY-TUI-001a] flags/args to provide required inputs
   - [PY-TUI-001b] `--yes` / `--no-input` / `--non-interactive` conventions
 - [PY-TUI-002] Detect non-interactive environments and degrade gracefully.
 
-### 13.2 Accessibility and terminal compatibility ♿️
+### 14.2 Accessibility and terminal compatibility ♿️
 
 - [PY-TUI-003] Do not rely on colour alone to convey meaning.
 - [PY-TUI-004] Ensure output works in:
@@ -900,7 +943,7 @@ Security is behaviour and must be tested.
   - [PY-TUI-004c] CI logs (no TUI assumptions)
 - [PY-TUI-005] Provide a "plain output" mode to disable rich formatting when needed.
 
-### 13.3 Prompts and safety rails
+### 14.3 Prompts and safety rails
 
 - [PY-TUI-006] Destructive actions must:
   - [PY-TUI-006a] default to safe behaviour
@@ -909,7 +952,7 @@ Security is behaviour and must be tested.
 
 ---
 
-## 14. Testing approach (TDD, unit-test first) 🧪
+## 15. Testing approach (TDD, unit-test first) 🧪
 
 Per [constitution.md §3.6](../../.specify/memory/constitution.md#36-design-for-testability-tdd), follow a test-first flow for behaviour changes:
 
@@ -934,7 +977,7 @@ Additional Python-specific testing guidance:
 - [PY-TST-005] Add concise docstrings or comments to test cases that explain what scenario is being validated and why it matters.
 - [PY-TST-006] When tests rely on fixtures or external dependencies, note those dependencies in comments so reviewers understand the setup constraints.
 
-### 14.1 Golden tests (snapshot) 📸
+### 15.1 Golden tests (snapshot) 📸
 
 - [PY-TST-007] Snapshot/golden tests are allowed for CLI output when:
   - [PY-TST-007a] output is deterministic
@@ -944,7 +987,7 @@ Additional Python-specific testing guidance:
 
 ---
 
-## 15. Code organisation and maintainability ✍️
+## 16. Code organisation and maintainability ✍️
 
 Per [constitution.md §7](../../.specify/memory/constitution.md#7-code-quality-guardrails):
 
@@ -963,15 +1006,15 @@ Per [constitution.md §7](../../.specify/memory/constitution.md#7-code-quality-g
   - [PY-CODE-007b] key behaviour next
   - [PY-CODE-007c] helpers near the behaviour they support
   - [PY-CODE-007d] shared utilities clearly grouped
-- [PY-CODE-008] Add type hints at module and boundary surfaces (public functions, use-case interfaces, adapters). Use a pragmatic level of typing that improves change safety without slowing iteration.
+- [PY-CODE-008] Type hints are **mandatory** at all public API surfaces (functions, classes, methods) and strongly recommended throughout (see §6 for full typing requirements).
 - [PY-CODE-009] Keep framework objects at the edges: do not let request/response objects leak into domain or use-case logic ([PY-IO-008], [PY-CODE-001]).
 - [PY-CODE-010] Break complex functions into smaller, intention-revealing helpers so each unit has a single responsibility and remains easy to test.
 
 ---
 
-## 16. Build, packaging, and release 📦
+## 17. Build, packaging, and release 📦
 
-### 16.1 CLI packaging and versioning
+### 17.1 CLI packaging and versioning
 
 - [PY-PKG-001] Define a single canonical entrypoint:
   - [PY-PKG-001a] console script / `python -m package` / equivalent
@@ -981,16 +1024,16 @@ Per [constitution.md §7](../../.specify/memory/constitution.md#7-code-quality-g
 - [PY-PKG-003] Use semantic versioning for the CLI contract.
 - [PY-PKG-004] Ensure reproducible builds where feasible.
 
-### 16.2 API versioning reminders
+### 17.2 API versioning reminders
 
 - [PY-PKG-005] Prefer **non-breaking evolution**.
 - [PY-PKG-006] If API versioning is required, use a consistent scheme (for example `/v1/` path prefix or content negotiation).
 
 ---
 
-## 17. Performance and resilience 🚀
+## 18. Performance and resilience 🚀
 
-### 17.1 Performance and resilience (API focus; applies generally)
+### 18.1 Performance and resilience (API focus; applies generally)
 
 - [PY-PERF-001] Avoid premature optimisation, but do not allow unbounded inefficiency.
 - [PY-PERF-002] Make performance characteristics explicit and testable where relevant.
@@ -1000,7 +1043,7 @@ Per [constitution.md §7](../../.specify/memory/constitution.md#7-code-quality-g
   - [PY-PERF-003c] circuit-breaking patterns where appropriate
 - [PY-PERF-004] Prefer streaming/pagination for large datasets.
 
-### 17.2 AWS Lambda and serverless-specific rules (applies to Lambda-hosted systems)
+### 18.2 AWS Lambda and serverless-specific rules (applies to Lambda-hosted systems)
 
 These apply when the API is deployed on AWS Lambda (even when using a framework adapter).
 
@@ -1020,7 +1063,7 @@ These apply when the API is deployed on AWS Lambda (even when using a framework 
 
 ---
 
-## 18. AI-assisted change expectations 🤖
+## 19. AI-assisted change expectations 🤖
 
 Per [constitution.md §3.5](../../.specify/memory/constitution.md#35-ai-assisted-development-discipline--change-governance), when you create or modify code:
 
@@ -1033,7 +1076,7 @@ Per [constitution.md §3.5](../../.specify/memory/constitution.md#35-ai-assisted
 
 ---
 
-## 19. Documentation, readability, and style ✏️
+## 20. Documentation, readability, and style ✏️
 
 - [PY-DOC-001] Provide PEP 257-compliant docstrings for modules, public classes, and functions; include parameters, return values, and behavioural notes where ambiguity exists.
 - [PY-DOC-002] Write clear comments that explain the _why_ behind design decisions, algorithm choices, and non-obvious trade-offs rather than restating code.
@@ -1041,7 +1084,7 @@ Per [constitution.md §3.5](../../.specify/memory/constitution.md#35-ai-assisted
 - [PY-DOC-004] For algorithm-heavy code paths, include a short explanation of the approach, complexity considerations, and any constraints being enforced.
 - [PY-DOC-005] Prioritise readability and maintainability over cleverness; when in doubt, choose the clearer construct even if it is slightly longer.
 - [PY-DOC-006] Use descriptive function, method, and variable names. Where the domain language is known, mirror it consistently.
-- [PY-DOC-007] Apply type hints from the `typing` module (for example `List[str]`, `Dict[str, int]`, `tuple[str, ...]`) across public interfaces and complex internal helpers to make contracts explicit.
+- [PY-DOC-007] Apply type hints consistently (see §6); prefer modern built-in generics (`list[str]`, `dict[str, int]`) over `typing` module equivalents for Python 3.9+; use `|` union syntax for Python 3.10+.
 - [PY-DOC-008] Mention notable edge cases or behavioural quirks directly above the code that enforces them so future readers understand the rationale.
 - [PY-STYLE-001] Follow PEP 8 for formatting, spacing, and naming; keep indentation at four spaces and avoid tabs.
 - [PY-STYLE-002] Keep lines within 79 characters where practical; when longer lines are unavoidable (for example long URLs), document the exception with a lint pragma if required.
@@ -1051,7 +1094,7 @@ Per [constitution.md §3.5](../../.specify/memory/constitution.md#35-ai-assisted
 
 ---
 
-## 20. Anti-patterns (recognise and avoid) 🚫
+## 21. Anti-patterns (recognise and avoid) 🚫
 
 These patterns cause recurring issues in Python codebases. Avoid them unless an ADR documents a justified exception.
 
@@ -1070,8 +1113,12 @@ These patterns cause recurring issues in Python codebases. Avoid them unless an 
 - [PY-ANT-013] **Long parameter lists (>5 positional)** — consider a dataclass, TypedDict, or Pydantic model to group related parameters.
 - [PY-ANT-014] **Shadowing built-ins** (`id`, `type`, `list`, `dict`, `input`, `open`) — causes subtle bugs. Choose distinct names.
 - [PY-ANT-015] **Ignoring return values of I/O or validation calls** — silent failures. Check or log outcomes explicitly.
+- [PY-ANT-016] **Using `Any` to silence type errors** — defeats the purpose of typing; use `object`, `Unknown`, protocol types, or properly constrained generics instead. Every `Any` must be justified and documented.
+- [PY-ANT-017] **Untyped public APIs** — public functions/classes without type hints are forbidden; they break the contract between humans, frameworks, and AI.
+- [PY-ANT-018] **`# type: ignore` without explanation** — silencing type errors hides bugs; always include a reason comment (for example `# type: ignore[arg-type] — third-party stub is wrong`).
+- [PY-ANT-019] **Mixing typed and untyped code at boundaries** — if a module is typed, keep it fully typed; partial typing creates false confidence.
 
 ---
 
-> **Version**: 1.4.0
-> **Last Amended**: 2026-01-11
+> **Version**: 1.5.0
+> **Last Amended**: 2026-01-14

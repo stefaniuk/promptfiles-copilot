@@ -59,24 +59,25 @@ Provide repository-standard targets so an engineer can operate the repo quickly:
 
 - [MK-LCL-001] Bootstrap: `make deps` — installs production and development dependencies from the lock file, as defined in Section 11. Use `make deps-prod` for production-only dependencies.
 - [MK-LCL-002] Lint/format: `make lint` and `make format` — run the paired lint and format targets defined in Section 11.
-- [MK-LCL-003] Test (fast lane): `make test` — must run quickly (aim: < 5 seconds for unit tests) and deterministically, matching the Section 11 target.
-- [MK-LCL-004] Full suite: optionally add an extended target (commonly `make test-all`) that builds on the Section 11 `test` recipe to include integration/e2e tiers when applicable.
-- [MK-LCL-005] Build: reuse the Section 11 `build` target (from the CI/CD block) to compile or package artefacts locally when applicable.
-- [MK-LCL-006] Run locally: `make run` or `make up` / `make down` — use the Section 11 operations targets to start/stop the application or dependency stack (if applicable).
+- [MK-LCL-003] Type-check: `make typecheck` — runs the static type checker (e.g. mypy) as a blocking gate.
+- [MK-LCL-004] Test (fast lane): `make test` — must run quickly (aim: < 5 seconds for unit tests) and deterministically, matching the Section 11 target.
+- [MK-LCL-005] Full suite: optionally add an extended target (commonly `make test-all`) that builds on the Section 11 `test` recipe to include integration/e2e tiers when applicable.
+- [MK-LCL-006] Build: reuse the Section 11 `build` target (from the CI/CD block) to compile or package artefacts locally when applicable.
+- [MK-LCL-007] Run locally: `make run` or `make up` / `make down` — use the Section 11 operations targets to start/stop the application or dependency stack (if applicable).
 
 ### 2.2 Clear, actionable errors
 
-- [MK-LCL-007] Any target that runs tools must produce clear, actionable errors when tools are missing (for example "install X via asdf" or "run make deps").
-- [MK-LCL-008] Do not fail silently; prefer explicit prerequisite checks with helpful messages.
+- [MK-LCL-008] Any target that runs tools must produce clear, actionable errors when tools are missing (for example "install X via asdf" or "run make deps").
+- [MK-LCL-009] Do not fail silently; prefer explicit prerequisite checks with helpful messages.
 
 ### 2.3 Script delegation (recommended)
 
-- [MK-LCL-009] Prefer calling scripts under `scripts/**/*.sh` (or similar) from make, rather than writing test/build logic inside make recipes.
-- [MK-LCL-010] Scripts should be independently runnable for debugging.
+- [MK-LCL-010] Prefer calling scripts under `scripts/**/*.sh` (or similar) from make, rather than writing test/build logic inside make recipes.
+- [MK-LCL-011] Scripts should be independently runnable for debugging.
 
 ### 2.4 Environment check (recommended)
 
-- [MK-LCL-011] Where supported, provide a "doctor" target (for example `make doctor`) that confirms local prerequisites and surfaces actionable fixes.
+- [MK-LCL-012] Where supported, provide a "doctor" target (for example `make doctor`) that confirms local prerequisites and surfaces actionable fixes.
 
 ---
 
@@ -300,6 +301,9 @@ format: # Auto-format code @CodeQuality
 lint: # Run linter to check code style and errors @CodeQuality
 	# TODO: Analyse source files for style violations, potential bugs, and code smells
 
+typecheck: # Run static type checker @CodeQuality
+	# TODO: Run mypy, or equivalent to catch type errors before runtime
+
 test: # Run all tests @Testing
 	# TODO: Execute the test suite and generate coverage report
 	# Use `test-integration`, `test-contract`, `test-e2e` etc. for extended suites if applicable
@@ -450,5 +454,5 @@ These patterns cause recurring issues in Makefiles and build scripts. Avoid them
 
 ---
 
-> **Version**: 1.3.0
-> **Last Amended**: 2026-01-11
+> **Version**: 1.3.1
+> **Last Amended**: 2026-01-14
