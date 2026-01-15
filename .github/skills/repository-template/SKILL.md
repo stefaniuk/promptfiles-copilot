@@ -9,16 +9,16 @@ This skill enables adopting, configuring, or removing capabilities from the [NHS
 
 ## Source Reference
 
-All implementation files are located in the `example/` subdirectory, which is a git subtree of the upstream repository template. When copying files to a target repository, use the contents from:
+All implementation files are located in the `assets/` subdirectory, which is a git subtree of the upstream repository template. When copying files to a target repository, use the contents from:
 
 ```text
-.github/skills/repository-template/example/
+.github/skills/repository-template/assets/
 ```
 
 For example, to adopt `scripts/init.mk`, copy from:
 
 ```text
-.github/skills/repository-template/example/scripts/init.mk
+.github/skills/repository-template/assets/scripts/init.mk
 ```
 
 to your target repository's `scripts/init.mk`.
@@ -59,10 +59,10 @@ to your target repository's `scripts/init.mk`.
 
 **Dependencies**: GNU Make 3.82+
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`Makefile`](example/Makefile) — Project-specific targets (customise this)
-- [`scripts/init.mk`](example/scripts/init.mk) — Common targets and infrastructure (do not edit)
+- [`Makefile`](assets/Makefile) — Project-specific targets (customise this)
+- [`scripts/init.mk`](assets/scripts/init.mk) — Common targets and infrastructure (do not edit)
 
 **Key make targets**:
 
@@ -75,7 +75,7 @@ make list-variables    # Debug: show all make variables
 
 **To adopt**:
 
-1. Copy `example/Makefile` and `example/scripts/init.mk` to your repository
+1. Copy `assets/Makefile` and `assets/scripts/init.mk` to your repository
 2. Customise the `Makefile` with your project-specific targets
 3. Add `@Pipeline`, `@Operations`, `@Configuration`, `@Development`, `@Testing`, `@Quality`, or `@Others` annotations to target comments for categorisation
 
@@ -102,9 +102,9 @@ make help
 
 **Dependencies**: Python, pre-commit (`pip install pre-commit`)
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/config/pre-commit.yaml`](example/scripts/config/pre-commit.yaml) — Hook definitions
+- [`scripts/config/pre-commit.yaml`](assets/scripts/config/pre-commit.yaml) — Hook definitions
 
 **Configuration**:
 
@@ -158,11 +158,11 @@ pre-commit run --config scripts/config/pre-commit.yaml --all-files
 
 **Dependencies**: Gitleaks (native or Docker)
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/githooks/scan-secrets.sh`](example/scripts/githooks/scan-secrets.sh) — Scanner wrapper
-- [`scripts/config/gitleaks.toml`](example/scripts/config/gitleaks.toml) — Gitleaks configuration
-- [`.gitleaksignore`](example/.gitleaksignore) — Ignore file for false positives
+- [`scripts/githooks/scan-secrets.sh`](assets/scripts/githooks/scan-secrets.sh) — Scanner wrapper
+- [`scripts/config/gitleaks.toml`](assets/scripts/config/gitleaks.toml) — Gitleaks configuration
+- [`.gitleaksignore`](assets/.gitleaksignore) — Ignore file for false positives
 
 **Check modes**:
 
@@ -220,10 +220,10 @@ gitleaks detect --config scripts/config/gitleaks.toml --source . --verbose --red
 
 **Dependencies**: editorconfig-checker (native or Docker)
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`.editorconfig`](example/.editorconfig) — Format rules
-- [`scripts/githooks/check-file-format.sh`](example/scripts/githooks/check-file-format.sh) — Checker wrapper
+- [`.editorconfig`](assets/.editorconfig) — Format rules
+- [`scripts/githooks/check-file-format.sh`](assets/scripts/githooks/check-file-format.sh) — Checker wrapper
 
 **Default rules** (`.editorconfig`):
 
@@ -288,10 +288,10 @@ editorconfig-checker -config .editorconfig
 
 **Dependencies**: markdownlint-cli (native or Docker)
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/githooks/check-markdown-format.sh`](example/scripts/githooks/check-markdown-format.sh) — Linter wrapper
-- [`scripts/config/markdownlint.yaml`](example/scripts/config/markdownlint.yaml) — Rule configuration
+- [`scripts/githooks/check-markdown-format.sh`](assets/scripts/githooks/check-markdown-format.sh) — Linter wrapper
+- [`scripts/config/markdownlint.yaml`](assets/scripts/config/markdownlint.yaml) — Rule configuration
 
 **Configuration** (`scripts/config/markdownlint.yaml`):
 
@@ -341,11 +341,11 @@ markdownlint --config scripts/config/markdownlint.yaml "**/*.md"
 
 **Dependencies**: Vale (native or Docker)
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/githooks/check-english-usage.sh`](example/scripts/githooks/check-english-usage.sh) — Vale wrapper
-- [`scripts/config/vale/vale.ini`](example/scripts/config/vale/vale.ini) — Vale configuration
-- [`scripts/config/vale/styles/`](example/scripts/config/vale/styles/) — Custom style rules
+- [`scripts/githooks/check-english-usage.sh`](assets/scripts/githooks/check-english-usage.sh) — Vale wrapper
+- [`scripts/config/vale/vale.ini`](assets/scripts/config/vale/vale.ini) — Vale configuration
+- [`scripts/config/vale/styles/`](assets/scripts/config/vale/styles/) — Custom style rules
 
 **Configuration** (`scripts/config/vale/vale.ini`):
 
@@ -399,14 +399,14 @@ vale --config scripts/config/vale/vale.ini README.md
 
 **Dependencies**: Docker, hadolint (for linting)
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/docker/docker.mk`](example/scripts/docker/docker.mk) — Make targets
-- [`scripts/docker/docker.lib.sh`](example/scripts/docker/docker.lib.sh) — Shell functions library
-- [`scripts/docker/dockerfile-linter.sh`](example/scripts/docker/dockerfile-linter.sh) — Hadolint wrapper
-- [`scripts/docker/Dockerfile.metadata`](example/scripts/docker/Dockerfile.metadata) — OCI label template
-- [`scripts/config/hadolint.yaml`](example/scripts/config/hadolint.yaml) — Hadolint configuration
-- [`scripts/docker/dgoss.sh`](example/scripts/docker/dgoss.sh) — Container testing with dgoss
+- [`scripts/docker/docker.mk`](assets/scripts/docker/docker.mk) — Make targets
+- [`scripts/docker/docker.lib.sh`](assets/scripts/docker/docker.lib.sh) — Shell functions library
+- [`scripts/docker/dockerfile-linter.sh`](assets/scripts/docker/dockerfile-linter.sh) — Hadolint wrapper
+- [`scripts/docker/Dockerfile.metadata`](assets/scripts/docker/Dockerfile.metadata) — OCI label template
+- [`scripts/config/hadolint.yaml`](assets/scripts/config/hadolint.yaml) — Hadolint configuration
+- [`scripts/docker/dgoss.sh`](assets/scripts/docker/dgoss.sh) — Container testing with dgoss
 
 **Make targets**:
 
@@ -480,11 +480,11 @@ make help | grep -E "docker-build|docker-lint|docker-push"
 
 **Dependencies**: Terraform
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/terraform/`](example/scripts/terraform/) — Make targets (optional include in init.mk)
-- [`scripts/githooks/check-terraform-format.sh`](example/scripts/githooks/check-terraform-format.sh) — Format checker
-- [`infrastructure/`](example/infrastructure/) — Directory structure for Terraform code
+- [`scripts/terraform/`](assets/scripts/terraform/) — Make targets (optional include in init.mk)
+- [`scripts/githooks/check-terraform-format.sh`](assets/scripts/githooks/check-terraform-format.sh) — Format checker
+- [`infrastructure/`](assets/infrastructure/) — Directory structure for Terraform code
 
 **Directory structure**:
 
@@ -547,9 +547,9 @@ test -d infrastructure/environments && echo "Structure OK" || echo "Missing stru
 
 **Dependencies**: ShellCheck (native or Docker)
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/shellscript-linter.sh`](example/scripts/shellscript-linter.sh) — ShellCheck wrapper
+- [`scripts/shellscript-linter.sh`](assets/scripts/shellscript-linter.sh) — ShellCheck wrapper
 
 **Usage**:
 
@@ -593,9 +593,9 @@ shellcheck scripts/*.sh
 
 **Dependencies**: Test runners for your language/framework
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/tests/test.mk`](example/scripts/tests/test.mk) — Test target definitions
+- [`scripts/tests/test.mk`](assets/scripts/tests/test.mk) — Test target definitions
 
 **Available targets**:
 
@@ -648,16 +648,16 @@ grep -l "test.mk" scripts/init.mk Makefile
 
 **Purpose**: Multi-stage CI/CD pipeline with reusable workflows and composite actions.
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`example/.github/workflows/cicd-1-pull-request.yaml`](example/.github/workflows/cicd-1-pull-request.yaml) — Main PR workflow
-- [`example/.github/workflows/cicd-2-publish.yaml`](example/.github/workflows/cicd-2-publish.yaml) — Publish workflow
-- [`example/.github/workflows/cicd-3-deploy.yaml`](example/.github/workflows/cicd-3-deploy.yaml) — Deployment workflow
-- [`example/.github/workflows/stage-1-commit.yaml`](example/.github/workflows/stage-1-commit.yaml) — Commit stage (quality checks)
-- [`example/.github/workflows/stage-2-test.yaml`](example/.github/workflows/stage-2-test.yaml) — Test stage
-- [`example/.github/workflows/stage-3-build.yaml`](example/.github/workflows/stage-3-build.yaml) — Build stage
-- [`example/.github/workflows/stage-4-acceptance.yaml`](example/.github/workflows/stage-4-acceptance.yaml) — Acceptance stage
-- [`example/.github/actions/`](example/.github/actions/) — Composite actions for each check
+- [`assets/.github/workflows/cicd-1-pull-request.yaml`](assets/.github/workflows/cicd-1-pull-request.yaml) — Main PR workflow
+- [`assets/.github/workflows/cicd-2-publish.yaml`](assets/.github/workflows/cicd-2-publish.yaml) — Publish workflow
+- [`assets/.github/workflows/cicd-3-deploy.yaml`](assets/.github/workflows/cicd-3-deploy.yaml) — Deployment workflow
+- [`assets/.github/workflows/stage-1-commit.yaml`](assets/.github/workflows/stage-1-commit.yaml) — Commit stage (quality checks)
+- [`assets/.github/workflows/stage-2-test.yaml`](assets/.github/workflows/stage-2-test.yaml) — Test stage
+- [`assets/.github/workflows/stage-3-build.yaml`](assets/.github/workflows/stage-3-build.yaml) — Build stage
+- [`assets/.github/workflows/stage-4-acceptance.yaml`](assets/.github/workflows/stage-4-acceptance.yaml) — Acceptance stage
+- [`assets/.github/actions/`](assets/.github/actions/) — Composite actions for each check
 
 **Pipeline stages**:
 
@@ -713,10 +713,10 @@ grep -r "uses:.*\.github/actions/" .github/workflows/
 
 **Dependencies**: act (GitHub Actions local runner), Docker
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/init.mk`](example/scripts/init.mk) — Contains the `runner-act` make target
-- [`scripts/docker/docker.lib.sh`](example/scripts/docker/docker.lib.sh) — Provides `docker-get-image-version-and-pull` for runner image
+- [`scripts/init.mk`](assets/scripts/init.mk) — Contains the `runner-act` make target
+- [`scripts/docker/docker.lib.sh`](assets/scripts/docker/docker.lib.sh) — Provides `docker-get-image-version-and-pull` for runner image
 
 **Make target**:
 
@@ -800,12 +800,12 @@ make runner-act workflow=cicd-1-pull-request job=commit-stage
 
 **Dependencies**: Grype, Syft (via Docker or native)
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/config/grype.yaml`](example/scripts/config/grype.yaml) — Grype vulnerability scanner configuration
-- [`scripts/config/syft.yaml`](example/scripts/config/syft.yaml) — Syft SBOM generator configuration
-- [`scripts/reports/create-sbom-report.sh`](example/scripts/reports/create-sbom-report.sh) — SBOM generation wrapper
-- [`scripts/reports/scan-vulnerabilities.sh`](example/scripts/reports/scan-vulnerabilities.sh) — Vulnerability scanning wrapper
+- [`scripts/config/grype.yaml`](assets/scripts/config/grype.yaml) — Grype vulnerability scanner configuration
+- [`scripts/config/syft.yaml`](assets/scripts/config/syft.yaml) — Syft SBOM generator configuration
+- [`scripts/reports/create-sbom-report.sh`](assets/scripts/reports/create-sbom-report.sh) — SBOM generation wrapper
+- [`scripts/reports/scan-vulnerabilities.sh`](assets/scripts/reports/scan-vulnerabilities.sh) — Vulnerability scanning wrapper
 
 **Features**:
 
@@ -866,9 +866,9 @@ yq eval '.' scripts/config/syft.yaml > /dev/null && echo "syft.yaml valid"
 
 **Dependencies**: gocloc (native or Docker)
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/reports/create-lines-of-code-report.sh`](example/scripts/reports/create-lines-of-code-report.sh)
+- [`scripts/reports/create-lines-of-code-report.sh`](assets/scripts/reports/create-lines-of-code-report.sh)
 
 **Output**: `lines-of-code-report.json` with:
 
@@ -918,11 +918,11 @@ jq '.' lines-of-code-report.json > /dev/null && echo "Valid JSON"
 
 **Purpose**: Standardised editor configuration and recommended extensions.
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`.vscode/extensions.json`](example/.vscode/extensions.json) — Recommended extensions
-- [`.vscode/settings.json`](example/.vscode/settings.json) — Workspace settings
-- [`project.code-workspace`](example/project.code-workspace) — Multi-root workspace file
+- [`.vscode/extensions.json`](assets/.vscode/extensions.json) — Recommended extensions
+- [`.vscode/settings.json`](assets/.vscode/settings.json) — Workspace settings
+- [`project.code-workspace`](assets/project.code-workspace) — Multi-root workspace file
 
 **Key extensions**:
 
@@ -965,9 +965,9 @@ jq -r '.recommendations[]' .vscode/extensions.json
 
 **Dependencies**: Docker, VS Code with Remote Containers extension
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`.devcontainer/devcontainer.json`](example/.devcontainer/devcontainer.json)
+- [`.devcontainer/devcontainer.json`](assets/.devcontainer/devcontainer.json)
 
 **Features**:
 
@@ -1010,9 +1010,9 @@ jq -e '.image // .build' .devcontainer/devcontainer.json > /dev/null && echo "Ha
 
 **Dependencies**: asdf version manager
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`.tool-versions`](example/.tool-versions) — Tool version pins (standard and Docker)
+- [`.tool-versions`](assets/.tool-versions) — Tool version pins (standard and Docker)
 
 **Standard tool entries**:
 
@@ -1105,11 +1105,11 @@ grep "^# docker/" .tool-versions
 
 **Purpose**: Standardised templates for issues, pull requests, and security policies to ensure consistent contributor experience.
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`.github/ISSUE_TEMPLATE/`](example/.github/ISSUE_TEMPLATE/) — Issue form templates
-- [`.github/PULL_REQUEST_TEMPLATE.md`](example/.github/PULL_REQUEST_TEMPLATE.md) — PR description template
-- [`.github/SECURITY.md`](example/.github/SECURITY.md) — Security vulnerability reporting policy
+- [`.github/ISSUE_TEMPLATE/`](assets/.github/ISSUE_TEMPLATE/) — Issue form templates
+- [`.github/PULL_REQUEST_TEMPLATE.md`](assets/.github/PULL_REQUEST_TEMPLATE.md) — PR description template
+- [`.github/SECURITY.md`](assets/.github/SECURITY.md) — Security vulnerability reporting policy
 
 **Issue templates**:
 
@@ -1162,9 +1162,9 @@ done
 
 **Purpose**: Automated dependency update pull requests for multiple package ecosystems.
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`.github/dependabot.yaml`](example/.github/dependabot.yaml) — Dependabot configuration
+- [`.github/dependabot.yaml`](assets/.github/dependabot.yaml) — Dependabot configuration
 
 **Configured ecosystems**:
 
@@ -1213,12 +1213,12 @@ yq eval '.updates[].package-ecosystem' .github/dependabot.yaml
 
 **Purpose**: Standardised documentation layout with Architecture Decision Records (ADRs), developer guides, and user guides.
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`docs/adr/`](example/docs/adr/) — Architecture Decision Records
-- [`docs/developer-guides/`](example/docs/developer-guides/) — Technical documentation for developers
-- [`docs/user-guides/`](example/docs/user-guides/) — End-user documentation
-- [`docs/diagrams/`](example/docs/diagrams/) — Draw.io diagrams
+- [`docs/adr/`](assets/docs/adr/) — Architecture Decision Records
+- [`docs/developer-guides/`](assets/docs/developer-guides/) — Technical documentation for developers
+- [`docs/user-guides/`](assets/docs/user-guides/) — End-user documentation
+- [`docs/diagrams/`](assets/docs/diagrams/) — Draw.io diagrams
 
 **ADR structure** (`docs/adr/`):
 
@@ -1285,10 +1285,10 @@ find docs -name "*.md" -type f
 
 **Dependencies**: sonar-scanner (native or Docker), SonarCloud account
 
-**Source files** (in `example/`):
+**Source files** (in `assets/`):
 
-- [`scripts/reports/perform-static-analysis.sh`](example/scripts/reports/perform-static-analysis.sh) — SonarCloud scanner wrapper
-- [`scripts/config/sonar-scanner.properties`](example/scripts/config/sonar-scanner.properties) — Scanner configuration shared by native and Docker execution
+- [`scripts/reports/perform-static-analysis.sh`](assets/scripts/reports/perform-static-analysis.sh) — SonarCloud scanner wrapper
+- [`scripts/config/sonar-scanner.properties`](assets/scripts/config/sonar-scanner.properties) — Scanner configuration shared by native and Docker execution
 
 **Required environment variables**:
 
@@ -1361,10 +1361,10 @@ git init
 make config
 ```
 
-Or copy from the local `example/` directory:
+Or copy from the local `assets/` directory:
 
 ```bash
-cp -r .github/skills/repository-template/example/* my-project/
+cp -r .github/skills/repository-template/assets/* my-project/
 cd my-project
 make config
 ```
@@ -1374,7 +1374,7 @@ make config
 To add a single capability to an existing repository:
 
 1. Identify the capability from the table above
-2. Copy the required files from [`example/`](example/) to your repository root
+2. Copy the required files from [`assets/`](assets/) to your repository root
 3. Update any include statements in `Makefile` or `scripts/init.mk`
 4. Run `make config` if using pre-commit hooks
 
@@ -1391,55 +1391,55 @@ To remove a capability:
 
 ## File Reference
 
-All source files are located in the [`example/`](example/) directory. Copy them to your repository root (or the equivalent path).
+All source files are located in the [`assets/`](assets/) directory. Copy them to your repository root (or the equivalent path).
 
 ### Root Files
 
-| File                                                               | Purpose                | Capability              |
-| ------------------------------------------------------------------ | ---------------------- | ----------------------- |
-| [`example/.editorconfig`](example/.editorconfig)                   | File formatting rules  | File Format Checking    |
-| [`example/.gitattributes`](example/.gitattributes)                 | Git file handling      | Core                    |
-| [`example/.gitignore`](example/.gitignore)                         | Git ignore patterns    | Core                    |
-| [`example/.gitleaksignore`](example/.gitleaksignore)               | False positive ignores | Secret Scanning         |
-| [`example/.tool-versions`](example/.tool-versions)                 | Tool version pins      | Tool Version Management |
-| [`example/LICENCE.md`](example/LICENCE.md)                         | MIT licence            | Core                    |
-| [`example/Makefile`](example/Makefile)                             | Project make targets   | Core Make System        |
-| [`example/project.code-workspace`](example/project.code-workspace) | VS Code workspace      | VS Code Integration     |
-| [`example/VERSION`](example/VERSION)                               | Project version        | Core                    |
+| File                                                             | Purpose                | Capability              |
+| ---------------------------------------------------------------- | ---------------------- | ----------------------- |
+| [`assets/.editorconfig`](assets/.editorconfig)                   | File formatting rules  | File Format Checking    |
+| [`assets/.gitattributes`](assets/.gitattributes)                 | Git file handling      | Core                    |
+| [`assets/.gitignore`](assets/.gitignore)                         | Git ignore patterns    | Core                    |
+| [`assets/.gitleaksignore`](assets/.gitleaksignore)               | False positive ignores | Secret Scanning         |
+| [`assets/.tool-versions`](assets/.tool-versions)                 | Tool version pins      | Tool Version Management |
+| [`assets/LICENCE.md`](assets/LICENCE.md)                         | MIT licence            | Core                    |
+| [`assets/Makefile`](assets/Makefile)                             | Project make targets   | Core Make System        |
+| [`assets/project.code-workspace`](assets/project.code-workspace) | VS Code workspace      | VS Code Integration     |
+| [`assets/VERSION`](assets/VERSION)                               | Project version        | Core                    |
 
 ### Documentation Directory
 
-| Path                                                                                                                   | Purpose                       |
-| ---------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| [`example/docs/adr/`](example/docs/adr/)                                                                               | Architecture Decision Records |
-| [`example/docs/adr/ADR-nnn_Any_Decision_Record_Template.md`](example/docs/adr/ADR-nnn_Any_Decision_Record_Template.md) | ADR template                  |
-| [`example/docs/developer-guides/`](example/docs/developer-guides/)                                                     | Technical documentation       |
-| [`example/docs/user-guides/`](example/docs/user-guides/)                                                               | End-user guides               |
-| [`example/docs/diagrams/`](example/docs/diagrams/)                                                                     | Draw.io diagrams              |
+| Path                                                                                                                 | Purpose                       |
+| -------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| [`assets/docs/adr/`](assets/docs/adr/)                                                                               | Architecture Decision Records |
+| [`assets/docs/adr/ADR-nnn_Any_Decision_Record_Template.md`](assets/docs/adr/ADR-nnn_Any_Decision_Record_Template.md) | ADR template                  |
+| [`assets/docs/developer-guides/`](assets/docs/developer-guides/)                                                     | Technical documentation       |
+| [`assets/docs/user-guides/`](assets/docs/user-guides/)                                                               | End-user guides               |
+| [`assets/docs/diagrams/`](assets/docs/diagrams/)                                                                     | Draw.io diagrams              |
 
 ### Scripts Directory
 
-| Path                                                                             | Purpose                  |
-| -------------------------------------------------------------------------------- | ------------------------ |
-| [`example/scripts/init.mk`](example/scripts/init.mk)                             | Core make infrastructure |
-| [`example/scripts/shellscript-linter.sh`](example/scripts/shellscript-linter.sh) | ShellCheck wrapper       |
-| [`example/scripts/config/`](example/scripts/config/)                             | Tool configurations      |
-| [`example/scripts/docker/`](example/scripts/docker/)                             | Docker support           |
-| [`example/scripts/githooks/`](example/scripts/githooks/)                         | Pre-commit hook scripts  |
-| [`example/scripts/reports/`](example/scripts/reports/)                           | Reporting scripts        |
-| [`example/scripts/terraform/`](example/scripts/terraform/)                       | Terraform support        |
-| [`example/scripts/tests/`](example/scripts/tests/)                               | Test framework           |
+| Path                                                                           | Purpose                  |
+| ------------------------------------------------------------------------------ | ------------------------ |
+| [`assets/scripts/init.mk`](assets/scripts/init.mk)                             | Core make infrastructure |
+| [`assets/scripts/shellscript-linter.sh`](assets/scripts/shellscript-linter.sh) | ShellCheck wrapper       |
+| [`assets/scripts/config/`](assets/scripts/config/)                             | Tool configurations      |
+| [`assets/scripts/docker/`](assets/scripts/docker/)                             | Docker support           |
+| [`assets/scripts/githooks/`](assets/scripts/githooks/)                         | Pre-commit hook scripts  |
+| [`assets/scripts/reports/`](assets/scripts/reports/)                           | Reporting scripts        |
+| [`assets/scripts/terraform/`](assets/scripts/terraform/)                       | Terraform support        |
+| [`assets/scripts/tests/`](assets/scripts/tests/)                               | Test framework           |
 
 ### GitHub Directory
 
-| Path                                                                                   | Purpose                  |
-| -------------------------------------------------------------------------------------- | ------------------------ |
-| [`example/.github/workflows/`](example/.github/workflows/)                             | CI/CD pipeline workflows |
-| [`example/.github/actions/`](example/.github/actions/)                                 | Composite actions        |
-| [`example/.github/ISSUE_TEMPLATE/`](example/.github/ISSUE_TEMPLATE/)                   | Issue templates          |
-| [`example/.github/PULL_REQUEST_TEMPLATE.md`](example/.github/PULL_REQUEST_TEMPLATE.md) | PR template              |
-| [`example/.github/SECURITY.md`](example/.github/SECURITY.md)                           | Security policy          |
-| [`example/.github/dependabot.yaml`](example/.github/dependabot.yaml)                   | Dependency updates       |
+| Path                                                                                 | Purpose                  |
+| ------------------------------------------------------------------------------------ | ------------------------ |
+| [`assets/.github/workflows/`](assets/.github/workflows/)                             | CI/CD pipeline workflows |
+| [`assets/.github/actions/`](assets/.github/actions/)                                 | Composite actions        |
+| [`assets/.github/ISSUE_TEMPLATE/`](assets/.github/ISSUE_TEMPLATE/)                   | Issue templates          |
+| [`assets/.github/PULL_REQUEST_TEMPLATE.md`](assets/.github/PULL_REQUEST_TEMPLATE.md) | PR template              |
+| [`assets/.github/SECURITY.md`](assets/.github/SECURITY.md)                           | Security policy          |
+| [`assets/.github/dependabot.yaml`](assets/.github/dependabot.yaml)                   | Dependency updates       |
 
 ---
 
@@ -1455,5 +1455,5 @@ Then selectively copy relevant files to your repository.
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-01-14
+> **Version**: 1.0.1
+> **Last Amended**: 2026-01-15
