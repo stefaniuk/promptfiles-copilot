@@ -23,6 +23,20 @@ For example, to adopt `scripts/init.mk`, copy from:
 
 to your target repository's `scripts/init.mk`.
 
+⚠️ Distribution note: this SKILL file is mirrored verbatim across three homes - the NHS England shared GitHub Copilot prompt catalogue (similar to the [Awesome GitHub Copilot Customizations](https://github.com/github/awesome-copilot)), the upstream [Repository Template](https://github.com/nhs-england-tools/repository-template), and every repository created from that template. Keep the wording identical in all locations, instead of editing per environment, detect where you are and resolve paths accordingly.
+
+🤖 Assistant behaviour: when a user asks broad questions such as _"repository template – describe how to use this skill"_, respond by summarising the capability list below, you must list all the capabilities in a tabular form as the next step and invite user to issue a follow-up prompt that names a specific capability plus an action (add, remove or improve) they want performed in their repository. This keeps replies actionable and focused on the modular building blocks.
+
+AI assistants or automation should detect the active context before copying files. For a reliable conclusion, check the repository's git URL first (for example, `git remote get-url origin`). If it points to `nhs-england-tools/repository-template`, you are working inside the upstream template and can read directly from the project root.
+
+Use the following checks after confirming the git URL:
+
+1. If `.github/skills/repository-template/assets/` exists and contains files, use that subtree as the source (typical in the prompt catalogue or when the assets subtree is vendor-copied).
+2. If the `assets/` directory exists but is empty while template root files such as `Makefile`, `scripts/`, and `docs/` are present, you are inside the `repository-template` itself—read directly from the project root.
+3. If neither case applies (for example, inside a repository that was generated from the template), treat the instructions as referring to files rooted in the current repository, because the template content has already been adopted there.
+
+When in doubt, follow the [Updating from the template repository](./SKILL.md#updating-from-the-template-repository) workflow to pull fresh assets.
+
 ## Quick Reference
 
 | Capability                                                         | Purpose                      | Key Files                                                                       |
@@ -125,7 +139,7 @@ make githooks-run      # Run all hooks manually
 
 1. Copy `scripts/config/pre-commit.yaml`
 2. Copy the corresponding `scripts/githooks/*.sh` scripts for enabled hooks
-3. Add `pre-commit` to `.tool-versions` (e.g., `pre-commit 3.6.0`)
+3. Add `pre-commit` to `.tool-versions` (e.g., `pre-commit 4.5.1`)
 4. Run `asdf install` to install pre-commit
 5. Run `make githooks-config`
 
@@ -168,6 +182,7 @@ pre-commit run --config scripts/config/pre-commit.yaml --all-files
 
 ```bash
 check=staged-changes ./scripts/githooks/scan-secrets.sh   # Pre-commit (default)
+check=branch-changes ./scripts/githooks/scan-secrets.sh   # Commits on current branch not in main (CI)
 check=last-commit ./scripts/githooks/scan-secrets.sh      # Last commit only
 check=whole-history ./scripts/githooks/scan-secrets.sh    # Full repository history
 ```
@@ -181,7 +196,7 @@ check=whole-history ./scripts/githooks/scan-secrets.sh    # Full repository hist
 **To adopt**:
 
 1. Copy `scripts/githooks/scan-secrets.sh`, `scripts/config/gitleaks.toml`, and `.gitleaksignore`
-2. Add `gitleaks` to `.tool-versions` (e.g., `gitleaks 8.18.4`) for native execution
+2. Add `gitleaks` to `.tool-versions` (e.g., `gitleaks 8.30.0`) for native execution
 3. Optionally add Docker image entry to `.tool-versions` for Docker fallback:
 
    ```text
@@ -1017,10 +1032,10 @@ jq -e '.image // .build' .devcontainer/devcontainer.json > /dev/null && echo "Ha
 **Standard tool entries**:
 
 ```text
+gitleaks 8.30.0
+pre-commit 4.5.1
 terraform 1.7.0
-pre-commit 3.6.0
 vale 3.6.0
-gitleaks 8.18.4
 ```
 
 **Extended format for Docker images**:
