@@ -1,52 +1,90 @@
-# AI-assisted Development Prompt Files
+<div align="center">
 
-A curated, specification-first library of prompts, instruction packs, skills, and Copilot agents that keep AI helpers aligned with the spec-kit operating model. Inspired by the discoverability patterns of the [Awesome GitHub Copilot](https://github.com/github/awesome-copilot) repository, every artefact here is packaged for copy-and-paste reuse so downstream teams inherit the same deterministic workflow.
+# 🤖 AI-assisted Development Prompt Files
 
-- [AI-assisted Development Prompt Files](#ai-assisted-development-prompt-files)
-  - [Quick start](#quick-start)
-  - [Why use this library](#why-use-this-library)
-  - [Featured artefacts](#featured-artefacts)
-  - [Operational workflow](#operational-workflow)
-    - [How to use these prompts](#how-to-use-these-prompts)
-    - [Sync prompt files with `make apply`](#sync-prompt-files-with-make-apply)
-    - [Estimate context window usage with `make count-tokens`](#estimate-context-window-usage-with-make-count-tokens)
-    - [Spec-kit governance gates](#spec-kit-governance-gates)
-  - [Delivery backlog](#delivery-backlog)
-  - [Contributing](#contributing)
-  - [Links and resources](#links-and-resources)
+[![Spec-Kit](https://img.shields.io/badge/spec--kit-powered-blue?style=for-the-badge)](https://github.com/stefaniuk/promptfiles)
+[![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)](CONTRIBUTING.md)
 
-## Quick start
+**A curated, specification-first library of prompts, instruction packs, skills, and Copilot agents**
 
-- ✂️ Copy the prompts or instruction packs you need straight into downstream repositories.
-- 📦 Install the required instructions by copying any repository-specific guidance into `.github/instructions` so Copilot agents inherit the rules automatically.
-- 🤖 Use the prompts under `.github/prompts` (or the packaged agents under `.github/agents`) to plan work, author specs, and run reviews before coding.
-- 🧪 Keep the workspace healthy by running `make lint` and `make test` whenever you touch source material or prompts - this mirrors the automation enforced in downstream projects that consume spec-kit deliverables.
-- 🧠 Capture architectural reasoning in `docs/adr` and high-level storytelling in `docs/prompts` to maintain the link between specifications and the broader system narrative.
+_Keep AI helpers aligned with the spec-kit operating model • Copy-and-paste reuse • Deterministic workflows_
 
-## Why use this library
+[Quick Start](#-quick-start) •
+[Features](#-why-use-this-library) •
+[Artefacts](#-featured-artefacts) •
+[Workflow](#-operational-workflow) •
+[Contributing](#-contributing)
 
-- 📜 **Specification-first truth** - Prompts, agents, and skills are written directly against the spec-kit constitution, so code, docs, and governance remain synchronised.
-- 🛡️ **Consistent guardrails** - Instruction packs apply deterministic lint, test, and review rules across every repo that copies them, ensuring Copilot never drifts from agreed standards.
-- ⚙️ **Deterministic automation** - Every workflow leans on `make lint`, `make test`, and explicit governance gates, keeping behaviour measurable and testable.
-- 📦 **Copy-ready building blocks** - Like Awesome GitHub Copilot, everything is shippable by folder, which makes large organisations faster to onboard.
-- 🧠 **Human-first context** - ADR templates, prompt suites, and memory snapshots keep the narrative intact so new engineers can reason about intent before changing code.
+</div>
 
-## Featured artefacts
+---
 
-| Pack                                                 | What it delivers                                                                                                             | Typical usage                                                                          |
-| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| [.github/agents](.github/agents)                     | Ready-to-run Copilot agents (analyse, clarify, constitution, implement, plan, specify, tasks) tuned for spec-kit ceremonies. | Activate via Copilot agents sessions or the `/speckit.*` prompts shown in this README. |
-| [.github/prompts](.github/prompts)                   | Focused prompt files for documentation reviews, governance gates, tests, and refactoring support.                            | Reference via `/speckit-*` chat commands or copy into downstream repositories.         |
-| [.github/instructions](.github/instructions)         | Coding standards and best practice packs scoped by file glob so Copilot always sees the right rules.                         | Copy into downstream `.github/instructions` to inherit the same enforcement.           |
-| [.github/skills](.github/skills)                     | Bundled instructions plus helper assets that extend Copilot's capabilities for niche workflows.                              | Drop into downstream repos when a richer skill set is needed.                          |
-| [.specify/templates](.specify/templates)             | Seed specs, plans, and tasks for new features.                                                                               | Use with the spec-kit CLI (`specify`) or manual copy to keep specs uniform.            |
-| [docs/adr/adr-template.md](docs/adr/adr-template.md) | Opinionated ADR template aligned with spec-kit identifiers.                                                                  | Reference whenever a decision record is required.                                      |
+## 🚀 Quick Start
 
-## Operational workflow
+Get up and running in minutes:
 
-🚀 The spec-kit lifecycle mirrors the Awesome GitHub Copilot mindset: discover the right prompt or agent, ground it in a specification, and automate every validation step. Use the flow below to decide which prompt or agent to call next.
+| Step  | Action                                                                                                              |
+| :---: | ------------------------------------------------------------------------------------------------------------------- |
+| **1** | ✂️ **Copy** the prompts or instruction packs you need straight into downstream repositories                         |
+| **2** | 📦 **Install** instructions by copying guidance into `.github/instructions` so Copilot inherits rules automatically |
+| **3** | 🤖 **Use** prompts under `.github/prompts` or agents under `.github/agents` to plan, spec, and review               |
+| **4** | 🧪 **Validate** by running `make lint` and `make test` whenever you touch source material                           |
+| **5** | 🧠 **Document** architectural reasoning in `docs/adr` for future context                                            |
 
-### How to use these prompts
+---
+
+## ✨ Why Use This Library
+
+<table>
+<tr>
+<td width="50%">
+
+### 📜 Specification-First Truth
+
+Prompts, agents, and skills are written directly against the spec-kit constitution, so code, docs, and governance remain synchronised.
+
+### 🛡️ Consistent Guardrails
+
+Instruction packs apply deterministic lint, test, and review rules across every repo, ensuring Copilot never drifts from agreed standards.
+
+</td>
+<td width="50%">
+
+### ⚙️ Deterministic Automation
+
+Every workflow leans on `make lint`, `make test`, and explicit governance gates, keeping behaviour measurable and testable.
+
+### 📦 Copy-Ready Building Blocks
+
+Everything is shippable by folder, making large organisations faster to onboard.
+
+</td>
+</tr>
+</table>
+
+---
+
+## 📦 Featured Artefacts
+
+> **Tip:** Each pack is designed for copy-paste reuse. Pick what you need!
+
+| Pack                                                        | Description                                                                                                                 |
+| :---------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- |
+| 🤖 **[.github/agents](.github/agents)**                     | Ready-to-run Copilot agents (analyse, clarify, constitution, implement, plan, specify, tasks) tuned for spec-kit ceremonies |
+| 💬 **[.github/prompts](.github/prompts)**                   | Focused prompt files for documentation reviews, governance gates, tests, and refactoring support                            |
+| 📋 **[.github/instructions](.github/instructions)**         | Coding standards and best practice packs scoped by file glob so Copilot always sees the right rules                         |
+| 🧠 **[.github/skills](.github/skills)**                     | Bundled instructions plus helper assets that extend Copilot's capabilities for niche workflows                              |
+| 📝 **[.specify/templates](.specify/templates)**             | Seed specs, plans, and tasks for new features                                                                               |
+| 📄 **[docs/adr/adr-template.md](docs/adr/adr-template.md)** | Opinionated ADR template aligned with spec-kit identifiers                                                                  |
+
+---
+
+## 🔄 Operational Workflow
+
+The spec-kit lifecycle: **discover** the right prompt → **ground** it in a specification → **automate** every validation step.
+
+### 📊 Workflow Diagram
 
 ```mermaid
 flowchart TD
@@ -78,65 +116,119 @@ flowchart TD
   class clarify,checklist,analyze review;
 ```
 
-### Sync prompt files with `make apply`
+### 📤 Sync Prompt Files
 
-- 📍 Decide which downstream repository should inherit the latest prompts or instructions and note its absolute path (for example `~/projects/my-service`).
-- 🛠️ From this repository's root, run `make apply dest=/absolute/path/to/target`. The `dest` argument is mandatory, the helper script will create folders in the target repo if they do not yet exist.
-- 🧳 The task copies `.github/agents`, `.github/instructions` (and `include`), `.github/prompts`, `.github/skills`, `.github/copilot-instructions.md`, `.specify/memory/constitution.md`, `docs/adr/adr-template.md`, and `docs/.gitignore` into the destination.
-- ✅ Review the downstream repo's git status, commit the synced files, and re-run its `make lint` and `make test` targets so Copilot agents there immediately benefit from the updated governance packs.
+```bash
+make apply dest=/absolute/path/to/target
+```
 
-### Estimate context window usage with `make count-tokens`
+<details>
+<summary><strong>What gets copied?</strong></summary>
 
-- 📊 Run `make count-tokens` to count LLM tokens in the default Copilot prompt files (instructions, constitution, and includes).
-- 🔍 Use `make count-tokens args="--all --sort-by tokens"` to scan every markdown file and rank them by token count.
-- 📁 Target specific paths with `make count-tokens args=".github/instructions .specify"`.
-- 🧮 The report shows per-file token counts, a "No IDs" column (tokens with instruction identifiers like `[ID-<prefix>-NNN]` stripped), and context window usage as a percentage of 200K tokens.
+- `.github/agents`, `.github/instructions`, `.github/prompts`, `.github/skills`
+- `.github/copilot-instructions.md`
+- `.specify/memory/constitution.md`
+- `docs/adr/adr-template.md`, `docs/.gitignore`
 
-### Spec-kit governance gates
+</details>
 
-The default workflow now introduces explicit governance gates so every downstream repository can see, not infer, the mandatory reviews between specification and implementation:
+> **Next step:** Review git status in the target repo, commit, and run `make lint && make test`
 
-1. 📄 **Documentation Consistency Gate** - `/speckit-documentation-review` runs before any coding work. It keeps ubiquitous language, identifiers, and traceability consistent across spec.md, plan.md, tasks.md, and supporting artefacts so later phases never inherit contradictory inputs.
-2. 🧰 **Instruction Enforcement Cycle** - After every delivery phase (Setup, Foundational, each user story, and Polish) `/[tech]-enforce-instructions` prompts plus `make lint && make test` produce a visible checklist item. This prevents silent drift from the Makefile, Python, Terraform, and TypeScript guardrails that large systems depend on.
-3. ✅ **Code Compliance Review Gate** - `/speckit-code-review` appears as a closing task, forcing engineers to reconcile implementation against the specification and constitution before calling the feature "done".
-4. 🧪 **Test Automation Quality Review Gate** - `/speckit-test-review` follows code compliance to ensure the test pyramid remains healthy, high-value gaps are closed, and the automation signal is strong enough to support continuous delivery.
+### 📊 Estimate Context Window Usage
 
-These gates are captured in the spec template, plan template, and tasks template so every generated tasks.md shows Phase 0 governance steps, per-phase enforcement items, and the final two review commands. Benefits for large-scale spec-driven systems include:
+```bash
+# Default: scan Copilot prompt files
+make count-tokens
 
-- **Deterministic flow** - each gate blocks the next phase until its findings are resolved, which keeps multi-team streams aligned without relying on oral history.
-- **Auditability** - reviewers can see checklist evidence for documentation, instruction, code, and test compliance, making governance reviews lightweight even in regulated environments.
-- **Scalability** - by shifting instruction enforcement and test-quality reviews into repeatable tasks, dozens of teams can run the same process without bespoke tooling.
-- **Fewer regressions** - mandatory lint and test runs at every gate catch integration issues early, preventing expensive rework when multiple features converge.
-- **Better onboarding** - new contributors can read tasks.md and understand the entire spec-kit lifecycle without needing prior context.
+# Scan all markdown, sorted by size
+make count-tokens args="--all --sort-by tokens"
 
-## Delivery backlog
+# Target specific paths
+make count-tokens args=".github/instructions .specify"
+```
 
-- **New prompts**
-  - `architecture-review.prompt` (architect for flow)
-  - `migrate-from-[tech A]-to-[tech B].prompt`
-- **Instruction packs**
-  - Add automation-ready GitHub Actions workflow instructions.
-  - Capture Docker and Markdown conventions so every downstream repo inherits the same quality bar.
-- **Spec-kit workflow prompts**
-  - **Pull request creation (spec-kit-ready):** produce PR descriptions that link to each feature's `spec.md`, summarise changes by identifier, list test evidence, call out risk and rollback steps, and surface a reviewer checklist tied to the constitution.
-  - **Decision record prompt (ADR creation/update):** author or update ADRs referenced from the motivating spec section, including alternatives and consequences using consistent headings and filenames.
-  - **Release notes prompt (identifier-driven):** create changelog entries grouped by spec identifiers and feature folders, emphasising behaviour changes and any backwards-incompatible impacts.
-  - Fix
-    - Characters: " " '
-    - [README.md](../../README.md#context)
-    - Check British English
+The report shows:
 
-## Contributing
+- **Tokens** — per-file token counts
+- **No IDs** — counts with identifiers like `[PY-QR-010]` stripped
+- **Usage %** — context window usage (200K baseline)
 
-- Raise an issue or PR describing which prompt, instruction pack, or agent you plan to extend so the specification remains the single source of truth.
-- Keep specs, plans, tasks, and documentation in sync when behaviour changes, never rely on implicit context.
-- Run `make lint` and `make test` before opening a PR to satisfy the mandatory quality gates mirrored in downstream repositories.
-- Follow the project constitution alongside any relevant NHS Engineering guidance referenced there.
+### 🛡️ Governance Gates
 
-## Links and resources
+Explicit checkpoints between specification and implementation:
 
-- [Custom prompts](https://code.visualstudio.com/docs/copilot/customization/prompt-files)
-- [Custom instructions](https://code.visualstudio.com/docs/copilot/customization/custom-instructions)
-- [Custom agents](https://code.visualstudio.com/docs/copilot/customization/custom-agents)
-- [Custom skills](https://code.visualstudio.com/docs/copilot/customization/agent-skills)
-- [GitHub Awesome Copilot](https://github.com/github/awesome-copilot)
+| Gate                   | Command                         | Purpose                                       |
+| :--------------------- | :------------------------------ | :-------------------------------------------- |
+| 📄 **Documentation**   | `/speckit-documentation-review` | Consistency across spec.md, plan.md, tasks.md |
+| 🧰 **Instructions**    | `/[tech]-enforce-instructions`  | Lint & test at every delivery phase           |
+| ✅ **Code Compliance** | `/speckit-code-review`          | Reconcile implementation with spec            |
+| 🧪 **Test Quality**    | `/speckit-test-review`          | Ensure healthy test pyramid                   |
+
+<details>
+<summary><strong>Why governance gates matter</strong></summary>
+
+- **Deterministic flow** — each gate blocks the next phase until resolved
+- **Auditability** — checklist evidence for compliance reviews
+- **Scalability** — repeatable tasks across dozens of teams
+- **Fewer regressions** — catch integration issues early
+- **Better onboarding** — contributors understand the lifecycle from tasks.md
+
+</details>
+
+---
+
+## 🗺️ Roadmap
+
+<details>
+<summary><strong>📝 New Prompts</strong></summary>
+
+- `architecture-review.prompt` — architect for flow
+- `migrate-from-[tech A]-to-[tech B].prompt`
+
+</details>
+
+<details>
+<summary><strong>📋 Instruction Packs</strong></summary>
+
+- GitHub Actions workflow instructions
+- Docker and Markdown conventions
+
+</details>
+
+<details>
+<summary><strong>🔧 Workflow Prompts</strong></summary>
+
+- **PR creation** — spec-linked descriptions with reviewer checklists
+- **ADR prompt** — author/update decision records from specs
+- **Release notes** — changelog entries grouped by spec identifiers
+
+</details>
+
+---
+
+## 🤝 Contributing
+
+1. **Raise an issue or PR** describing your planned changes
+2. **Keep artefacts in sync** — specs, plans, tasks, and docs must align
+3. **Run quality gates** — `make lint && make test` before opening a PR
+4. **Follow the constitution** and NHS Engineering guidance
+
+---
+
+## 📚 Resources
+
+| Resource            | Link                                                                                         |
+| :------------------ | :------------------------------------------------------------------------------------------- |
+| Custom Prompts      | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/prompt-files)        |
+| Custom Instructions | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/custom-instructions) |
+| Custom Agents       | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/custom-agents)       |
+| Custom Skills       | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/agent-skills)        |
+| Awesome Copilot     | [GitHub](https://github.com/github/awesome-copilot)                                          |
+
+---
+
+<div align="center">
+
+**Made with ❤️ for specification-driven development**
+
+</div>
