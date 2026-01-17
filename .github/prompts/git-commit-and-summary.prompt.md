@@ -23,17 +23,28 @@ All artefacts must be fully backed by the diff between `main` and the current `H
 
 ### A. Establish the diff against `main`
 
-1. Confirm `main` is up to date (`git fetch origin main`).
-2. Generate the diff overview:
-   - `git diff --stat main...HEAD`
-   - `git diff --name-status main...HEAD`
-3. Inspect the full diff (`git diff main...HEAD`).
-4. You must capture working tree and branch context:
-   - `git status -sb` (shows staged/unstaged files and current branch name).
-   - `git rev-parse --abbrev-ref HEAD` (confirms branch or detached `HEAD`).
-5. If no changes exist, output **"No diff vs main – nothing to commit."** and stop.
-6. Capture tone/context:
-   - `git log -3 --oneline` (read the latest three commit messages to mirror tone and level of detail).
+Run the labelled batch below **once** from the repository root so each command prints a `>>> <command>` header followed by its output. This keeps every datum tied to the command that produced it and avoids duplicate executions.
+
+```bash
+for cmd in \
+  "git fetch origin main" \
+  "git diff --stat main...HEAD" \
+  "git diff --name-status main...HEAD" \
+  "git diff main...HEAD" \
+  "git rev-parse --abbrev-ref HEAD" \
+  "git status -sb" \
+  "git log -3 --oneline"; do
+  printf '\n>>> %s\n' "$cmd"
+  eval "$cmd"
+done
+```
+
+1. Use the labelled outputs above to confirm `main` is up to date.
+2. Read the `git diff --stat` and `git diff --name-status` sections for the overview.
+3. Inspect the `git diff main...HEAD` section for full context.
+4. Capture branch/working-tree details from the `git status -sb` and `git rev-parse --abbrev-ref HEAD` sections.
+5. If the diffs sections show no changes, output **"No diff vs main – nothing to commit."** and stop.
+6. Mirror recent commit tone using the `git log -3 --oneline` section.
 
 ### B. Classify the change
 
@@ -115,5 +126,5 @@ Return content exactly in this shape for easy copy/paste:
 
 ---
 
-> **Version**: 1.0.2
-> **Last Amended**: 2026-01-10
+> **Version**: 1.1.0
+> **Last Amended**: 2026-01-17

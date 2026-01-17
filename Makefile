@@ -76,4 +76,7 @@ ${VERBOSE}.SILENT: \
 	count-tokens \
 	format \
 	lint \
+	lint-file-format \
+	lint-markdown-format \
+	lint-markdown-links \
 	test \
