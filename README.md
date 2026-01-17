@@ -159,10 +159,10 @@ Explicit checkpoints between specification and implementation:
 
 | Gate                   | Command                         | Purpose                                       |
 | :--------------------- | :------------------------------ | :-------------------------------------------- |
-| 📄 **Documentation**   | `/speckit-documentation-review` | Consistency across spec.md, plan.md, tasks.md |
-| ✅ **Code Compliance** | `/speckit-code-review`          | Reconcile implementation with spec            |
-| 🧪 **Test Quality**    | `/speckit-test-review`          | Ensure healthy test pyramid                   |
-| 🧰 **Instructions**    | `/[tech]-enforce-instructions`  | Lint & test at every delivery phase           |
+| 📄 **Documentation**   | `/review.speckit-documentation` | Consistency across spec.md, plan.md, tasks.md |
+| ✅ **Code Compliance** | `/review.speckit-code`          | Reconcile implementation with spec            |
+| 🧪 **Test Quality**    | `/review.speckit-test`          | Ensure healthy test pyramid                   |
+| 🧰 **Instructions**    | `/enforce.[tech]`               | Lint & test at every delivery phase           |
 
 <details>
 <summary><strong>Why governance gates matter</strong></summary>
@@ -176,6 +176,18 @@ Explicit checkpoints between specification and implementation:
 </details>
 
 ---
+
+## 🧭 Prompt Naming Convention
+
+Prompts use a **prefix + category + verb** convention to keep fuzzy search fast and predictable:
+
+| Prefix      | Purpose                                     | Example                         |
+| :---------- | :------------------------------------------ | :------------------------------ |
+| `speckit.`  | Spec-kit lifecycle steps                    | `speckit.plan.prompt.md`        |
+| `codebase.` | Evidence-first codebase documentation flows | `codebase.01-repository-map...` |
+| `enforce.`  | Instruction compliance enforcement          | `enforce.python.prompt.md`      |
+| `review.`   | Review and audit prompts                    | `review.speckit-code.prompt.md` |
+| `util.`     | Operational utilities                       | `util.gh-pr-review.prompt.md`   |
 
 ## 🗺️ Roadmap
 

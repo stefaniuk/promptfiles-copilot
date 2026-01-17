@@ -44,8 +44,8 @@ You have access to:
 
 ## Spec-kit Workflow Integration
 
-- Trigger this review once the documentation review in [speckit-documentation-review.prompt.md](./speckit-documentation-review.prompt.md) has passed, the planning prompts ([speckit.plan.prompt.md](./speckit.plan.prompt.md) and [speckit.tasks.prompt.md](./speckit.tasks.prompt.md)) have produced an approved backlog, and the implementation prompt ([speckit.implement.prompt.md](./speckit.implement.prompt.md)) has been executed.
-- Treat this review as the post-implementation gate: all findings here must be resolved (or formally tracked) before the checklist and release prompts ([speckit.checklist.prompt.md](./speckit.checklist.prompt.md)) and the test automation quality review ([speckit-test-review.prompt.md](./speckit-test-review.prompt.md)) can run.
+- Trigger this review once the documentation review in [review.speckit-documentation.prompt.md](./review.speckit-documentation.prompt.md) has passed, the planning prompts ([speckit.plan.prompt.md](./speckit.plan.prompt.md) and [speckit.tasks.prompt.md](./speckit.tasks.prompt.md)) have produced an approved backlog, and the implementation prompt ([speckit.implement.prompt.md](./speckit.implement.prompt.md)) has been executed.
+- Treat this review as the post-implementation gate: all findings here must be resolved (or formally tracked) before the checklist and release prompts ([speckit.checklist.prompt.md](./speckit.checklist.prompt.md)) and the test automation quality review ([review.speckit-test.prompt.md](./review.speckit-test.prompt.md)) can run.
 - When you discover specification gaps during this review, feed them back to the documentation review prompt to keep the upstream artefacts aligned; do not defer doc fixes until after the test automation stage.
 
 ---
@@ -235,5 +235,5 @@ This review is complete only when:
 
 ---
 
-> **Version**: 1.2.3
-> **Last Amended**: 2026-01-05
+> **Version**: 1.2.4
+> **Last Amended**: 2026-01-17

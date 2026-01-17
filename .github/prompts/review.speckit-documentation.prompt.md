@@ -57,7 +57,7 @@ When citing findings, always reference files with workspace-relative Markdown li
 ## Spec-kit Workflow Integration
 
 - Run this review immediately after completing the specification and clarification cycle (see [speckit.specify.prompt.md](./speckit.specify.prompt.md) and [speckit.clarify.prompt.md](./speckit.clarify.prompt.md)) and **before** invoking planning/backlog prompts such as [speckit.plan.prompt.md](./speckit.plan.prompt.md) and [speckit.tasks.prompt.md](./speckit.tasks.prompt.md). Treat a clean outcome here as the gate that allows implementation work to begin, and repeat the review once more immediately before running [speckit.implement.prompt.md](./speckit.implement.prompt.md) so implementation never starts from outdated documentation.
-- Capture every decision, rename, or identifier fix discovered here so that downstream prompts ([speckit-code-review.prompt.md](./speckit-code-review.prompt.md) and [speckit-test-review.prompt.md](./speckit-test-review.prompt.md)) inherit the corrected baseline when they compare code and tests against the specification set.
+- Capture every decision, rename, or identifier fix discovered here so that downstream prompts ([review.speckit-code.prompt.md](./review.speckit-code.prompt.md) and [review.speckit-test.prompt.md](./review.speckit-test.prompt.md)) inherit the corrected baseline when they compare code and tests against the specification set.
 - When this review uncovers blockers, feed them back into the specification artefacts and ADRs before proceeding; the planning and implementation prompts must never run on an inconsistent document set.
 
 ---
@@ -348,5 +348,5 @@ This review is complete only when:
 
 ---
 
-> **Version**: 1.2.3
-> **Last Amended**: 2026-01-05
+> **Version**: 1.2.4
+> **Last Amended**: 2026-01-17

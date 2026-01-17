@@ -49,7 +49,7 @@ description: "Task list template for feature implementation"
 
 - [ ] T000 Run `.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks` to capture FEATURE_DIR and AVAILABLE_DOCS
 - [ ] T001 Audit all files under `specs/[###-feature-name]/checklists/` and block if any `- [ ]` items remain
-- [ ] T002 Run `/speckit-documentation-review` for `specs/[###-feature-name]/` and resolve all findings before proceeding
+- [ ] T002 Run `/review.speckit-documentation` for `specs/[###-feature-name]/` and resolve all findings before proceeding
 
 ---
 
@@ -250,8 +250,8 @@ Examples of foundational tasks (adjust based on your project):
 
 **Purpose**: Block completion until the codebase aligns with the specification and the automated test suite provides sufficient confidence.
 
-- [ ] T036 Run `/speckit-code-review` for `specs/[###-feature-name]/` and resolve every finding before proceeding (rerun `make lint && make test` afterward)
-- [ ] T037 Run `/speckit-test-review`, close high-value gaps, rebalance the test pyramid if required, and rerun `make lint && make test`
+- [ ] T036 Run `/review.speckit-code` for `specs/[###-feature-name]/` and resolve every finding before proceeding (rerun `make lint && make test` afterward)
+- [ ] T037 Run `/review.speckit-test`, close high-value gaps, rebalance the test pyramid if required, and rerun `make lint && make test`
 
 ---
 
@@ -349,5 +349,5 @@ With multiple developers:
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-01-11
+> **Version**: 1.0.1
+> **Last Amended**: 2026-01-17

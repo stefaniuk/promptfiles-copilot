@@ -279,5 +279,5 @@ flowchart LR
 
 ---
 
-> **Version**: 1.3.1
+> **Version**: 1.3.2
 > **Last Amended**: 2026-01-17

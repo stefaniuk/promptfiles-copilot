@@ -162,5 +162,5 @@ Example evidence snippet:
 
 ---
 
-> **Version**: 1.1.1
+> **Version**: 1.1.2
 > **Last Amended**: 2026-01-17

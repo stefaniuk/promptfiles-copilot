@@ -136,14 +136,14 @@ _Example of marking unclear requirements:_
 
 Document every non-negotiable gate that must be completed during implementation so the resulting plan and tasks explicitly enumerate them.
 
-1. **Documentation Consistency Gate** – Run `/speckit-documentation-review` before any implementation work to validate ubiquitous language, identifier coverage, and cross-document alignment. Implementation must block until this review reports zero issues.
+1. **Documentation Consistency Gate** – Run `/review.speckit-documentation` before any implementation work to validate ubiquitous language, identifier coverage, and cross-document alignment. Implementation must block until this review reports zero issues.
 2. **Instruction Enforcement Cycle** – After each delivery phase (Setup, Foundational, every user story, and Polish), execute the relevant `/[tech]-enforce-instructions` prompts (Python, TypeScript, Makefile, Terraform, etc.), remediate findings, and re-run `make lint && make test` until clean.
-3. **Code Compliance Review Gate** – Once all phases complete, run `/speckit-code-review`, resolve constitution/spec divergences, and only proceed when it reports zero issues and `make lint && make test` are clean.
-4. **Test Automation Quality Review Gate** – After code compliance passes, run `/speckit-test-review`, close any high-value test gaps, rebalance the test pyramid if required, and rerun quality gates until the review reports a healthy suite.
+3. **Code Compliance Review Gate** – Once all phases complete, run `/review.speckit-code`, resolve constitution/spec divergences, and only proceed when it reports zero issues and `make lint && make test` are clean.
+4. **Test Automation Quality Review Gate** – After code compliance passes, run `/review.speckit-test`, close any high-value test gaps, rebalance the test pyramid if required, and rerun quality gates until the review reports a healthy suite.
 
 Capture any additional service-specific approvals (security reviews, data governance sign-off, etc.) here so they cascade into plan.md and tasks.md.
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-01-11
+> **Version**: 1.0.1
+> **Last Amended**: 2026-01-17

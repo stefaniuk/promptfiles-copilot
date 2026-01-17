@@ -243,5 +243,5 @@ Use this snippet for each significant finding:
 
 ---
 
-> **Version**: 1.3.3
+> **Version**: 1.3.4
 > **Last Amended**: 2026-01-17

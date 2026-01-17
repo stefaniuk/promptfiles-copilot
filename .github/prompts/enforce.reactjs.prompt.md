@@ -102,5 +102,5 @@ Context for prioritization: $ARGUMENTS
 
 ---
 
-> **Version**: 1.0.1
+> **Version**: 1.0.2
 > **Last Amended**: 2026-01-17

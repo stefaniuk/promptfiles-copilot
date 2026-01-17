@@ -103,7 +103,7 @@ Single-purpose prompt files that guide Copilot through specific tasks.
 
 **File naming:** `<domain>-<action>.prompt.md`
 
-Examples: `speckit-code-review.prompt.md`, `python-enforce-instructions.prompt.md`
+Examples: `review.speckit-code.prompt.md`, `enforce.python.prompt.md`
 
 ### Instructions (`.github/instructions/*.instructions.md`)
 
@@ -268,7 +268,7 @@ Types: feat, fix, docs, style, refactor, test, chore
 
 Examples:
 feat(instructions): add Rust coding standards
-fix(prompts): correct speckit-code-review checklist
+fix(prompts): correct review.speckit-code checklist
 docs(readme): update quick start section
 ```
 

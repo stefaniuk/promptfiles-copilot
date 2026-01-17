@@ -56,7 +56,7 @@ Before performing any analysis:
 
 ## Spec-kit Workflow Integration
 
-- Run this prompt only after the upstream reviews have passed: the documentation set is aligned ([speckit-documentation-review.prompt.md](./speckit-documentation-review.prompt.md)), the code compliance review in [speckit-code-review.prompt.md](./speckit-code-review.prompt.md) reports no unresolved critical/major issues, and the checklist/release readiness prompts (for example [speckit.checklist.prompt.md](./speckit.checklist.prompt.md)) have been updated.
+- Run this prompt only after the upstream reviews have passed: the documentation set is aligned ([review.speckit-documentation.prompt.md](./review.speckit-documentation.prompt.md)), the code compliance review in [review.speckit-code.prompt.md](./review.speckit-code.prompt.md) reports no unresolved critical/major issues, and the checklist/release readiness prompts (for example [speckit.checklist.prompt.md](./speckit.checklist.prompt.md)) have been updated.
 - Treat this review as the final quality gate before release: its output should flow into [speckit.analyze.prompt.md](./speckit.analyze.prompt.md) and any release/ADR updates, ensuring the entire test suite reflects the finalised specification and implementation.
 - When this review uncovers structural documentation gaps (for example missing identifiers or acceptance criteria that prevent testability), loop back to the documentation and code-compliance prompts before attempting another run; never accept partial coverage at this stage.
 
@@ -300,5 +300,5 @@ This review is complete only when:
 
 ---
 
-> **Version**: 1.2.3
-> **Last Amended**: 2026-01-05
+> **Version**: 1.2.4
+> **Last Amended**: 2026-01-17

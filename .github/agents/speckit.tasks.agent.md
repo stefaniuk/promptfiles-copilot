@@ -24,13 +24,11 @@ You **MUST** consider the user input before proceeding (if not empty).
 1. **Setup**: Run `.specify/scripts/bash/check-prerequisites.sh --json` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
 2. **Load design documents**: Read from FEATURE_DIR:
-
    - **Required**: plan.md (tech stack, libraries, structure), spec.md (user stories with priorities)
    - **Optional**: data-model.md (entities), contracts/ (API endpoints), research.md (decisions), quickstart.md (test scenarios)
    - Note: Not all projects have all documents. Generate tasks based on what's available.
 
 3. **Execute task generation workflow**:
-
    - Load plan.md and extract tech stack, libraries, project structure
    - Load spec.md and extract user stories with their priorities (P1, P2, P3, etc.)
    - If data-model.md exists: Extract entities and map to user stories
@@ -43,16 +41,15 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Validate task completeness (each user story has all needed tasks, independently testable)
 
 4. **Generate tasks.md**: Use `.specify/templates/tasks-template.md` as structure, fill with:
-
    - Correct feature name from plan.md
-   - Phase 0: Governance tasks (prerequisites script, checklist audit, `/speckit-documentation-review`)
+   - Phase 0: Governance tasks (prerequisites script, checklist audit, `/review.speckit-documentation`)
    - Phase 1: Setup tasks (project initialization)
    - Phase 2: Foundational tasks (blocking prerequisites for all user stories)
    - Phase 3+: One phase per user story (in priority order from spec.md)
    - Each phase includes: story goal, independent test criteria, tests (if requested), implementation tasks
-   - After every phase (Setup, Foundational, each user story, Polish), append a task that runs the instruction enforcement cycle (`/[tech]-enforce-instructions` + `make lint && make test`)
+   - After every phase (Setup, Foundational, each user story, Polish), append a task that runs the instruction enforcement cycle (`/enforce.[tech]` + `make lint && make test`)
    - Final Phase: Polish & cross-cutting concerns plus the closing enforcement gate
-   - Final section: Code and test quality gates (`/speckit-code-review` and `/speckit-test-review`)
+   - Final section: Code and test quality gates (`/review.speckit-code` and `/review.speckit-test`)
    - All tasks must follow the strict checklist format (see Task Generation Rules below)
    - Clear file paths for each task
    - Dependencies section showing story completion order
@@ -124,16 +121,15 @@ Every task MUST strictly follow this format:
 1. **Phase 0 tasks**: Always prepend three tasks before Setup:
    - Run `.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks` to capture FEATURE_DIR and AVAILABLE_DOCS
    - Audit every checklist file under the feature directory; block if any `- [ ]` remain
-   - Run `/speckit-documentation-review` and resolve all findings before implementation
-2. **Instruction enforcement cycle**: After every phase (Setup, Foundational, each user story, and Polish), add a dedicated task instructing the implementer to run the applicable `/[tech]-enforce-instructions` prompts and re-run `make lint && make test` until clean.
-3. **Code compliance gate**: Add a task near the end to run `/speckit-code-review`, remediate findings, and re-run quality gates.
-4. **Test automation gate**: Add the final task to run `/speckit-test-review`, address gaps, and re-run quality gates.
+   - Run `/review.speckit-documentation` and resolve all findings before implementation
+2. **Instruction enforcement cycle**: After every phase (Setup, Foundational, each user story, and Polish), add a dedicated task instructing the implementer to run the applicable `/enforce.[tech]` prompts and re-run `make lint && make test` until clean.
+3. **Code compliance gate**: Add a task near the end to run `/review.speckit-code`, remediate findings, and re-run quality gates.
+4. **Test automation gate**: Add the final task to run `/review.speckit-test`, address gaps, and re-run quality gates.
 5. **Blocking semantics**: Describe in each gate task that implementation MUST halt until the gate reports zero issues.
 
 ### Task Organization
 
 1. **From User Stories (spec.md)** - PRIMARY ORGANIZATION:
-
    - Each user story (P1, P2, P3...) gets its own phase
    - Map all related components to their story:
      - Models needed for that story
@@ -143,12 +139,10 @@ Every task MUST strictly follow this format:
    - Mark story dependencies (most stories should be independent)
 
 2. **From Contracts**:
-
    - Map each contract/endpoint → to the user story it serves
    - If tests requested: Each contract → contract test task [P] before implementation in that story's phase
 
 3. **From Data Model**:
-
    - Map each entity to the user story(ies) that need it
    - If entity serves multiple stories: Put in earliest story or Setup phase
    - Relationships → service layer tasks in appropriate story phase
@@ -169,5 +163,5 @@ Every task MUST strictly follow this format:
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-01-11
+> **Version**: 1.0.1
+> **Last Amended**: 2026-01-17

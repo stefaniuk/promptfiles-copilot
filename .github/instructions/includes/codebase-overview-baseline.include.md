@@ -56,11 +56,11 @@ Use this shared baseline for producing and maintaining codebase overview documen
 ### Prompt execution order
 
 - [CBO-PRM-001] Run prompts in this order.
-- [CBO-PRM-002] [codebase-01-repository-map](../../prompts/codebase-01-repository-map.prompt.md)
-- [CBO-PRM-003] [codebase-02-component-catalogue](../../prompts/codebase-02-component-catalogue.prompt.md)
-- [CBO-PRM-004] [codebase-03-runtime-flows](../../prompts/codebase-03-runtime-flows.prompt.md)
-- [CBO-PRM-005] [codebase-04-domain-analysis](../../prompts/codebase-04-domain-analysis.prompt.md)
-- [CBO-PRM-006] [codebase-05-c4-model](../../prompts/codebase-05-c4-model.prompt.md)
+- [CBO-PRM-002] [codebase.01-repository-map](../../prompts/codebase.01-repository-map.prompt.md)
+- [CBO-PRM-003] [codebase.02-component-catalogue](../../prompts/codebase.02-component-catalogue.prompt.md)
+- [CBO-PRM-004] [codebase.03-runtime-flows](../../prompts/codebase.03-runtime-flows.prompt.md)
+- [CBO-PRM-005] [codebase.04-domain-analysis](../../prompts/codebase.04-domain-analysis.prompt.md)
+- [CBO-PRM-006] [codebase.05-c4-model](../../prompts/codebase.05-c4-model.prompt.md)
 
 ### Iteration rules
 
@@ -76,5 +76,5 @@ Use this shared baseline for producing and maintaining codebase overview documen
 
 ---
 
-> **Version**: 1.3.0
+> **Version**: 1.3.1
 > **Last Amended**: 2026-01-17

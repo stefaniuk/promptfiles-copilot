@@ -37,10 +37,10 @@ _GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
 
 | Gate                           | Trigger                                                                   | Required action                                                                                                                |
 | ------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Documentation Consistency      | Before any implementation work                                            | Run `/speckit-documentation-review`, resolve findings, and block until the review reports zero issues                          |
+| Documentation Consistency      | Before any implementation work                                            | Run `/review.speckit-documentation`, resolve findings, and block until the review reports zero issues                          |
 | Instruction Enforcement Cycle  | After every delivery phase (Setup, Foundational, each user story, Polish) | Execute all applicable `/[tech]-enforce-instructions` prompts, fix violations, and re-run `make lint && make test` until clean |
-| Code Compliance Review         | After all phases complete                                                 | Run `/speckit-code-review`, remediate constitution/spec gaps, and ensure quality gates are green                               |
-| Test Automation Quality Review | After code compliance passes                                              | Run `/speckit-test-review`, address high-value gaps, rebalance the test pyramid, and confirm quality gates remain green        |
+| Code Compliance Review         | After all phases complete                                                 | Run `/review.speckit-code`, remediate constitution/spec gaps, and ensure quality gates are green                               |
+| Test Automation Quality Review | After code compliance passes                                              | Run `/review.speckit-test`, address high-value gaps, rebalance the test pyramid, and confirm quality gates remain green        |
 
 Document any additional platform or organisational gates (security review, data governance approval, etc.) so they can cascade into tasks.md.
 
@@ -129,5 +129,5 @@ directories captured above]
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-01-11
+> **Version**: 1.0.1
+> **Last Amended**: 2026-01-17
