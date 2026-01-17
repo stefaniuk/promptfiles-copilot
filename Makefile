@@ -10,18 +10,18 @@ format: # Auto-format code @Quality
 	# No formatting required for this repository
 
 lint-file-format: # Check file formats @Quality
-	check=all ./scripts/githooks/check-file-format.sh
+	check=all ./scripts/githooks/check-file-format.sh && echo "file format: ok"
 
 lint-markdown-format: # Check markdown formatting @Quality
-	check=all ./scripts/githooks/check-markdown-format.sh
+	check=all ./scripts/githooks/check-markdown-format.sh && echo "markdown format: ok"
 
 lint-markdown-links: # Check markdown links @Quality
-	lychee --config lychee.toml "**/*.md"
+	output=$$(lychee --config lychee.toml -n -q "**/*.md" 2>&1) && echo "markdown links: ok" || { echo "$$output"; exit 1; }
 
 lint: # Run linter to check code style and errors @Quality
 	$(MAKE) lint-file-format
 	$(MAKE) lint-markdown-format
-# $(MAKE) lint-markdown-links
+	$(MAKE) lint-markdown-links
 
 test: # Run all tests @Testing
 	# No tests required for this repository
