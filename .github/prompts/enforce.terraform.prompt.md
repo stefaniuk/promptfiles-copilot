@@ -53,8 +53,9 @@ Enumerate every Terraform artefact in the repository, detect any discrepancies a
 
 1. For each artefact, scan for violations of the Terraform instruction tags (plan-first discipline, London-only region, tagging, security, observability, etc.).
 2. Assess each artefact and file against compliance of each reference identifier (for example `[TF-QR-001]`) from the `terraform.instructions.md` file.
-3. Capture findings with evidence links formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [TF-REG-003] because ...`.
-4. Record unknowns explicitly using **Unknown from code – {action}** (for example missing drift detection or undocumented apply processes).
+3. Verify toolchain and reproducibility requirements per [TF-LCL-007]–[TF-LCL-011] (Terraform/provider pinning, `.terraform.lock.hcl`), remote state isolation per [TF-STATE-001]–[TF-STATE-008], and London-only region enforcement per [TF-REG-001]–[TF-REG-004].
+4. Capture findings with evidence links formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [TF-REG-003] because ...`.
+5. Record unknowns explicitly using **Unknown from code – {action}** (for example missing drift detection or undocumented apply processes).
 
 ### 3) Plan refactoring and rework
 
@@ -74,7 +75,7 @@ Enumerate every Terraform artefact in the repository, detect any discrepancies a
 
 ### 5) Validate quality gates and behavioural parity
 
-1. After each batch, run `terraform fmt`, `terraform validate`, `terraform plan`, and the repository's lint/scan targets (for example `make fmt`, `make validate`, `make plan`, `make lint`) until all pass with zero warnings per `[TF-QG-007]`.
+1. After each batch, run `terraform fmt -recursive`, `terraform validate`, `terraform plan`, and lint/scan checks; prefer `make format`, `make validate`, `make plan`, `make lint`, `make test` when available and ensure they map to the canonical commands per [TF-QG-001]–[TF-QG-008] and the quality gates baseline.
 2. If additional checks exist (for example `make test`, `terraform test`, drift detectors, security scanners), run them when the touched areas require it.
 3. Document failures and fixes in the plan file; unresolved issues must be tracked as blockers.
 
@@ -102,5 +103,5 @@ Context for prioritization: $ARGUMENTS
 
 ---
 
-> **Version**: 1.1.3
-> **Last Amended**: 2026-01-17
+> **Version**: 1.1.4
+> **Last Amended**: 2025-01-17

@@ -7,6 +7,7 @@ description: Enforce repository-wide compliance with tauri.instructions.md
 
 - Read the [constitution](../../.specify/memory/constitution.md) for non-negotiable rules, if you have not done already.
 - Read the [Tauri instructions](../instructions/tauri.instructions.md).
+- Read the [Rust instructions](../instructions/rust.instructions.md), [ReactJS instructions](../instructions/reactjs.instructions.md), and [TypeScript instructions](../instructions/typescript.instructions.md) for shared language and tooling expectations.
 - Reference identifiers (for example `[TAU-QR-001]`) as you must assess compliance against each of them across the codebase and remediate any deviations.
 - Read the [codebase overview instructions](../instructions/includes/codebase-overview-baseline.include.md) and adopt the approach for gathering supporting evidence.
 
@@ -53,8 +54,11 @@ Enumerate every Tauri artefact in the repository, detect any discrepancies again
 
 1. For each artefact, scan for violations of instruction tags (least privilege, strict CSP, no remote content, UI untrusted, commands vs events, operation IDs, etc.).
 2. Assess each artefact and file against compliance of each reference identifier (for example `[TAU-QR-001]`) from the `tauri.instructions.md` file.
-3. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [TAU-CAP-001] because ...`.
-4. Record unknowns explicitly using **Unknown from code – {action}** (for example overly permissive capability or missing update signature).
+3. Validate the Tauri quality checklist and anti-patterns per [TAU-CHK-001]–[TAU-CHK-009] and §9.
+4. Confirm toolchain pinning and distribution requirements per [TAU-DST-001]–[TAU-DST-004], plus dependency scanning per [TAU-TST-004].
+5. Ensure Rust/React/TypeScript instruction tags are enforced for their respective surfaces per [TAU-CHK-008]–[TAU-CHK-009].
+6. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [TAU-CAP-001] because ...`.
+7. Record unknowns explicitly using **Unknown from code – {action}** (for example overly permissive capability or missing update signature).
 
 ### 3) Plan refactoring and rework
 
@@ -74,9 +78,10 @@ Enumerate every Tauri artefact in the repository, detect any discrepancies again
 
 ### 5) Validate quality gates and behavioural parity
 
-1. After each batch, run the canonical quality gates (for example `cargo fmt --check`, `cargo clippy -- -D warnings`, `cargo test`, `pnpm lint`, `pnpm typecheck`, `pnpm test`) and iterate until all pass with zero warnings.
-2. If additional checks exist (for example `tauri build`, capability validation, code signing verification), run them when the touched areas require it.
-3. Document failures and fixes in the plan file; unresolved issues must be tracked as blockers.
+1. After each batch, run Rust and TypeScript quality gates (`cargo fmt --check`, `cargo clippy -- -D warnings`, `cargo test`, `cargo test --no-default-features`, `cargo test --all-features`, `cargo doc --no-deps`, `cargo audit`, plus `make format`, `make lint`, `make typecheck`, `make test` or repository equivalents) and iterate until all pass.
+2. Run dependency scanning for Rust + npm per [TAU-TST-004] and verify update signing if the updater is enabled per [TAU-DST-003].
+3. If additional checks exist (for example `tauri build`, capability validation, signing verification), run them when the touched areas require it.
+4. Document failures and fixes in the plan file; unresolved issues must be tracked as blockers.
 
 ### 6) Summarise outcomes and next steps
 
@@ -102,5 +107,5 @@ Context for prioritization: $ARGUMENTS
 
 ---
 
-> **Version**: 1.0.2
-> **Last Amended**: 2026-01-17
+> **Version**: 1.0.3
+> **Last Amended**: 2025-01-17

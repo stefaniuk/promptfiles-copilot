@@ -7,6 +7,8 @@ description: Enforce repository-wide compliance with playwright-python.instructi
 
 - Read the [constitution](../../.specify/memory/constitution.md) for non-negotiable rules, if you have not done already.
 - Read the [Playwright Python instructions](../instructions/playwright-python.instructions.md).
+- Read the [Python instructions](../instructions/python.instructions.md) for general Python standards.
+- Read the [Playwright baseline](../instructions/includes/playwright-baseline.include.md) for shared Playwright guidance.
 - Reference identifiers (for example `[PW-PY-QR-001]`) as you must assess compliance against each of them across the codebase and remediate any deviations.
 - Read the [codebase overview instructions](../instructions/includes/codebase-overview-baseline.include.md) and adopt the approach for gathering supporting evidence.
 
@@ -28,7 +30,7 @@ Enumerate every Playwright Python test artefact in the repository, detect any di
 
 ### A. Enumerate Playwright Python scope
 
-1. Run `git ls-files '**/test_*.py' '**/*_test.py'` (include glue files such as `conftest.py`, `pytest.ini`, `pyproject.toml`, `playwright.config.py`, `Makefile`, CI configs) to capture the full Playwright Python test footprint.
+1. Run `git ls-files '**/test_*.py' '**/*_test.py' 'tests/**/*.py'` (include glue files such as `conftest.py`, `pytest.ini`, `pyproject.toml`, `playwright.config.py`, `Makefile`, CI configs) to capture the full Playwright Python test footprint.
 2. Categorise each file into **test files**, **page objects**, **fixtures**, **helpers/utilities**, **configuration**, or **CI/tooling**.
 3. Record locations that declare tooling (Pytest, Playwright, pytest-playwright, CI workflows) to ensure the instructions apply consistently.
 
@@ -53,8 +55,9 @@ Enumerate every Playwright Python test artefact in the repository, detect any di
 
 1. For each artefact, scan for violations of instruction tags (role-based locators, web-first assertions, anti-patterns, Page Object Model, etc.).
 2. Assess each artefact and file against compliance of each reference identifier (for example `[PW-PY-QR-001]`) from the `playwright-python.instructions.md` file.
-3. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [PW-PY-LOC-002] because ...`.
-4. Record unknowns explicitly using **Unknown from code – {action}** (for example missing `conftest.py` or undocumented fixture patterns).
+3. Apply the shared Playwright baseline requirements (isolation, retries, timeouts, anti-patterns) per [PW-PY-STB-001] and [PW-PY-ANT-006], and enforce applicable Python instruction tags for the test code.
+4. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [PW-PY-LOC-002] because ...`.
+5. Record unknowns explicitly using **Unknown from code – {action}** (for example missing `conftest.py` or undocumented fixture patterns).
 
 ### 3) Plan refactoring and rework
 
@@ -74,7 +77,7 @@ Enumerate every Playwright Python test artefact in the repository, detect any di
 
 ### 5) Validate quality gates and behavioural parity
 
-1. After each batch, run `pytest` with the repository's test targets (for example `make test`, `make test-e2e`) and iterate until all pass with zero warnings (per `[PW-PY-CHK-001]`–`[PW-PY-CHK-005]`).
+1. After each batch, run Python quality gates (`make lint`, `make typecheck`, `make test` or equivalents) and the Playwright test command (`pytest` or `make test-e2e`); iterate until all pass per [PY-QG-001]–[PY-QG-003] and [PW-PY-EXE-001]–[PW-PY-EXE-006].
 2. If additional checks exist (for example `--headed` debugging, `--trace on` for failures), run them when the touched areas require it.
 3. Document failures and fixes in the plan file; unresolved issues must be tracked as blockers.
 
@@ -102,5 +105,5 @@ Context for prioritization: $ARGUMENTS
 
 ---
 
-> **Version**: 1.0.2
-> **Last Amended**: 2026-01-17
+> **Version**: 1.0.3
+> **Last Amended**: 2025-01-17

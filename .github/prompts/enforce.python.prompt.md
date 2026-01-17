@@ -51,10 +51,11 @@ Enumerate every Python artefact in the repository, detect any discrepancies agai
 
 ### 2) Detect discrepancies against instructions
 
-1. For each artefact and file, scan for violations of the instruction tags (CLI contract, quality gates, observability, security, etc.).
+1. For each artefact and file, scan for violations of the instruction tags (CLI contract, quality gates, observability, security, toolchain pinning, local-first targets, etc.).
 2. Assess each artefact and file against compliance of each reference identifier (for example `[PY-QR-001]`) from the `python.instructions.md` file.
-3. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [PY-CTR-008] because ...`.
-4. Record unknowns explicitly using **Unknown from code – {action}** (for example missing `uv` lockfile or undocumented CLI modes).
+3. Verify toolchain defaults per [PY-LCL-009]–[PY-LCL-015] (Python version pinning, `uv` usage/lockfile, Ruff configuration, mypy in CI).
+4. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [PY-CTR-008] because ...`.
+5. Record unknowns explicitly using **Unknown from code – {action}** (for example missing `uv` lockfile or undocumented CLI modes).
 
 ### 3) Plan refactoring and rework
 
@@ -74,8 +75,8 @@ Enumerate every Python artefact in the repository, detect any discrepancies agai
 
 ### 5) Validate quality gates and behavioural parity
 
-1. After each batch, run `make lint` and `make test`; iterate until both pass with zero warnings (per `[PY-QG-003]`).
-2. If additional checks exist (for example `make type-check`, `uv run pytest -m integration`), run them when the touched areas require it.
+1. After each batch, run `make lint`, `make typecheck`, and `make test`; iterate until all pass with zero errors or warnings (per [PY-QG-001]–[PY-QG-003] and the quality gates baseline).
+2. If additional checks exist (for example `make test-all`, `uv run pytest -m integration`), run them when the touched areas require it.
 3. Document any failures and fixes in the plan file; unresolved issues must be tracked as blockers.
 
 ### 6) Summarise outcomes and next steps
@@ -102,5 +103,5 @@ Context for prioritization: $ARGUMENTS
 
 ---
 
-> **Version**: 1.1.3
-> **Last Amended**: 2026-01-17
+> **Version**: 1.1.4
+> **Last Amended**: 2025-01-17

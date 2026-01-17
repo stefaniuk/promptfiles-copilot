@@ -7,6 +7,7 @@ description: Enforce repository-wide compliance with reactjs.instructions.md
 
 - Read the [constitution](../../.specify/memory/constitution.md) for non-negotiable rules, if you have not done already.
 - Read the [ReactJS instructions](../instructions/reactjs.instructions.md).
+- Read the [TypeScript instructions](../instructions/typescript.instructions.md) for shared tooling, quality gates, and UI accessibility baselines.
 - Reference identifiers (for example `[RJS-QR-001]`) as you must assess compliance against each of them across the codebase and remediate any deviations.
 - Read the [codebase overview instructions](../instructions/includes/codebase-overview-baseline.include.md) and adopt the approach for gathering supporting evidence.
 
@@ -28,7 +29,7 @@ Enumerate every React artefact in the repository, detect any discrepancies again
 
 ### A. Enumerate React scope
 
-1. Run `git ls-files '*.tsx' '*.jsx'` (include glue files such as `package.json`, `pnpm-lock.yaml`, `tsconfig*.json`, `vite.config.ts`, `next.config.js`, `Makefile`, CI configs) to capture the full React footprint.
+1. Run `git ls-files '*.tsx' '*.jsx' '*.ts' '*.js'` (include glue files such as `package.json`, `pnpm-lock.yaml`, `tsconfig*.json`, `vite.config.ts`, `next.config.js`, `Makefile`, CI configs) to capture the full React footprint.
 2. Categorise each file into **pages/routes**, **components**, **hooks**, **contexts/providers**, **utilities**, **tests**, or **configuration**.
 3. Record locations that declare tooling (ESLint, Prettier/Biome, TypeScript config, Vitest/Jest, Storybook) to ensure the instructions apply consistently.
 
@@ -53,8 +54,10 @@ Enumerate every React artefact in the repository, detect any discrepancies again
 
 1. For each artefact, scan for violations of instruction tags (functional components, hooks rules, accessibility, performance patterns, error boundaries, etc.).
 2. Assess each artefact and file against compliance of each reference identifier (for example `[RJS-QR-001]`) from the `reactjs.instructions.md` file.
-3. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [RJS-CMP-003] because ...`.
-4. Record unknowns explicitly using **Unknown from code – {action}** (for example missing Error Boundary or undocumented state management approach).
+3. Validate the React quality checklist and anti-patterns per [RJS-CHK-001]–[RJS-CHK-010] and §11.
+4. Confirm applicable TypeScript instruction requirements (quality gates, accessibility baseline, strict typing/tooling) per [TS-QG-001]–[TS-QG-007] and [TS-UI-001]–[TS-UI-027].
+5. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [RJS-CMP-003] because ...`.
+6. Record unknowns explicitly using **Unknown from code – {action}** (for example missing Error Boundary or undocumented state management approach).
 
 ### 3) Plan refactoring and rework
 
@@ -74,7 +77,7 @@ Enumerate every React artefact in the repository, detect any discrepancies again
 
 ### 5) Validate quality gates and behavioural parity
 
-1. After each batch, run the canonical quality gates (for example `make fmt`, `make lint`, `make typecheck`, `make test`) and iterate until all pass with zero warnings (per `[RJS-QG-001]`–`[RJS-QG-003]`).
+1. After each batch, run the canonical TypeScript quality gates (`make format`, `make lint`, `make typecheck`, `make test`) and iterate until all pass per [TS-QG-001]–[TS-QG-007].
 2. If additional checks exist (for example Storybook build, accessibility audits, visual regression tests), run them when the touched areas require it.
 3. Document failures and fixes in the plan file; unresolved issues must be tracked as blockers.
 
@@ -102,5 +105,5 @@ Context for prioritization: $ARGUMENTS
 
 ---
 
-> **Version**: 1.0.2
-> **Last Amended**: 2026-01-17
+> **Version**: 1.0.3
+> **Last Amended**: 2025-01-17

@@ -30,7 +30,7 @@ Enumerate every Makefile (including included `*.mk` modules), detect discrepanci
 
 1. Run `git ls-files 'Makefile' '**/*.mk'` (include bootstrap scripts under `scripts/`, CI configs, and helper shell scripts) to capture the full orchestration footprint.
 2. Categorise each file into **root Makefiles**, **shared modules**, **task-specific includes**, **helper scripts**, or **CI integrations**.
-3. Record locations that declare canonical targets (for example `make deps`, `make lint`, `make test`, `make doctor`) and any scripts they delegate to, so quality gates can be enforced consistently.
+3. Record locations that declare canonical targets (for example `make deps`, `make format`, `make lint`, `make typecheck`, `make test`, `make test-all`, `make build`, `make run`/`make up`/`make down`, `make doctor`) and any scripts they delegate to, so quality gates can be enforced consistently.
 
 ### B. Load enforcement context
 
@@ -51,10 +51,11 @@ Enumerate every Makefile (including included `*.mk` modules), detect discrepanci
 
 ### 2) Detect discrepancies against instructions
 
-1. For each artefact, scan for violations of the Makefile instruction tags (thin root requirement, help target, `.ONESHELL`, fail-fast shell flags, safe clean targets, CI reuse, etc.).
+1. For each artefact, scan for violations of the Makefile instruction tags (thin root requirement, help/UX coverage, local-first targets, `.ONESHELL`, fail-fast shell flags, safe clean targets, CLI contract alignment, CI reuse, etc.).
 2. Assess each artefact and file against compliance of each reference identifier (for example `[MK-QR-001]`) from the `makefile.instructions.md` file.
-3. Capture findings with precise evidence links, for example `- Evidence: [Makefile](Makefile#L5-L30) — violates [MK-UX-003] because public targets lack descriptions.`
-4. Record unknowns explicitly using **Unknown from code – {action}** (for example unclear bootstrap tooling or missing confirmation flags for destructive targets).
+3. Confirm local-first targets and help metadata align with [MK-LCL-001]–[MK-LCL-007] and [MK-UX-001]–[MK-UX-009], including CLI contract compliance per [MK-UX-009].
+4. Capture findings with precise evidence links, for example `- Evidence: [Makefile](Makefile#L5-L30) — violates [MK-UX-003] because public targets lack descriptions.`
+5. Record unknowns explicitly using **Unknown from code – {action}** (for example unclear bootstrap tooling or missing confirmation flags for destructive targets).
 
 ### 3) Plan refactoring and rework
 
@@ -74,8 +75,8 @@ Enumerate every Makefile (including included `*.mk` modules), detect discrepanci
 
 ### 5) Validate quality gates and behavioural parity
 
-1. After each batch, run `make lint` and `make test` (or the repository's equivalent canonical targets) until both pass with zero warnings per `[MK-QG-001]`–`[MK-QG-004]`.
-2. If additional targets exist (for example `make deps`, `make doctor`, `make test-all`), run the ones affected by the changes.
+1. After each batch, run `make lint` and `make test`; if the targets do not exist, run the repository's equivalent canonical commands and follow the quality gates baseline for command selection and warning handling per `[MK-QG-001]`–`[MK-QG-004]`.
+2. If additional targets exist (for example `make deps`, `make format`, `make typecheck`, `make test-all`, `make build`, `make run`, `make doctor`), run the ones affected by the changes.
 3. Document failures and fixes in the plan file; unresolved issues must be tracked as blockers.
 
 ### 6) Summarise outcomes and next steps
@@ -102,5 +103,5 @@ Context for prioritization: $ARGUMENTS
 
 ---
 
-> **Version**: 1.1.3
-> **Last Amended**: 2026-01-17
+> **Version**: 1.1.4
+> **Last Amended**: 2025-01-17

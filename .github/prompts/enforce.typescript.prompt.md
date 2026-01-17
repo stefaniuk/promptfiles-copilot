@@ -53,8 +53,9 @@ Enumerate every TypeScript artefact in the repository, detect any discrepancies 
 
 1. For each artefact, scan for violations of instruction tags (CLI contract, async correctness, observability, security, accessibility, etc.).
 2. Assess each artefact and file against compliance of each reference identifier (for example `[TS-QR-001]`) from the `typescript.instructions.md` file.
-3. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [TS-CTR-014] because ...`.
-4. Record unknowns explicitly using **Unknown from code – {action}** (for example missing strict compiler flags or undocumented integration modes).
+3. Verify toolchain and local-first requirements per [TS-LCL-001]–[TS-LCL-012] (make targets, Node version pinning, lockfile, corepack, package manager) and strict compiler defaults per [TS-TSC-001]–[TS-TSC-004].
+4. Capture findings with precise evidence links, formatted as `- Evidence: [path/to/file](path/to/file#L10-L40) — violates [TS-CTR-014] because ...`.
+5. Record unknowns explicitly using **Unknown from code – {action}** (for example missing strict compiler flags or undocumented integration modes).
 
 ### 3) Plan refactoring and rework
 
@@ -74,7 +75,7 @@ Enumerate every TypeScript artefact in the repository, detect any discrepancies 
 
 ### 5) Validate quality gates and behavioural parity
 
-1. After each batch, run the canonical quality gates (for example `make fmt`, `make lint`, `make typecheck`, `make test`) and iterate until all pass with zero warnings (per `[TS-QG-005]`).
+1. After each batch, run the canonical quality gates (`make format`, `make lint`, `make typecheck`, `make test`); if make targets do not exist, run the repository equivalents and follow the quality gates baseline per [TS-QG-001]–[TS-QG-007].
 2. If additional checks exist (for example `pnpm run test-e2e`, `pnpm run typecheck -- --watch`), run them when the touched areas require it.
 3. Document failures and fixes in the plan file; unresolved issues must be tracked as blockers.
 
@@ -102,5 +103,5 @@ Context for prioritization: $ARGUMENTS
 
 ---
 
-> **Version**: 1.1.3
-> **Last Amended**: 2026-01-17
+> **Version**: 1.1.4
+> **Last Amended**: 2025-01-17

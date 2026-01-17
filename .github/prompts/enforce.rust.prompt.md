@@ -74,8 +74,8 @@ Enumerate every Rust artefact in the repository, detect any discrepancies agains
 
 ### 5) Validate quality gates and behavioural parity
 
-1. After each batch, run `cargo fmt --check`, `cargo clippy -- -D warnings`, and `cargo test` (or the repository's targets such as `make fmt`, `make lint`, `make test`) and iterate until all pass with zero warnings (per `[RS-QG-001]`–`[RS-QG-005]`).
-2. If additional checks exist (for example `cargo deny check`, `cargo audit`, `--no-default-features`, `--all-features`), run them when the touched areas require it.
+1. After each batch, run `cargo fmt --check`, `cargo clippy -- -D warnings`, `cargo test`, `cargo test --no-default-features`, `cargo test --all-features`, `cargo doc --no-deps`, and `cargo audit` (or mapped make targets) and iterate until all pass per [RS-QG-001]–[RS-QG-005].
+2. If additional checks exist (for example `cargo deny check`, `cargo +nightly miri test`, benchmark suites), run them when the touched areas require it.
 3. Document failures and fixes in the plan file; unresolved issues must be tracked as blockers.
 
 ### 6) Summarise outcomes and next steps
@@ -102,5 +102,5 @@ Context for prioritization: $ARGUMENTS
 
 ---
 
-> **Version**: 1.0.2
-> **Last Amended**: 2026-01-17
+> **Version**: 1.0.3
+> **Last Amended**: 2025-01-17
