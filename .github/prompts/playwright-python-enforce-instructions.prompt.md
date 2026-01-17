@@ -8,7 +8,7 @@ description: Enforce repository-wide compliance with playwright-python.instructi
 - Read the [constitution](../../.specify/memory/constitution.md) for non-negotiable rules, if you have not done already.
 - Read the [Playwright Python instructions](../instructions/playwright-python.instructions.md).
 - Reference identifiers (for example `[PW-PY-QR-001]`) as you must assess compliance against each of them across the codebase and remediate any deviations.
-- Read the [codebase overview instructions](../instructions/includes/codebase-overview.include.md) and adopt the approach for gathering supporting evidence.
+- Read the [codebase overview instructions](../instructions/includes/codebase-overview-baseline.include.md) and adopt the approach for gathering supporting evidence.
 
 ## User Input
 

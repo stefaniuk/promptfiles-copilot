@@ -3,7 +3,7 @@ agent: agent
 description: Domain analysis (DDD) to document bounded contexts, language, events, and context map (evidence-first)
 ---
 
-**Mandatory preparation:** read [codebase overview](../instructions/includes/codebase-overview.include.md) instructions in full and follow strictly its rules before executing any step below.
+**Mandatory preparation:** read [codebase overview](../instructions/includes/codebase-overview-baseline.include.md) instructions in full and follow strictly its rules before executing any step below.
 
 ## Goal
 

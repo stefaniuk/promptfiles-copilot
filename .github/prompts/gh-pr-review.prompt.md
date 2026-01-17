@@ -4,7 +4,7 @@ description: Pull request review using codebase overview context
 
 **Mandatory preparation:**
 
-- Read [codebase overview](../instructions/includes/codebase-overview.include.md) in full and follow strictly its rules before executing any step below.
+- Read [codebase overview](../instructions/includes/codebase-overview-baseline.include.md) in full and follow strictly its rules before executing any step below.
 - Read the following instructions fully for each technology/language and use them to support the review:
   - [Python instructions](../instructions/python.instructions.md)
   - [TypeScript instructions](../instructions/typescript.instructions.md)
