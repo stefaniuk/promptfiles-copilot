@@ -72,6 +72,7 @@ config:: # Configure development environment (main) @Configuration
 ${VERBOSE}.SILENT: \
 	apply \
 	clean \
+	clone-rt \
 	config \
 	count-tokens \
 	format \
