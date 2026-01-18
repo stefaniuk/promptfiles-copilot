@@ -1,0 +1,216 @@
+# =============================================================================
+# Docker Compose Template (Development)
+# =============================================================================
+#
+# This template demonstrates modern Docker Compose patterns for local
+# development with a multi-service architecture: webapp (Node.js), API
+# (FastAPI), and database (PostgreSQL).
+#
+# Key practices from Docker documentation (https://docs.docker.com/compose/):
+#   - Compose Specification (no version attribute required)
+#   - Health checks with depends_on conditions
+#   - Secrets for sensitive data
+#   - Named volumes for persistence
+#   - Custom networks for service isolation
+#   - Profiles for optional services
+#   - Compose Watch for hot-reload development
+#
+# Usage:
+#   Development:  docker compose up --watch
+#   With debug:   docker compose --profile debug up --watch
+#   Production:   docker compose -f compose.yaml -f compose.prod.yaml up -d
+#
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Project name (optional — defaults to directory name)
+# -----------------------------------------------------------------------------
+name: myproject
+
+# -----------------------------------------------------------------------------
+# Services
+# -----------------------------------------------------------------------------
+services:
+  # ---------------------------------------------------------------------------
+  # Database: PostgreSQL
+  # ---------------------------------------------------------------------------
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER_FILE: /run/secrets/db_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      POSTGRES_DB: myproject
+    secrets:
+      - db_user
+      - db_password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U $$(cat /run/secrets/db_user) -d myproject"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    # Bind to localhost only for security in development
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  # ---------------------------------------------------------------------------
+  # API: FastAPI (Python)
+  # ---------------------------------------------------------------------------
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      target: development
+    restart: unless-stopped
+    environment:
+      # Non-sensitive config
+      APP_ENV: development
+      LOG_LEVEL: DEBUG
+      # Database connection — use service name as hostname
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: myproject
+      # Secrets loaded from files at runtime
+      DATABASE_USER_FILE: /run/secrets/db_user
+      DATABASE_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_user
+      - db_password
+    volumes:
+      # Development: bind mount for hot reload
+      - ./api/src:/app/src:ro
+    networks:
+      - backend
+      - frontend
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    # Compose Watch for development hot-reload
+    develop:
+      watch:
+        - action: sync
+          path: ./api/src
+          target: /app/src
+          ignore:
+            - __pycache__/
+            - "*.pyc"
+        - action: rebuild
+          path: ./api/pyproject.toml
+        - action: rebuild
+          path: ./api/uv.lock
+
+  # ---------------------------------------------------------------------------
+  # Webapp: Node.js (frontend)
+  # ---------------------------------------------------------------------------
+  webapp:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+      target: development
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      # API connection — use service name as hostname
+      API_URL: http://api:8000
+    volumes:
+      # Development: bind mount for hot reload (exclude node_modules)
+      - ./webapp/src:/app/src:ro
+      - ./webapp/public:/app/public:ro
+    networks:
+      - frontend
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    # Compose Watch for development hot-reload
+    develop:
+      watch:
+        - action: sync
+          path: ./webapp/src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: sync
+          path: ./webapp/public
+          target: /app/public
+        - action: rebuild
+          path: ./webapp/package.json
+        - action: rebuild
+          path: ./webapp/package-lock.json
+
+  # ---------------------------------------------------------------------------
+  # Debug tools: pgAdmin (optional — only starts with --profile debug)
+  # ---------------------------------------------------------------------------
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    profiles:
+      - debug
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/pgadmin_password
+      PGADMIN_LISTEN_PORT: 5050
+    secrets:
+      - pgadmin_password
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - backend
+    ports:
+      - "127.0.0.1:5050:5050"
+    depends_on:
+      db:
+        condition: service_healthy
+
+# -----------------------------------------------------------------------------
+# Secrets — loaded from local files (never commit secret values)
+# -----------------------------------------------------------------------------
+secrets:
+  db_user:
+    file: ./secrets/db_user.txt
+  db_password:
+    file: ./secrets/db_password.txt
+  pgadmin_password:
+    file: ./secrets/pgadmin_password.txt
+
+# -----------------------------------------------------------------------------
+# Volumes — named volumes for data persistence
+# -----------------------------------------------------------------------------
+volumes:
+  db_data:
+    name: ${COMPOSE_PROJECT_NAME:-myproject}_db_data
+  pgadmin_data:
+    name: ${COMPOSE_PROJECT_NAME:-myproject}_pgadmin_data
+
+# -----------------------------------------------------------------------------
+# Networks — isolate backend from frontend
+# -----------------------------------------------------------------------------
+networks:
+  # Backend network: db and api only
+  backend:
+    driver: bridge
+  # Frontend network: api and webapp
+  frontend:
+    driver: bridge

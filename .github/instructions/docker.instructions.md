@@ -1,10 +1,10 @@
 ---
-applyTo: "{**/Dockerfile,**/Dockerfile.*}"
+applyTo: "{**/Dockerfile,**/Dockerfile.*,**/compose.yaml,**/compose.*.yaml,**/docker-compose.yaml,**/docker-compose.*.yaml}"
 ---
 
 # Dockerfile Engineering Instructions (container image development) 🐳
 
-These instructions define the default engineering approach for writing **production-grade Dockerfiles**.
+These instructions define the default engineering approach for writing **production-grade Dockerfiles** and **Docker Compose files for development**.
 
 They must remain applicable to:
 
@@ -13,12 +13,13 @@ They must remain applicable to:
 - Tool wrapper images
 - Multi-stage build images
 - Development and CI/CD images
+- Docker Compose multi-service development environments
 
 They are **non-negotiable** unless an exception is explicitly documented (with rationale and expiry) in an ADR/decision record.
 
-**Cross-references.** For Makefile orchestration conventions that build Docker images, see [makefile.instructions.md](./makefile.instructions.md). For shell scripts that wrap Docker commands, see [shell.instructions.md](./shell.instructions.md). This file focuses exclusively on Dockerfile patterns.
+**Cross-references.** For Makefile orchestration conventions that build Docker images, see [makefile.instructions.md](./makefile.instructions.md). For shell scripts that wrap Docker commands, see [shell.instructions.md](./shell.instructions.md). This file focuses on Dockerfile patterns and Docker Compose for development.
 
-**Identifier scheme.** Every normative rule carries a unique tag in the form `[DF-<prefix>-NNN]`, where the prefix maps to the containing section (for example `QR` for Quick Reference, `STR` for Structure, `FROM` for Base Image, `ARG` for Build Arguments, `ENV` for Environment Variables, `RUN` for Run Instructions, `COPY` for Copy Instructions, `META` for Metadata, `SEC` for Security, `OPT` for Optimisation). Use these identifiers when referencing, planning, or validating requirements.
+**Identifier scheme.** Every normative rule carries a unique tag in the form `[DF-<prefix>-NNN]`, where the prefix maps to the containing section (for example `QR` for Quick Reference, `STR` for Structure, `FROM` for Base Image, `ARG` for Build Arguments, `ENV` for Environment Variables, `RUN` for Run Instructions, `COPY` for Copy Instructions, `META` for Metadata, `SEC` for Security, `OPT` for Optimisation, `CMP` for Compose). Use these identifiers when referencing, planning, or validating requirements.
 
 ---
 
@@ -36,6 +37,7 @@ This section exists so humans and AI assistants can reliably apply the most impo
 - [DF-QR-008] **Lint with hadolint**: all Dockerfiles must pass hadolint with no errors or warnings ([DF-QG-001]).
 - [DF-QR-009] **Non-root user**: run containers as non-root where possible ([DF-SEC-001]).
 - [DF-QR-010] **Minimal layers**: combine related commands to reduce layer count and image size ([DF-OPT-001]).
+- [DF-QR-011] **Docker Compose for development**: use `compose.yaml` with healthchecks, secrets, custom networks, and Compose Watch for hot-reload ([DF-CMP-001]–[DF-CMP-030]).
 
 ---
 
@@ -652,7 +654,133 @@ These patterns cause recurring issues in Dockerfiles. Avoid them unless an ADR d
 
 ---
 
-## 15. AI-assisted change expectations 🤖
+## 15. Docker Compose for development 🐙
+
+Docker Compose simplifies multi-container development by defining services, networks, and volumes in a single YAML file. Use Compose primarily for **local development and testing**; for production, prefer orchestration platforms (e.g. Kubernetes-like cloud managed service) or apply production-specific overrides.
+
+**Cross-reference.** For full Compose file syntax, see [Compose file reference](https://docs.docker.com/reference/compose-file/). For the template, see [templates/compose.yaml.template](./templates/compose.yaml.template).
+
+### 15.1 File naming and structure
+
+- [DF-CMP-001] Name the primary file `compose.yaml` (preferred) or `docker-compose.yaml` (legacy).
+- [DF-CMP-002] Use override files for environment-specific config: `compose.override.yaml` (auto-merged), `compose.prod.yaml`, `compose.test.yaml`.
+- [DF-CMP-003] Do not include a top-level `version` key — the modern Compose Specification does not require it.
+- [DF-CMP-004] Optionally set `name` at the top level to define the project name explicitly.
+
+### 15.2 Service definition best practices
+
+- [DF-CMP-005] Pin image versions; never use `:latest` in Compose (mirrors [DF-FROM-001]).
+- [DF-CMP-006] Prefer `build.target` to select a multi-stage Dockerfile stage (for example `target: development`).
+- [DF-CMP-007] Use `restart: unless-stopped` for resilience in development; use `restart: always` in production overrides.
+- [DF-CMP-008] Use `depends_on` with conditions (`service_healthy`, `service_started`) to control startup order:
+
+```yaml
+depends_on:
+  db:
+    condition: service_healthy
+    restart: true
+```
+
+- [DF-CMP-009] Define `healthcheck` for each service to enable reliable dependency ordering:
+
+```yaml
+healthcheck:
+  test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+  interval: 10s
+  timeout: 5s
+  retries: 5
+  start_period: 30s
+```
+
+### 15.3 Networking
+
+- [DF-CMP-010] Use custom networks to isolate service tiers (for example `frontend`, `backend`).
+- [DF-CMP-011] Reference services by their service name (DNS); avoid hard-coded IPs.
+- [DF-CMP-012] Bind host ports to `127.0.0.1` for development security:
+
+```yaml
+ports:
+  - "127.0.0.1:5432:5432"
+```
+
+### 15.4 Volumes and data persistence
+
+- [DF-CMP-013] Use named volumes for persistent data; define them in the top-level `volumes` key.
+- [DF-CMP-014] Use bind mounts only for development source code sync (prefer read-only `:ro` where possible).
+- [DF-CMP-015] Do not bind mount `node_modules/`, `__pycache__/`, or other platform-specific artefacts.
+
+### 15.5 Secrets handling (non-negotiable)
+
+- [DF-CMP-016] Use the top-level `secrets` element for sensitive data; never embed secrets in `environment`:
+
+```yaml
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+
+services:
+  db:
+    secrets:
+      - db_password
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+```
+
+- [DF-CMP-017] Use `_FILE` environment variable convention (supported by many official images) to load secrets at runtime.
+- [DF-CMP-018] Add secret files to `.gitignore`; never commit plaintext secrets.
+
+### 15.6 Environment variables
+
+- [DF-CMP-019] Prefer `env_file` for non-sensitive, environment-specific config.
+- [DF-CMP-020] Use `.env` for Compose variable interpolation (project name, ports, feature flags).
+- [DF-CMP-021] Document all required environment variables in `.env.default` (committed) without values.
+
+### 15.7 Profiles for optional services
+
+- [DF-CMP-022] Use `profiles` to group optional or debug services:
+
+```yaml
+services:
+  pgadmin:
+    profiles:
+      - debug
+```
+
+- [DF-CMP-023] Start profiles explicitly: `docker compose --profile debug up`.
+
+### 15.8 Compose Watch for hot-reload development
+
+- [DF-CMP-024] Use the `develop.watch` attribute for automatic sync and rebuild during development:
+
+```yaml
+develop:
+  watch:
+    - action: sync
+      path: ./src
+      target: /app/src
+      ignore:
+        - __pycache__/
+    - action: rebuild
+      path: pyproject.toml
+```
+
+- [DF-CMP-025] Use `action: sync` for source files with hot-reload frameworks.
+- [DF-CMP-026] Use `action: rebuild` for dependency manifests (`package.json`, `pyproject.toml`).
+- [DF-CMP-027] Use `action: sync+restart` for config files that require process restart.
+
+### 15.9 Production considerations
+
+- [DF-CMP-028] Create a separate `compose.prod.yaml` override that removes volume bindings, sets `restart: always`, and adjusts resource limits.
+- [DF-CMP-029] Merge files for production: `docker compose -f compose.yaml -f compose.prod.yaml up -d`.
+- [DF-CMP-030] For true production workloads, prefer a managed container platform.
+
+### 15.10 Template
+
+Use the template at [templates/compose.yaml.template](./templates/compose.yaml.template) when scaffolding new multi-service projects.
+
+---
+
+## 16. AI-assisted change expectations 🤖
 
 Per [constitution.md §3.5](../../.specify/memory/constitution.md#35-ai-assisted-development-discipline--change-governance), when you create or modify Dockerfiles:
 
@@ -662,11 +790,11 @@ Per [constitution.md §3.5](../../.specify/memory/constitution.md#35-ai-assisted
 
 ---
 
-## 16. Dockerfile template 📝
+## 17. Dockerfile template 📝
 
 Use the template at [templates/Dockerfile.template](./templates/Dockerfile.template) when creating new Dockerfiles.
 
 ---
 
-> **Version**: 1.1.1
-> **Last Amended**: 2026-01-17
+> **Version**: 1.2.0
+> **Last Amended**: 2026-01-18
