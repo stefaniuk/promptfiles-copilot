@@ -29,6 +29,15 @@ test: # Run all tests @Testing
 clone-rt: # Clone the repository template into .github/skills/repository-template @Operations
 	.github/skills/repository-template/scripts/git-clone-repository-template.sh
 
+specify: # Re-initialise speck-kit files @Operations
+	specify init \
+		--ai copilot \
+		--script sh \
+		--ignore-agent-tools \
+		--no-git \
+		--here \
+		--force
+
 apply: # Copy prompt files assets to a destination repository; mandatory: dest=[path] @Operations
 	if [ -z "$(dest)" ]; then
 		echo "Error: dest argument is required. Usage: make apply dest=/path/to/destination"
