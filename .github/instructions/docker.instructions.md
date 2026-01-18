@@ -38,6 +38,7 @@ This section exists so humans and AI assistants can reliably apply the most impo
 - [DF-QR-009] **Non-root user**: run containers as non-root where possible ([DF-SEC-001]).
 - [DF-QR-010] **Minimal layers**: combine related commands to reduce layer count and image size ([DF-OPT-001]).
 - [DF-QR-011] **Docker Compose for development**: use `compose.yaml` with healthchecks, secrets, custom networks, and Compose Watch for hot-reload ([DF-CMP-001]–[DF-CMP-030]).
+- [DF-QR-012] **Integrity and least privilege**: verify downloaded artefacts and lock down ownership/permissions at build time ([DF-SEC-009]–[DF-SEC-011]).
 
 ---
 
@@ -559,6 +560,17 @@ These principles extend [constitution.md §3](../../.specify/memory/constitution
 
 - [DF-SEC-008] Pin base images to digest to prevent supply chain attacks. See [DF-FROM-002].
 
+### 10.5 Artifact integrity and permissions hardening
+
+- [DF-SEC-009] Verify downloaded artefacts with checksums or signatures; avoid `curl | sh` or unverified remote installs.
+- [DF-SEC-010] Use `COPY --chown` (and `--chmod` when supported) to enforce least privilege at build time instead of post-copy `chown`/`chmod`.
+- [DF-SEC-011] Keep writable paths explicit and minimal; avoid world-writable permissions.
+
+### 10.6 Vulnerability scanning and SBOMs (free tooling)
+
+- [DF-SEC-012] Scan built images with Grype in CI; fail on critical/high vulnerabilities unless an ADR documents the exception.
+- [DF-SEC-013] Generate an SBOM using Syft for release images and store it alongside build artefacts.
+
 ---
 
 ## 11. Optimisation guidelines 🚀
@@ -796,5 +808,5 @@ Use the template at [templates/Dockerfile.template](./templates/Dockerfile.templ
 
 ---
 
-> **Version**: 1.2.0
+> **Version**: 1.2.1
 > **Last Amended**: 2026-01-18
