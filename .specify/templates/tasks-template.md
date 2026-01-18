@@ -1,4 +1,5 @@
 ---
+
 description: "Task list template for feature implementation"
 ---
 
@@ -24,55 +25,32 @@ description: "Task list template for feature implementation"
 - **Mobile**: `api/src/`, `ios/src/` or `android/src/`
 - Paths shown below assume single project - adjust based on plan.md structure
 
-<!--
+<!-- 
   ============================================================================
   IMPORTANT: The tasks below are SAMPLE TASKS for illustration purposes only.
-
+  
   The /speckit.tasks command MUST replace these with actual tasks based on:
   - User stories from spec.md (with their priorities P1, P2, P3...)
   - Feature requirements from plan.md
   - Entities from data-model.md
   - Endpoints from contracts/
-
+  
   Tasks MUST be organized by user story so each story can be:
   - Implemented independently
   - Tested independently
   - Delivered as an MVP increment
-
+  
   DO NOT keep these sample tasks in the generated tasks.md file.
   ============================================================================
 -->
-
-## Phase 0: Governance & Documentation Gates
-
-**Purpose**: Validate prerequisites, checklist completion, and documentation consistency before touching implementation artefacts.
-
-- [ ] T000 Run `.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks` to capture FEATURE_DIR and AVAILABLE_DOCS
-- [ ] T001 Audit all files under `specs/[###-feature-name]/checklists/` and block if any `- [ ]` items remain
-- [ ] T002 Run `/review.speckit-documentation` for `specs/[###-feature-name]/` and resolve all findings before proceeding
-
----
 
 ## Phase 1: Setup (Shared Infrastructure)
 
 **Purpose**: Project initialization and basic structure
 
-- [ ] T003 Create project structure per implementation plan
-- [ ] T004 Initialize [language] project with [framework] dependencies
-- [ ] T005 [P] Configure linting and formatting tools
-- [ ] T006 Run instruction enforcement cycle for Setup outputs (execute `/[tech]-enforce-instructions`, then `make lint && make test`)
-
-### Demo Instructions (show Setup running)
-
-- **Commands**:
-
-  ```bash
-  [List the exact CLI/API commands that prove the setup slice works]
-  ```
-
-- **Navigation**: `[Where to look in the UI/logs to confirm Setup is complete]`
-- **Expected outcome**: `[What success looks like for this phase]`
-- **Show & Tell cue**: `[Talking points stakeholders should cover while demoing Setup]`
+- [ ] T001 Create project structure per implementation plan
+- [ ] T002 Initialize [language] project with [framework] dependencies
+- [ ] T003 [P] Configure linting and formatting tools
 
 ---
 
@@ -84,27 +62,14 @@ description: "Task list template for feature implementation"
 
 Examples of foundational tasks (adjust based on your project):
 
-- [ ] T007 Setup database schema and migrations framework
-- [ ] T008 [P] Implement authentication/authorization framework
-- [ ] T009 [P] Setup API routing and middleware structure
-- [ ] T010 Create base models/entities that all stories depend on
-- [ ] T011 Configure error handling and logging infrastructure
-- [ ] T012 Setup environment configuration management
-- [ ] T013 Run instruction enforcement cycle for Foundational outputs (execute `/[tech]-enforce-instructions`, then `make lint && make test`)
+- [ ] T004 Setup database schema and migrations framework
+- [ ] T005 [P] Implement authentication/authorization framework
+- [ ] T006 [P] Setup API routing and middleware structure
+- [ ] T007 Create base models/entities that all stories depend on
+- [ ] T008 Configure error handling and logging infrastructure
+- [ ] T009 Setup environment configuration management
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
-
-### Demo Instructions (show Foundational slice running)
-
-- **Commands**:
-
-  ```bash
-  [Exact commands or test suites that demonstrate the foundational capabilities]
-  ```
-
-- **Navigation**: `[Dashboards, health checks, or admin screens to view]`
-- **Expected outcome**: `[Observable impact confirming readiness for user stories]`
-- **Show & Tell cue**: `[Narrative to explain why the foundation unlocks later slices]`
 
 ---
 
@@ -118,32 +83,19 @@ Examples of foundational tasks (adjust based on your project):
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T014 [P] [US1] Contract test for [endpoint] in tests/contract/test\_[name].py
-- [ ] T015 [P] [US1] Integration test for [user journey] in tests/integration/test\_[name].py
+- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
 
 ### Implementation for User Story 1
 
-- [ ] T016 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T017 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T018 [US1] Implement [Service] in src/services/[service].py (depends on T016, T017)
-- [ ] T019 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T020 [US1] Add validation and error handling
-- [ ] T021 [US1] Add logging for user story 1 operations
-- [ ] T022 [US1] Run instruction enforcement cycle for User Story 1 outputs (execute `/[tech]-enforce-instructions`, then `make lint && make test`)
+- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
+- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
+- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
+- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T016 [US1] Add validation and error handling
+- [ ] T017 [US1] Add logging for user story 1 operations
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
-
-### Demo Instructions (show User Story 1 running)
-
-- **Commands**:
-
-  ```bash
-  [CLI/API sequence demonstrating the story end to end]
-  ```
-
-- **Navigation**: `[Exact UI flow, route, or dashboard to walk through]`
-- **Expected outcome**: `[User-facing result to verify]`
-- **Show & Tell cue**: `[Key story beats to highlight during the session]`
 
 ---
 
@@ -155,30 +107,17 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T023 [P] [US2] Contract test for [endpoint] in tests/contract/test\_[name].py
-- [ ] T024 [P] [US2] Integration test for [user journey] in tests/integration/test\_[name].py
+- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
 
 ### Implementation for User Story 2
 
-- [ ] T025 [P] [US2] Create [Entity] model in src/models/[entity].py
-- [ ] T026 [US2] Implement [Service] in src/services/[service].py
-- [ ] T027 [US2] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T028 [US2] Integrate with User Story 1 components (if needed)
-- [ ] T029 [US2] Run instruction enforcement cycle for User Story 2 outputs (execute `/[tech]-enforce-instructions`, then `make lint && make test`)
+- [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
+- [ ] T021 [US2] Implement [Service] in src/services/[service].py
+- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T023 [US2] Integrate with User Story 1 components (if needed)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
-
-### Demo Instructions (show User Story 2 running)
-
-- **Commands**:
-
-  ```bash
-  [CLI/API sequence demonstrating story 2]
-  ```
-
-- **Navigation**: `[Exact UI flow, route, or dashboard to walk through]`
-- **Expected outcome**: `[User-facing result to verify]`
-- **Show & Tell cue**: `[Key differentiators to emphasise to stakeholders]`
 
 ---
 
@@ -190,29 +129,16 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T030 [P] [US3] Contract test for [endpoint] in tests/contract/test\_[name].py
-- [ ] T031 [P] [US3] Integration test for [user journey] in tests/integration/test\_[name].py
+- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
+- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
 
 ### Implementation for User Story 3
 
-- [ ] T032 [P] [US3] Create [Entity] model in src/models/[entity].py
-- [ ] T033 [US3] Implement [Service] in src/services/[service].py
-- [ ] T034 [US3] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T035 [US3] Run instruction enforcement cycle for User Story 3 outputs (execute `/[tech]-enforce-instructions`, then `make lint && make test`)
+- [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
+- [ ] T027 [US3] Implement [Service] in src/services/[service].py
+- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
 
 **Checkpoint**: All user stories should now be independently functional
-
-### Demo Instructions (show User Story 3 running)
-
-- **Commands**:
-
-  ```bash
-  [CLI/API sequence demonstrating story 3]
-  ```
-
-- **Navigation**: `[Exact UI flow, route, or dashboard to walk through]`
-- **Expected outcome**: `[User-facing result to verify]`
-- **Show & Tell cue**: `[Narrative for demonstrating this slice end-to-end]`
 
 ---
 
@@ -230,28 +156,6 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
 - [ ] TXXX Security hardening
 - [ ] TXXX Run quickstart.md validation
-- [ ] TXXX Run instruction enforcement cycle for Polish deliverables (execute `/[tech]-enforce-instructions`, then `make lint && make test`)
-
-### Demo Instructions (show Polish improvements running)
-
-- **Commands**:
-
-  ```bash
-  [Commands/tests that highlight cross-cutting refinements]
-  ```
-
-- **Navigation**: `[Dashboards or UI areas where improvements appear]`
-- **Expected outcome**: `[Signals proving the polish work is live]`
-- **Show & Tell cue**: `[Summary talking points to wrap up the showcase]`
-
----
-
-## Final Quality Gates
-
-**Purpose**: Block completion until the codebase aligns with the specification and the automated test suite provides sufficient confidence.
-
-- [ ] T036 Run `/review.speckit-code` for `specs/[###-feature-name]/` and resolve every finding before proceeding (rerun `make lint && make test` afterward)
-- [ ] T037 Run `/review.speckit-test`, close high-value gaps, rebalance the test pyramid if required, and rerun `make lint && make test`
 
 ---
 
@@ -259,8 +163,7 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Phase Dependencies
 
-- **Governance (Phase 0)**: Must complete before touching source files
-- **Setup (Phase 1)**: No dependencies - can start immediately (after Phase 0 gates pass)
+- **Setup (Phase 1)**: No dependencies - can start immediately
 - **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS all user stories
 - **User Stories (Phase 3+)**: All depend on Foundational phase completion
   - User stories can then proceed in parallel (if staffed)
@@ -346,8 +249,3 @@ With multiple developers:
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence
-
----
-
-> **Version**: 1.0.1
-> **Last Amended**: 2026-01-17

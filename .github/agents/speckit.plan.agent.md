@@ -1,6 +1,6 @@
 ---
 description: Execute the implementation planning workflow using the plan template to generate design artifacts.
-handoffs:
+handoffs: 
   - label: Create Tasks
     agent: speckit.tasks
     prompt: Break the plan into tasks
@@ -25,13 +25,11 @@ You **MUST** consider the user input before proceeding (if not empty).
 2. **Load context**: Read FEATURE_SPEC and `.specify/memory/constitution.md`. Load IMPL_PLAN template (already copied).
 
 3. **Execute plan workflow**: Follow the structure in IMPL_PLAN template to:
-
    - Fill Technical Context (mark unknowns as "NEEDS CLARIFICATION")
    - Fill Constitution Check section from constitution
    - Evaluate gates (ERROR if violations unjustified)
    - Phase 0: Generate research.md (resolve all NEEDS CLARIFICATION)
    - Phase 1: Generate data-model.md, contracts/, quickstart.md
-   - Populate the **Phase Demo Playbook** section in plan.md and the quickstart.md so every phase (Setup, Foundational, each user story) includes concrete demo instructions: CLI/API commands to run, seed data required, and which UI/URL/dashboard to open to observe the behaviour. Frame these directions as the script for a Show & Tell session so product stakeholders can walk through each slice without extra translation.
    - Phase 1: Update agent context by running the agent script
    - Re-evaluate Constitution Check post-design
 
@@ -42,7 +40,6 @@ You **MUST** consider the user input before proceeding (if not empty).
 ### Phase 0: Outline & Research
 
 1. **Extract unknowns from Technical Context** above:
-
    - For each NEEDS CLARIFICATION → research task
    - For each dependency → best practices task
    - For each integration → patterns task
@@ -68,13 +65,11 @@ You **MUST** consider the user input before proceeding (if not empty).
 **Prerequisites:** `research.md` complete
 
 1. **Extract entities from feature spec** → `data-model.md`:
-
    - Entity name, fields, relationships
    - Validation rules from requirements
    - State transitions if applicable
 
 2. **Generate API contracts** from functional requirements:
-
    - For each user action → endpoint
    - Use standard REST/GraphQL patterns
    - Output OpenAPI/GraphQL schema to `/contracts/`
@@ -86,7 +81,7 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Add only new technology from current plan
    - Preserve manual additions between markers
 
-**Output**: data-model.md, /contracts/\*, quickstart.md, agent-specific file
+**Output**: data-model.md, /contracts/*, quickstart.md, agent-specific file
 
 ## Key rules
 

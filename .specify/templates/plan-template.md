@@ -17,44 +17,21 @@
   the iteration process.
 -->
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
 **Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]
+**Project Type**: [single/web/mobile - determines source structure]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
 **Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
-_GATE: Must pass before Phase 0 research. Re-check after Phase 1 design._
+*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 [Gates determined based on constitution file]
-
-## Implementation Gates (non-negotiable)
-
-| Gate                           | Trigger                                                                   | Required action                                                                                                                |
-| ------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Documentation Consistency      | Before any implementation work                                            | Run `/review.speckit-documentation`, resolve findings, and block until the review reports zero issues                          |
-| Instruction Enforcement Cycle  | After every delivery phase (Setup, Foundational, each user story, Polish) | Execute all applicable `/[tech]-enforce-instructions` prompts, fix violations, and re-run `make lint && make test` until clean |
-| Code Compliance Review         | After all phases complete                                                 | Run `/review.speckit-code`, remediate constitution/spec gaps, and ensure quality gates are green                               |
-| Test Automation Quality Review | After code compliance passes                                              | Run `/review.speckit-test`, address high-value gaps, rebalance the test pyramid, and confirm quality gates remain green        |
-
-Document any additional platform or organisational gates (security review, data governance approval, etc.) so they can cascade into tasks.md.
-
-## Phase Demo Playbook
-
-Describe exactly how a stakeholder can experience each completed phase (Setup, Foundational, every user story, Polish) inside a running environment. Include the commands to execute, any seed data needed, and the browser/navigation path to confirm behaviour. Treat this table as the Show & Tell runbook so a stakeholder can lead the session end-to-end. Duplicate or trim rows to match the actual phases in the spec.
-
-| Phase                  | Slice Value Delivered                      | CLI/API Commands to Run                                                 | UI / Navigation Steps (what to open, which flow to click through) | Expected Observation                |
-| ---------------------- | ------------------------------------------ | ----------------------------------------------------------------------- | ----------------------------------------------------------------- | ----------------------------------- |
-| Phase 1 – Setup        | `[What becomes usable after setup]`        | Example: `make bootstrap && ./manage db upgrade`                        | `[URL or app section to open, e.g., https://app.local/health]`    | `[What should be visible/verified]` |
-| Phase 2 – Foundational | `[Which cross-cutting capability unlocks]` | Example: `curl https://api.local/health`                                | `[Dashboards/logs to inspect]`                                    | `[Expected metrics/log entries]`    |
-| User Story 1 / Phase 3 | `[Story title / outcome]`                  | Example: `http POST :8080/api/story1 payload:=@examples/story1.json`    | `[Step-by-step navigation describing the story demo]`             | `[User-facing impact to confirm]`   |
-| User Story 2 / Phase 4 | `[Story title / outcome]`                  | Example: `npm run story2:demo && curl https://api.local/story2/preview` | `[Navigation path showing slice #2]`                              | `[Expected outcome]`                |
-| Polish / Final Phase   | `[Cross-cutting improvements]`             | Example: `pytest tests/perf && ./scripts/report.sh polish`              | `[Where to observe (logs, dashboards, UI)]`                       | `[What changes should be visible]`  |
 
 ## Project Structure
 
@@ -71,7 +48,6 @@ specs/[###-feature]/
 ```
 
 ### Source Code (repository root)
-
 <!--
   ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
   for this feature. Delete unused options and expand the chosen structure with
@@ -122,12 +98,7 @@ directories captured above]
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
-| Violation                  | Why Needed         | Simpler Alternative Rejected Because |
-| -------------------------- | ------------------ | ------------------------------------ |
-| [e.g., 4th project]        | [current need]     | [why 3 projects insufficient]        |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient]  |
-
----
-
-> **Version**: 1.0.1
-> **Last Amended**: 2026-01-17
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |

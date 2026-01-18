@@ -1,6 +1,6 @@
 ---
 description: Generate an actionable, dependency-ordered tasks.md for the feature based on available design artifacts.
-handoffs:
+handoffs: 
   - label: Analyze For Consistency
     agent: speckit.analyze
     prompt: Run a project analysis for consistency
@@ -35,21 +35,17 @@ You **MUST** consider the user input before proceeding (if not empty).
    - If contracts/ exists: Map endpoints to user stories
    - If research.md exists: Extract decisions for setup tasks
    - Generate tasks organized by user story (see Task Generation Rules below)
-   - For every phase (Setup, Foundational, each user story, Polish), append a **Demo Instructions** block that explains exactly how to run the feature slice in a real environment: cite CLI/API commands, sample payloads, seed data, and the browser/dashboard navigation path users should follow to observe the behaviour once that phase completes. Reuse details from plan.md and quickstart.md so the instructions stay aligned, and write them so a stakeholder can literally host a Show & Tell session using the text.
    - Generate dependency graph showing user story completion order
    - Create parallel execution examples per user story
    - Validate task completeness (each user story has all needed tasks, independently testable)
 
 4. **Generate tasks.md**: Use `.specify/templates/tasks-template.md` as structure, fill with:
    - Correct feature name from plan.md
-   - Phase 0: Governance tasks (prerequisites script, checklist audit, `/review.speckit-documentation`)
    - Phase 1: Setup tasks (project initialization)
    - Phase 2: Foundational tasks (blocking prerequisites for all user stories)
    - Phase 3+: One phase per user story (in priority order from spec.md)
    - Each phase includes: story goal, independent test criteria, tests (if requested), implementation tasks
-   - After every phase (Setup, Foundational, each user story, Polish), append a task that runs the instruction enforcement cycle (`/enforce.[tech]` + `make lint && make test`)
-   - Final Phase: Polish & cross-cutting concerns plus the closing enforcement gate
-   - Final section: Code and test quality gates (`/review.speckit-code` and `/review.speckit-test`)
+   - Final Phase: Polish & cross-cutting concerns
    - All tasks must follow the strict checklist format (see Task Generation Rules below)
    - Clear file paths for each task
    - Dependencies section showing story completion order
@@ -74,16 +70,6 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 **Tests are OPTIONAL**: Only generate test tasks if explicitly requested in the feature specification or if user requests TDD approach.
 
-### Demo Instructions for Every Phase (REQUIRED)
-
-- After listing tasks for **every** phase (Setup, Foundational, each user story, Polish), include a clearly labelled block that documents how stakeholders can see the feature slice running.
-- Each block must include:
-  - CLI/API commands (and sample payloads where relevant) needed to exercise the new behaviour
-  - Prerequisite steps (seed data, toggles) to prepare the environment
-  - Browser navigation / dashboard locations to observe the change
-  - Expected outcome so users can confirm success quickly
-- The instructions must reflect the plan.md Quickstart guidance, include cues for Show & Tell narration, and stay updated if tasks introduce new flows.
-
 ### Checklist Format (REQUIRED)
 
 Every task MUST strictly follow this format:
@@ -100,7 +86,7 @@ Every task MUST strictly follow this format:
 4. **[Story] label**: REQUIRED for user story phase tasks only
    - Format: [US1], [US2], [US3], etc. (maps to user stories from spec.md)
    - Setup phase: NO story label
-   - Foundational phase: NO story label
+   - Foundational phase: NO story label  
    - User Story phases: MUST have story label
    - Polish phase: NO story label
 5. **Description**: Clear action with exact file path
@@ -115,17 +101,6 @@ Every task MUST strictly follow this format:
 - ❌ WRONG: `T001 [US1] Create model` (missing checkbox)
 - ❌ WRONG: `- [ ] [US1] Create User model` (missing Task ID)
 - ❌ WRONG: `- [ ] T001 [US1] Create model` (missing file path)
-
-### Governance & Quality Gates (REQUIRED)
-
-1. **Phase 0 tasks**: Always prepend three tasks before Setup:
-   - Run `.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks` to capture FEATURE_DIR and AVAILABLE_DOCS
-   - Audit every checklist file under the feature directory; block if any `- [ ]` remain
-   - Run `/review.speckit-documentation` and resolve all findings before implementation
-2. **Instruction enforcement cycle**: After every phase (Setup, Foundational, each user story, and Polish), add a dedicated task instructing the implementer to run the applicable `/enforce.[tech]` prompts and re-run `make lint && make test` until clean.
-3. **Code compliance gate**: Add a task near the end to run `/review.speckit-code`, remediate findings, and re-run quality gates.
-4. **Test automation gate**: Add the final task to run `/review.speckit-test`, address gaps, and re-run quality gates.
-5. **Blocking semantics**: Describe in each gate task that implementation MUST halt until the gate reports zero issues.
 
 ### Task Organization
 
@@ -160,8 +135,3 @@ Every task MUST strictly follow this format:
   - Within each story: Tests (if requested) → Models → Services → Endpoints → Integration
   - Each phase should be a complete, independently testable increment
 - **Final Phase**: Polish & Cross-Cutting Concerns
-
----
-
-> **Version**: 1.0.1
-> **Last Amended**: 2026-01-17

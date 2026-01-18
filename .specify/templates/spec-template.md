@@ -1,23 +1,23 @@
 # Feature Specification: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`
-**Created**: [DATE]
-**Status**: Draft
+**Feature Branch**: `[###-feature-name]`  
+**Created**: [DATE]  
+**Status**: Draft  
 **Input**: User description: "$ARGUMENTS"
 
-## User Scenarios & Testing _(mandatory)_
+## User Scenarios & Testing *(mandatory)*
 
 <!--
   IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
   Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
   you should still have a viable MVP (Minimum Viable Product) that delivers value.
-
+  
   Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
   Think of each story as a standalone slice of functionality that can be:
   - Developed independently
   - Tested independently
   - Deployed independently
-  - Demonstrated to users independently (each slice should be Show & Tell ready)
+  - Demonstrated to users independently
 -->
 
 ### User Story 1 - [Brief Title] (Priority: P1)
@@ -33,12 +33,6 @@
 1. **Given** [initial state], **When** [action], **Then** [expected outcome]
 2. **Given** [initial state], **When** [action], **Then** [expected outcome]
 
-**Demo Instructions (show this phase running):**
-
-- **CLI/API**: `[Exact command(s) to run, including sample payloads when useful]`
-- **UI/Navigation**: `[Where to click or which URL/dashboard to open to observe the behaviour]`
-- **Show & Tell cue**: `[Key narrative stakeholders should use while demonstrating this slice]`
-
 ---
 
 ### User Story 2 - [Brief Title] (Priority: P2)
@@ -52,12 +46,6 @@
 **Acceptance Scenarios**:
 
 1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-
-**Demo Instructions (show this phase running):**
-
-- **CLI/API**: `[Exact command(s) to run, including sample payloads when useful]`
-- **UI/Navigation**: `[Where to click or which URL/dashboard to open to observe the behaviour]`
-- **Show & Tell cue**: `[Key narrative stakeholders should use while demonstrating this slice]`
 
 ---
 
@@ -73,12 +61,6 @@
 
 1. **Given** [initial state], **When** [action], **Then** [expected outcome]
 
-**Demo Instructions (show this phase running):**
-
-- **CLI/API**: `[Exact command(s) to run, including sample payloads when useful]`
-- **UI/Navigation**: `[Where to click or which URL/dashboard to open to observe the behaviour]`
-- **Show & Tell cue**: `[Key narrative stakeholders should use while demonstrating this slice]`
-
 ---
 
 [Add more user stories as needed, each with an assigned priority]
@@ -93,7 +75,7 @@
 - What happens when [boundary condition]?
 - How does system handle [error scenario]?
 
-## Requirements _(mandatory)_
+## Requirements *(mandatory)*
 
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
@@ -103,22 +85,22 @@
 ### Functional Requirements
 
 - **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]
+- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
 
-_Example of marking unclear requirements:_
+*Example of marking unclear requirements:*
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
 
-### Key Entities _(include if feature involves data)_
+### Key Entities *(include if feature involves data)*
 
 - **[Entity 1]**: [What it represents, key attributes without implementation]
 - **[Entity 2]**: [What it represents, relationships to other entities]
 
-## Success Criteria _(mandatory)_
+## Success Criteria *(mandatory)*
 
 <!--
   ACTION REQUIRED: Define measurable success criteria.
@@ -131,19 +113,3 @@ _Example of marking unclear requirements:_
 - **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
 - **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
 - **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
-
-## Implementation Gates & Quality Checks _(mandatory)_
-
-Document every non-negotiable gate that must be completed during implementation so the resulting plan and tasks explicitly enumerate them.
-
-1. **Documentation Consistency Gate** – Run `/review.speckit-documentation` before any implementation work to validate ubiquitous language, identifier coverage, and cross-document alignment. Implementation must block until this review reports zero issues.
-2. **Instruction Enforcement Cycle** – After each delivery phase (Setup, Foundational, every user story, and Polish), execute the relevant `/[tech]-enforce-instructions` prompts (Python, TypeScript, Makefile, Terraform, etc.), remediate findings, and re-run `make lint && make test` until clean.
-3. **Code Compliance Review Gate** – Once all phases complete, run `/review.speckit-code`, resolve constitution/spec divergences, and only proceed when it reports zero issues and `make lint && make test` are clean.
-4. **Test Automation Quality Review Gate** – After code compliance passes, run `/review.speckit-test`, close any high-value test gaps, rebalance the test pyramid if required, and rerun quality gates until the review reports a healthy suite.
-
-Capture any additional service-specific approvals (security reviews, data governance sign-off, etc.) here so they cascade into plan.md and tasks.md.
-
----
-
-> **Version**: 1.0.1
-> **Last Amended**: 2026-01-17
