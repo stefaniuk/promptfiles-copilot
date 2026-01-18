@@ -22,7 +22,7 @@ set -euo pipefail
 #   1 - Invalid links found
 #
 # Notes:
-#   1) The lychee configuration file is located at './lychee.toml'.
+#   1) The lychee configuration file is located at './scripts/config/lychee.toml'.
 #   2) For more information, visit https://github.com/lycheeverse/lychee
 
 # ==============================================================================
@@ -63,7 +63,7 @@ function run-lychee-natively() {
 
   # shellcheck disable=SC2086
   lychee \
-    --config "$PWD/lychee.toml" \
+    --config "$PWD/scripts/config/lychee.toml" \
     --no-progress \
     --quiet \
     $files
@@ -84,7 +84,7 @@ function run-lychee-in-docker() {
     --volume "$PWD":/workdir \
     --workdir /workdir \
     "$image" \
-      --config /workdir/lychee.toml \
+      --config /workdir/scripts/config/lychee.toml \
       --no-progress \
       --quiet \
       $files

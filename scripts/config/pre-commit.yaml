@@ -16,3 +16,8 @@ repos:
         entry: bash -c 'check=staged-changes ./scripts/githooks/check-markdown-format.sh'
         language: system
         pass_filenames: false
+      - id: check-markdown-links
+        name: Check Markdown links
+        entry: bash -c 'check=staged-changes ./scripts/githooks/check-markdown-links.sh'
+        language: system
+        pass_filenames: false
