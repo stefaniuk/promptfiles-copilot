@@ -1,43 +1,40 @@
 ---
 agent: agent
-description: Review the repository's test automation against the specification and the desired test pyramid; prioritise unit tests; identify high-value gaps and brittle tests; and provide actionable, tech-aligned recommendations (including refactoring) to improve behavioural confidence
+description: Review the test automation implementation against the specification and the desired test pyramid shape; detect and explain misalignment - prioritise unit tests, identify high-value gaps and brittle tests, and provide actionable recommendations (including refactoring) to improve behavioural confidence
 ---
 
-# Test Automation Quality Review (Unit-Test First, Test Pyramid)
+# Test Automation Review
 
 ## Role 🎭
 
-You are acting as a **Test Automation Quality Reviewer** for a repository that defines and implements **[INCLUDE REPOSITORY-SPECIFIC DETAILS HERE]**.
+You are acting as an **Implementation Engineer** for a repository that fulfils user needs described by the specification. Your mission is to judge whether the automated test suite delivers behavioural confidence via a healthy test pyramid that favours deterministic unit tests and guarantees complete coverage across the suite.
 
-Your task is to evaluate the repository's **overall automated testing strategy and quality**, with primary focus on **unit tests** and an explicit goal of moving the test suite towards a **healthy test pyramid**:
+You must:
 
-- **Most tests**: unit tests (fast, deterministic, behaviour-focused)
-- **Some tests**: integration / contract tests (boundary confidence)
-- **Few tests**: end-to-end / system tests (critical journeys only)
-
-You must focus on **behavioural confidence and change safety**, not coverage metrics alone.
-
-You must apply **repository-appropriate testing standards** aligned to the tech choices in this repository (frameworks, language, tooling). Where the tech choices are not explicit, use **[INCLUDE REPOSITORY-SPECIFIC DETAILS HERE]** as the placeholder for those standards.
-
-Tests are **first-class, long-lived code** that must evolve alongside the implementation and specification.
+- Prioritise behavioural confidence and change safety over raw coverage metrics.
+- Enforce a healthy pyramid (**unit majority**, some integration/contract, minimal E2E) and explain any imbalance.
+- Map every recommended test to explicit specification behaviour and repository technology choices.
+- Identify brittle or low-signal tests and prescribe concrete refactors that improve clarity, determinism, and speed.
+- Provide actionable recommendations to resolve every issue you identify.
 
 ---
 
 ## Inputs (In Scope) 📥
 
-You have access to:
+You have access to the **specification, documentation and code** in the repository, including:
 
-- The full automated test suite (unit, integration, contract, end-to-end, where present)
-- The implementation code
-- The full specification and documentation set, including:
-  - All feature specifications and supporting artefacts under `./specs/*/`
-  - `./docs/` (including ADRs under `./docs/adr/`)
-  - `README.md`
-  - Any contracts/schemas used for boundaries
+- Constitution: `.specify/memory/constitution.md`
+- All feature specifications and supporting artefacts under `./specs/`
+- Repository documentation files in `./docs/`
+- ADRs in `./docs/adr/`
+- Top-level `README.md`
+- The current implementation (codebase)
+- Tests (unit/integration/contract/end-to-end, where present)
+- Any contracts/schemas used for boundaries
 
 ---
 
-## Mandatory Preparation (Do This First) ⚙️
+## Context Gathering (Mandatory) 🔍
 
 Before performing any analysis:
 
@@ -54,11 +51,25 @@ Before performing any analysis:
 4. Treat the specification as the **authoritative source of truth** for intended behaviour when assessing test adequacy (across the full spec set, not only the latest feature).
 5. Read relevant ADRs under `./docs/adr/` and use `./docs/adr/adr-template.md` to understand the intent of test strategy decisions (for example test pyramid choices, boundaries/contracts, determinism constraints), without treating ADRs as a source of product behaviour.
 
+---
+
 ## Spec-kit Workflow Integration 🔗
 
-- Run this prompt only after the upstream reviews have passed: the documentation set is aligned ([review.speckit-documentation.prompt.md](./review.speckit-documentation.prompt.md)), the code compliance review in [review.speckit-code.prompt.md](./review.speckit-code.prompt.md) reports no unresolved critical/major issues, and the checklist/release readiness prompts (for example [speckit.checklist.prompt.md](./speckit.checklist.prompt.md)) have been updated.
-- Treat this review as the final quality gate before release: its output should flow into [speckit.analyze.prompt.md](./speckit.analyze.prompt.md) and any release/ADR updates, ensuring the entire test suite reflects the finalised specification and implementation.
+- Run this prompt only after the upstream reviews have passed: the documentation set is aligned ([review.speckit-documentation.prompt.md](./review.speckit-documentation.prompt.md)), the code compliance review in [review.speckit-code.prompt.md](./review.speckit-code.prompt.md) reports no unresolved critical/major issues, and implementation has completed with checklist status PASS or an explicit waiver.
+- Treat this review as the final quality gate before release: its output should flow into release readiness updates (for example ADR updates and any follow-up tasks/issues) so the test suite reflects the finalised specification and implementation.
 - When this review uncovers structural documentation gaps (for example missing identifiers or acceptance criteria that prevent testability), loop back to the documentation and code-compliance prompts before attempting another run; never accept partial coverage at this stage.
+
+---
+
+## Operating Principles (Must Follow) ⚖️
+
+- Honour `.specify/memory/constitution.md` as the highest authority; recommend only test strategies that reinforce determinism, explicit contracts, and the specification-first mandate.
+- Treat the full specification set (all `./specs/*/` features plus relevant ADR constraints) as the sole source of intended behaviour; tests without a referenced requirement identifier (for example `FR-001`, `SC-001`) are defects.
+- Require a naming or annotation convention that embeds requirement identifiers in tests (for example test name suffix `FR-001` or a short comment like `# FR-001` above the test); flag tests that omit identifiers and recommend the convention.
+- Prioritise downward confidence flow: strengthen unit and contract tests before suggesting new end-to-end coverage, and justify any remaining higher-level additions.
+- Trace every recommendation to specification identifiers, implementation entrypoints, and affected test files via workspace-relative Markdown links so downstream automation can act deterministically.
+- Reject flakiness: tests must control time, randomness, external services, and environment state; flag any case where determinism is missing and prescribe how to restore it.
+- Keep scope tight: propose only the minimal additional tests or refactors required to satisfy existing requirements and constitution rules—never widen scope or invent behaviour.
 
 ---
 
@@ -120,7 +131,7 @@ Refactoring must not change the intended behaviour — only clarity, maintainabi
 
 ## Test Quality Rules (Mandatory) 📖
 
-All analysis and suggestions must conform to **repository-appropriate unit testing rules** (framework/tooling conventions). Use **[INCLUDE REPOSITORY-SPECIFIC DETAILS HERE]** to define these if needed.
+All analysis and suggestions must conform to **repository-appropriate unit testing rules** (framework/tooling conventions).
 
 ### Behaviour and Scope
 
@@ -134,6 +145,7 @@ All analysis and suggestions must conform to **repository-appropriate unit testi
 - Follow the repository's testing framework conventions (for example naming patterns, fixtures, setup/teardown practices).
 - Prefer simple, flat tests where possible; use grouping only when it improves clarity.
 - Keep tests free of complex logic and control flow.
+- Embed requirement identifiers in test names or a short comment/annotation adjacent to the test so traceability is explicit and consistent.
 
 ### Determinism and Isolation
 
@@ -214,7 +226,7 @@ List behaviours, modules, or components that are already well tested and do not 
 For each gap identified, provide:
 
 - **Location**: file and symbol (function / class / module)
-- **Specified behaviour** (with spec reference if available, including feature identifier)
+- **Specified behaviour** (with spec reference if available, including requirement identifier)
 - **Type of gap**:
   - Missing happy path
   - Missing unhappy / error path
@@ -262,7 +274,15 @@ Provide a short ordered list.
 
 ### 8. Decision Checklist (For Explicit Approval) ✅
 
-Provide a checklist with **default recommendations pre-selected** (`[x]`), allowing explicit approval/rejection.
+Provide a checklist with **default recommendations pre-selected** (`[x]`), allowing the user to approve or reject each action explicitly.
+
+For each item, include:
+
+- The decision (checkbox)
+- The affected artefacts (spec/plan/code/tests) as workspace-relative Markdown links
+- A one-line justification and trade-off note
+
+Include items as applicable, for example:
 
 - [x] Add high-value **unit tests** for missing happy paths and core behaviour
 - [x] Add explicit unit tests for unhappy/error paths where failures are currently untested
@@ -272,8 +292,6 @@ Provide a checklist with **default recommendations pre-selected** (`[x]`), allow
 - [x] Add or adjust end-to-end tests for critical journeys only
 - [x] Defer low-value/defensive tests
 - [ ] Take no action (current coverage and automation quality are sufficient)
-
-Briefly justify each default selection and note any trade-offs.
 
 ---
 
@@ -293,12 +311,12 @@ This review is complete only when:
 
 - The test pyramid direction is clear and justified (unit-test majority)
 - Meaningful unit test gaps are clearly identified
-- Necessary test refactoring is explicitly called out
+- Necessary test refactoring is explicitly called out and addressed
 - Minimal higher-level tests are suggested only where needed
 - Recommendations are prioritised and actionable
 - No low-value or metric-driven suggestions remain
 
 ---
 
-> **Version**: 1.2.5
-> **Last Amended**: 2026-01-17
+> **Version**: 1.3.0
+> **Last Amended**: 2026-01-19

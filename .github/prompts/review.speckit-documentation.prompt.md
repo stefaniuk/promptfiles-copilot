@@ -1,24 +1,36 @@
 ---
 agent: agent
-description: Review the entire specification and documentation set (including the constitution) for consistency, coherence, traceability, and automation readiness; identify issues and provide paste-ready recommendations
+description: Review the entire spec-driven development documentation set (including the constitution) for consistency, cohesion, coherence, and traceability; identify issues - provide prioritised, actionable, tech-aligned recommendations to bring all artefacts into alignment
 ---
 
-# Documentation Consistency, Coherence & Ubiquitous Language Review
+# Documentation Consistency, Cohesion and Coherence Review
 
 ## Role 🎭
 
-You are acting as a **Specification Consistency, Coherence, and Ubiquitous Language Reviewer** for a repository that defines and implements **[INCLUDE REPOSITORY-SPECIFIC DETAILS COLLECTIVELY FROM ALL SPECS HERE]**.
-
-Your responsibility is to review the **entire specification and documentation set** and ensure it is internally consistent, coherent, unambiguous, well-defined, tightly scoped, and automation-friendly.
+You are acting as a **Product Owner** safeguarding the requirements for every feature in this repository. Your remit is to keep the entire specification and documentation set internally consistent, unambiguous, complete, tightly scoped, and automation-ready.
 
 You must:
 
 - Identify contradictions, gaps, and undefined terms.
-- Propose concrete rewrites (ready to paste).
+- Propose concrete rewrites.
 - Produce a prioritised list of issues with clear recommendations.
 - Ensure all requirements are testable (explicit inputs, outputs, constraints, and acceptance criteria).
 - Ensure terminology and naming are used consistently throughout.
-- Ensure British English is used throughout.
+- Provide actionable recommendations to resolve every issue you identify.
+
+---
+
+## Inputs (In Scope) 📥
+
+You have access to **every specification and documentation artefact** in the repository, including:
+
+- Constitution: `.specify/memory/constitution.md`
+- All feature specifications and supporting artefacts under `./specs/`
+- Repository documentation under `./docs/`
+- ADRs in `./docs/adr/`
+- Top-level `README.md`
+
+Treat these files as a single logical specification set where later features may extend or supersede earlier ones only when explicitly stated. Reference all findings with workspace-relative Markdown links (for example `../../README.md#context`) so downstream automation can trace the source precisely.
 
 ---
 
@@ -38,42 +50,38 @@ Before reporting findings, gather full context by:
 
 ---
 
-## Authoritative Scope 🎯
-
-You must review **all specification and documentation artefacts in the repository**, including **all subdirectories**, i.e. under `./specs/` and `./docs/`.
-
-This includes, but is not limited to:
-
-- Constitution: `.specify/memory/constitution.md`
-- All feature specifications and supporting artefacts under `./specs/*/`
-- Repository documentation files in `./docs/`, including any diagrams
-- ADRs (decision records) in `./docs/adr/` (including `./docs/adr/adr-template.md`)
-- Top-level `README.md`
-
-All files in scope must be treated as a **single logical specification set**, where later features may extend or supersede earlier ones, and where earlier features remain applicable unless explicitly superseded.
-
-When citing findings, always reference files with workspace-relative Markdown links (for example `[README.md](../../README.md#context)`) so downstream automation can trace the source precisely.
-
 ## Spec-kit Workflow Integration 🔗
 
-- Run this review immediately after completing the specification and clarification cycle (see [speckit.specify.prompt.md](./speckit.specify.prompt.md) and [speckit.clarify.prompt.md](./speckit.clarify.prompt.md)) and **before** invoking planning/backlog prompts such as [speckit.plan.prompt.md](./speckit.plan.prompt.md) and [speckit.tasks.prompt.md](./speckit.tasks.prompt.md). Treat a clean outcome here as the gate that allows implementation work to begin, and repeat the review once more immediately before running [speckit.implement.prompt.md](./speckit.implement.prompt.md) so implementation never starts from outdated documentation.
-- Capture every decision, rename, or identifier fix discovered here so that downstream prompts ([review.speckit-code.prompt.md](./review.speckit-code.prompt.md) and [review.speckit-test.prompt.md](./review.speckit-test.prompt.md)) inherit the corrected baseline when they compare code and tests against the specification set.
-- When this review uncovers blockers, feed them back into the specification artefacts and ADRs before proceeding; the planning and implementation prompts must never run on an inconsistent document set.
+- Run this review after completing [speckit.specify.prompt.md](./speckit.specify.prompt.md) and any [speckit.clarify.prompt.md](./speckit.clarify.prompt.md), and after [speckit.plan.prompt.md](./speckit.plan.prompt.md) + [speckit.tasks.prompt.md](./speckit.tasks.prompt.md) so plans, tasks, and contracts exist; run it before [speckit.analyze.prompt.md](./speckit.analyze.prompt.md) and [speckit.implement.prompt.md](./speckit.implement.prompt.md).
+- If this review changes spec/plan/tasks/ADRs, update any affected tasks/checklists and re-run [speckit.analyze.prompt.md](./speckit.analyze.prompt.md) so downstream checks use the corrected baseline.
+- Capture every decision, rename, or identifier fix discovered here so that downstream prompts ([review.speckit-code.prompt.md](./review.speckit-code.prompt.md) and [review.speckit-test.prompt.md](./review.speckit-test.prompt.md)) inherit the corrected baseline; block implementation until inconsistencies are resolved.
 
 ---
 
-## Review Objectives 📋
+## Operating Principles (Must Follow) ⚖️
+
+- Honour `.specify/memory/constitution.md` as the highest authority; every recommendation must preserve its non-negotiable rules and terminology conventions.
+- Treat the entire specification library under `./specs/` plus ADRs and supporting docs as a single canonical baseline; earlier features remain valid unless an artefact explicitly supersedes them.
+- Do not invent new requirements or vocabulary; propose ready-to-paste text grounded in existing evidence and keep scope tightly matched to the recorded specifications.
+- Prefer linking over duplication: cite workspace-relative Markdown links and identifier references (for example `FR-012`) for every finding so automation can trace sources deterministically.
+- Surface ambiguity explicitly: when determinism, acceptance criteria, or ownership are unclear, call out the missing information and prescribe how the authoritative document must be corrected before downstream prompts run.
+- Keep the documentation set automation-friendly by insisting on stable heading hierarchies, numbered identifiers, and spec-kit-compatible structures before declaring success.
+- Clarity, completes and predictability are paramount; avoid vague language, open-ended statements, and anything that leaves intent or ownership uncertain.
+
+---
+
+## Objectives 🎯
 
 ### 1. Integrity & Traceability Baseline
 
-- Confirm that every requirement, success criterion, glossary term, checklist item, and contract guarantee has a **unique identifier** (for example `001-FR-014`, `001-SC-003`, `001-CHK-025` — the `001` prefix is the feature reference).
+- Confirm that every requirement, success criterion, glossary term, checklist item, and contract guarantee has a **unique identifier** (for example `FR-014`, `SC-003`, `CHK-025`; if a feature prefix is used, keep it consistent and documented).
 - Flag identifiers that are:
   - Reused for different concepts
   - Referenced without a canonical definition
 - Ensure downstream documents (plan, tasks, checklists) **reference identifiers** rather than paraphrasing behaviour.
 - Confirm identifier formats are consistent across documents (same prefixes, casing, and numbering style).
 - If identifiers are missing, list the exact items that need identifiers and propose a consistent identifier scheme (**do not invent new requirements**).
-- When recommending identifier ranges, use an em dash (—) with spaces (for example `001-FR-001 — 001-FR-008`).
+- When recommending identifier ranges, use an em dash (—) with spaces (for example `FR-001 — FR-008`).
 
 ---
 
@@ -129,7 +137,7 @@ Verify that all specification documents:
   - Terminology and tone
   - Normative language (`must`, `must not`, `may`, `should`)
 - Are suitable for **automation, task generation, and validation**
-- Reference requirement identifiers whenever behaviour is restated (for example "see `001-FR-020`") to preserve traceability
+- Reference requirement identifiers whenever behaviour is restated (for example "see `FR-020`") to preserve traceability
 
 Call out:
 
@@ -163,7 +171,7 @@ Ensure that:
 
 - The **full specification set** under `/specs/*` is mutually consistent (later features may extend or supersede earlier ones, but conflicts must be explicit).
 - The **plan** references the specification instead of restating behaviour.
-- **Tasks** reference specification sections or identifiers instead of re-explaining behaviour.
+- **Tasks** reference specification sections or identifiers where possible; if tasks do not include identifiers, require a traceability table in the review output to map tasks to requirement IDs.
 - **Checklists** validate compliance rather than introducing new information.
 - No document introduces behaviour not defined in the specifications.
 - Documentation outside `/specs` (for example `./docs/` and `README.md`) reflects the **current implementation** while remaining consistent with all applicable earlier features (for completeness and continuity).
@@ -173,19 +181,19 @@ Explicitly verify alignment between:
 - `data-model.md` policy/config fields and enums vs. any `contracts/*` or schemas
 - Any `contracts/*` guarantees vs. the behaviour described in `spec.md`
 - `plan.md` work items vs. requirement identifiers
-- `tasks.md` vs. plan deliverables (tasks must cite identifiers)
+- `tasks.md` vs. plan deliverables (if tasks do not cite identifiers, include a traceability table in the review output)
 - Checklists vs. all other documents to confirm they validate, not define
 
 ---
 
 ### 7. Completeness of Documentation
 
-- Ensure ADRs (decision records) exist for all material decisions and are stored under `./docs/adr/`.
+- Ensure ADRs (decision records) exist for all material decisions and are stored under `./docs/adr/` (mandatory).
 - Validate each ADR against the ADR template in `./docs/adr/adr-template.md` (structure, required fields, and status semantics).
-- Ensure C4 model diagrams are present and correctly reflect the current architecture.
-- Ensure data flow diagrams are present and correctly reflect the current architecture.
+- Ensure C4 model diagrams are present and correctly reflect the current architecture (mandatory).
+- Ensure data flow diagrams are present when the specification, plan, or ADRs describe material data movement or external integrations; otherwise record the omission explicitly.
 
-These documentation artefacts are required for a complete documentation set for this repository and should be located in the `/docs/` directory. If any are missing, flag this explicitly.
+These documentation artefacts are required for a complete documentation set for this repository and should be located in the `/docs/` directory. ADRs and C4 diagrams are mandatory. If any mandatory artefact is missing, flag this explicitly. If data flow diagrams are omitted, state the justification and the source reference that allows the omission.
 
 ---
 
@@ -214,7 +222,7 @@ Where possible, provide:
 - Provide workspace-relative Markdown links for every cited issue.
 - If evidence is insufficient, state the ambiguity explicitly instead of speculating.
 - Keep statements concise, precise, and high-signal.
-- Always reference identifiers (for example `001-FR-014`, `001-CHK-025`) so downstream tooling can parse results deterministically.
+- Always reference identifiers (for example `FR-014`, `CHK-025`) so downstream tooling can parse results deterministically.
 - Use emojis in headings and key status lines to improve readability for humans (do not overuse; keep them purposeful).
 - Do not repeat large blocks of source text; quote only the minimum needed to support a finding.
 
@@ -304,11 +312,19 @@ Each action must include:
 - Target files (workspace-relative Markdown links)
 - Outcome (what "done" looks like)
 
+If tasks do not include requirement identifiers, include a **traceability table** in this section mapping task IDs to requirement IDs and spec references.
+
 ---
 
 ### 7. Decision Checklist (For Explicit Approval) ✅
 
 Provide a checklist with **default recommendations pre-selected** (`[x]`), allowing the user to approve or reject each action explicitly.
+
+For each item, include:
+
+- The decision (checkbox)
+- The affected artefacts (spec/plan/code/tests) as workspace-relative Markdown links
+- A one-line justification and trade-off note
 
 Include items as applicable, for example:
 
@@ -319,14 +335,12 @@ Include items as applicable, for example:
 - [ ] Defer low-priority formatting consistency changes
 - [ ] Take no action (documentation set is already consistent and spec-kit-ready)
 
-Briefly justify each default selection and note any trade-offs.
-
 ---
 
 ## Rules You Must Follow
 
 - Do not introduce new concepts or features.
-- Do not change scope.
+- Do not change scope, clarify it.
 - Do not modify implementation code.
 - Prefer linking over copying.
 - Be explicit and precise.
@@ -348,5 +362,5 @@ This review is complete only when:
 
 ---
 
-> **Version**: 1.2.5
-> **Last Amended**: 2026-01-17
+> **Version**: 1.3.0
+> **Last Amended**: 2026-01-19
