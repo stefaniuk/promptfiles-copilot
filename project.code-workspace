@@ -2,51 +2,51 @@
   "folders": [
     {
       "name": "Repository",
-      "path": "."
+      "path": ".",
     },
     {
       "name": "Copilot: Agents",
-      "path": ".github/agents/"
+      "path": ".github/agents/",
     },
     {
       "name": "Copilot: Instructions",
-      "path": ".github/instructions/"
+      "path": ".github/instructions/",
     },
     {
       "name": "Copilot: Prompts",
-      "path": ".github/prompts/"
+      "path": ".github/prompts/",
     },
     {
       "name": "Copilot: Skills",
-      "path": ".github/skills/"
+      "path": ".github/skills/",
     },
     {
       "name": "Spec-kit: Constitution",
-      "path": ".specify/memory/"
+      "path": ".specify/memory/",
     },
     {
       "name": "Spec-kit: Specification",
-      "path": "./specs"
+      "path": "./specs",
     },
     {
       "name": "Docs: ADRs",
-      "path": "./docs/adr"
+      "path": "./docs/adr",
     },
     {
       "name": "Docs: Codebase Overview",
-      "path": "./docs/codebase-overview"
+      "path": "./docs/codebase-overview",
     },
     {
       "name": "Docs: Prompt Reports",
-      "path": "./docs/prompt-reports"
+      "path": "./docs/prompt-reports",
     },
     {
       "name": "Docs: Other",
-      "path": "./docs/"
+      "path": "./docs/",
     },
     {
       "name": "Code: Scripts",
-      "path": "./scripts/"
-    }
-  ]
+      "path": "./scripts/",
+    },
+  ],
 }
