@@ -64,6 +64,7 @@ Before reporting findings, gather full context by:
 - Treat the entire specification library under `./specs/` plus ADRs and supporting docs as a single canonical baseline; earlier features remain valid unless an artefact explicitly supersedes them.
 - Do not invent new requirements or vocabulary; propose ready-to-paste text grounded in existing evidence and keep scope tightly matched to the recorded specifications.
 - Prefer linking over duplication: cite workspace-relative Markdown links and identifier references (for example `FR-012`) for every finding so automation can trace sources deterministically.
+- Treat every `.gitignore` file as a governed artefact: confirm it is composed from the relevant templates in <https://github.com/github/gitignore>, that only required sections are merged, and that any local additions are recorded in the specification set.
 - Surface ambiguity explicitly: when determinism, acceptance criteria, or ownership are unclear, call out the missing information and prescribe how the authoritative document must be corrected before downstream prompts run.
 - Keep the documentation set automation-friendly by insisting on stable heading hierarchies, numbered identifiers, and spec-kit-compatible structures before declaring success.
 - Clarity, completes and predictability are paramount; avoid vague language, open-ended statements, and anything that leaves intent or ownership uncertain.
@@ -362,5 +363,5 @@ This review is complete only when:
 
 ---
 
-> **Version**: 1.3.0
-> **Last Amended**: 2026-01-19
+> **Version**: 1.3.1
+> **Last Amended**: 2026-01-20

@@ -11,6 +11,7 @@ Use this shared baseline for local-first developer experience expectations. Doma
 - [LCL-BASE-WF-001] Provide a single-command workflow for core tasks (deps, format, lint, typecheck/validate, test, run).
 - [LCL-BASE-WF-002] If `make` is not used, provide an equivalent task runner with the same intent and predictable names.
 - [LCL-BASE-WF-003] Keep local defaults safe: no real cloud credentials or destructive operations by default.
+- [LCL-BASE-WF-004] Source each repository `.gitignore` from the matching templates in <https://github.com/github/gitignore>, merge only the relevant sections, and document any local additions in the spec set.
 
 ## 2. Pre-commit and fast feedback ⚡
 
@@ -28,5 +29,5 @@ Use this shared baseline for local-first developer experience expectations. Doma
 
 ---
 
-> **Version**: 1.0.1
-> **Last Amended**: 2026-01-17
+> **Version**: 1.0.2
+> **Last Amended**: 2026-01-20

@@ -198,20 +198,9 @@ Prompts use a **prefix + category + verb** convention to keep fuzzy search fast 
 - `migrate-from-[tech A]-to-[tech B].prompt`
 
 </details>
-
-<details>
-<summary><strong>📋 Instruction Packs</strong></summary>
-
-- GitHub Actions workflow instructions
-- Docker and Markdown conventions
-
-</details>
-
 <details>
 <summary><strong>🔧 Workflow Prompts</strong></summary>
 
-- **PR creation** — spec-linked descriptions with reviewer checklists
-- **ADR prompt** — author/update decision records from specs
 - **Release notes** — changelog entries grouped by spec identifiers
 
 </details>
