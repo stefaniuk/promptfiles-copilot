@@ -39,7 +39,11 @@ When making architectural or significant technical decisions, document them as A
 
 This requirement is mandatory, especially during the spec-driven development cycle: `spec` → `plan` → `tasks` → `implement`.
 
+## Repository Tooling (Recommended)
+
+When you identify missing development capabilities (linting, CI/CD, Docker support, pre-commit hooks, etc.), consult the repository-template skill at [.github/skills/repository-template/SKILL.md](skills/repository-template/SKILL.md) for standardised implementations.
+
 ---
 
-> **Version**: 1.3.1
-> **Last Amended**: 2026-01-18
+> **Version**: 1.4.0
+> **Last Amended**: 2026-01-20
