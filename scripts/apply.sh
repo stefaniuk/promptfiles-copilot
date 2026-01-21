@@ -40,7 +40,7 @@ set -euo pipefail
 #   - .specify/scripts/bash
 #   - .specify/templates
 #   - adr-template.md
-#   - docs/codebase-overview/ (with .gitignore)
+#   - docs/codebase-overview/ (with .gitkeep)
 #   - docs/prompt-reports/ (with .gitignore)
 #   - project.code-workspace (if not already present)
 #
@@ -522,6 +522,7 @@ function copy-adr-template() {
 }
 
 # Copy docs/codebase-overview directory to the destination.
+# Only copies .gitkeep if the destination directory is empty or doesn't exist.
 # Arguments (provided as function parameters):
 #   $1=[destination directory path]
 function copy-docs-codebase-overview() {
@@ -530,7 +531,18 @@ function copy-docs-codebase-overview() {
   mkdir -p "${dest}"
 
   print-info "Copying docs/codebase-overview to ${dest}"
-  cp -R "${DOCS_CODEBASE_OVERVIEW}/." "${dest}/"
+
+  # Check if destination directory has any files (excluding hidden files that start with .)
+  local file_count
+  file_count=$(find "${dest}" -maxdepth 1 -type f ! -name ".*" 2>/dev/null | wc -l | tr -d ' ')
+
+  if [[ "${file_count}" -eq 0 ]]; then
+    # Directory is empty, copy everything including .gitkeep
+    cp -R "${DOCS_CODEBASE_OVERVIEW}/." "${dest}/"
+  else
+    # Directory has files, copy everything except .gitkeep
+    find "${DOCS_CODEBASE_OVERVIEW}" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "${dest}/" \; 2>/dev/null || true
+  fi
 }
 
 # Copy docs/prompt-reports directory to the destination.
