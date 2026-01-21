@@ -95,12 +95,14 @@ flowchart TD
   needClarification -- Yes --> clarify["/speckit.clarify"]
   clarify --> specify
   needClarification -- No --> plan["/speckit.plan"]
+  plan -.- planNote["💡 Example (run+1): After planning completes, run the command again to verify all items on the Plan Completion Checklist are satisfied"]
 
   plan --> domainCoverage{Check domain coverage?}
   domainCoverage -- Yes --> checklist["/speckit.checklist"]
   checklist --> plan
-  checklist -.- checklistNote["💡 Example: Create a checklist for assembling, building and testing the deployment artefacts of all the components being implemented"]
+  checklist -.- checklistNote["💡 Example: Create a checklist for building, assembling and testing the deployment artefacts of all the components being implemented"]
   domainCoverage -- No --> tasks["/speckit.tasks"]
+  tasks -.- tasksNote["💡 Example (run+1): After breaking down the plan into tasks, run the command again to verify all items on the Tasks Completion Checklist are satisfied"]
 
   tasks --> consistency{Need consistency check?}
   consistency -- Yes --> analyze["/speckit.analyze"]
@@ -117,7 +119,7 @@ flowchart TD
   class specify,plan,tasks,implement action;
   class needClarification,domainCoverage,consistency question;
   class clarify,checklist,analyze review;
-  class specifyNote,checklistNote note;
+  class specifyNote,checklistNote,planNote,tasksNote note;
 ```
 
 ### 📤 Sync Prompt Files
