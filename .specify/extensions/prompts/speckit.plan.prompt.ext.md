@@ -1,7 +1,3 @@
----
-agent: speckit.plan
----
-
 You must adhere to the following mandatory planning requirements when creating a development plan.
 
 ## Documentation (Mandatory)

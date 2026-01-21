@@ -1,7 +1,3 @@
----
-agent: speckit.tasks
----
-
 You must adhere to the following mandatory task creation requirements when generating development tasks.
 
 ## Test-Driven Development (Mandatory)

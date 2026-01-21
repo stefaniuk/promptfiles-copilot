@@ -20,17 +20,14 @@
 #
 #   3. Run: make patch-speckit
 
-# # Default injection points per category
-# defaults:
-#   agents: after-frontmatter
-#   prompts: after-frontmatter
-#   templates: after-frontmatter
+# Default injection points per category
+defaults:
+  agents: after-frontmatter
+  prompts: after-frontmatter
+  templates: after-frontmatter
 
-# # Per-file overrides (filename: injection-strategy)
-# # Examples:
-# #   speckit.specify.agent.md: before-section:## Outline
-# #   tasks-template.md: after-section:## Format
-# overrides:
-#   speckit.implement.agent.md: before-section:## Outline
-#   speckit.specify.prompt.md: after-frontmatter
-#   tasks-template.md: before-section:## Phase 1
+# Per-file overrides (filename: injection-strategy)
+# Examples:
+#   speckit.specify.agent.md: before-section:## Outline
+#   tasks-template.md: after-section:## Format
+overrides: {}
