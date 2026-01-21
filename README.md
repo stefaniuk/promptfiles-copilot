@@ -107,19 +107,25 @@ flowchart TD
   tasks --> consistency{Need consistency check?}
   consistency -- Yes --> analyze["/speckit.analyze"]
   analyze --> tasks
-  consistency -- No --> implement["/speckit.implement phase X"]
+  consistency -- No --> reviewDocs["/review.speckit-documentation"]
+  reviewDocs --> implement["/speckit.implement"]
+  implement -.- implementNote["💡 Example (run N-times): Phase X"]
+  implement --> reviewCode["/review.speckit-code"]
+  reviewCode --> reviewTest["/review.speckit-test"]
 
   classDef source fill:#dbeafe,stroke:#1d4ed8,color:#0f172a,stroke-width:1px;
   classDef action fill:#d1fae5,stroke:#34d399,color:#064e3b,stroke-width:1px;
   classDef question fill:#fef3c7,stroke:#ea580c,color:#78350f,stroke-width:1px;
   classDef review fill:#fce7f3,stroke:#db2777,color:#831843,stroke-width:1px;
+  classDef docReview fill:#e0e7ff,stroke:#6366f1,color:#312e81,stroke-width:1px;
   classDef note fill:#f5f5f4,stroke:#a8a29e,color:#57534e,stroke-width:1px,stroke-dasharray:3;
 
   class constitution source;
   class specify,plan,tasks,implement action;
   class needClarification,domainCoverage,consistency question;
   class clarify,checklist,analyze review;
-  class specifyNote,checklistNote,planNote,tasksNote note;
+  class reviewDocs,reviewCode,reviewTest docReview;
+  class specifyNote,checklistNote,planNote,tasksNote,implementNote note;
 ```
 
 ### 📤 Sync Prompt Files
