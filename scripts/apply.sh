@@ -37,6 +37,8 @@ set -euo pipefail
 #   - repository-template skill
 #   - copilot-instructions.md
 #   - constitution.md
+#   - .specify/scripts/bash
+#   - .specify/templates
 #   - adr-template.md
 #   - docs/codebase-overview/ (with .gitignore)
 #   - docs/prompt-reports/ (with .gitignore)
@@ -64,6 +66,8 @@ PROMPTS_DIR="${REPO_ROOT}/.github/prompts"
 SKILLS_DIR="${REPO_ROOT}/.github/skills"
 COPILOT_INSTRUCTIONS="${REPO_ROOT}/.github/copilot-instructions.md"
 CONSTITUTION="${REPO_ROOT}/.specify/memory/constitution.md"
+SPECIFY_SCRIPTS_BASH="${REPO_ROOT}/.specify/scripts/bash"
+SPECIFY_TEMPLATES="${REPO_ROOT}/.specify/templates"
 ADR_TEMPLATE="${REPO_ROOT}/docs/adr/adr-template.md"
 DOCS_CODEBASE_OVERVIEW="${REPO_ROOT}/docs/codebase-overview"
 DOCS_PROMPT_REPORTS="${REPO_ROOT}/docs/prompt-reports"
@@ -231,6 +235,8 @@ function main() {
   copy-skills "${destination}"
   copy-copilot-instructions "${destination}"
   copy-constitution "${destination}"
+  copy-specify-scripts-bash "${destination}"
+  copy-specify-templates "${destination}"
   copy-adr-template "${destination}"
   copy-docs-codebase-overview "${destination}"
   copy-docs-prompt-reports "${destination}"
@@ -477,6 +483,30 @@ function copy-constitution() {
 
   print-info "Copying constitution.md to ${dest}"
   cp "${CONSTITUTION}" "${dest}/"
+}
+
+# Copy .specify/scripts/bash directory to the destination.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function copy-specify-scripts-bash() {
+
+  local dest="$1/.specify/scripts/bash"
+  mkdir -p "${dest}"
+
+  print-info "Copying .specify/scripts/bash to ${dest}"
+  cp -R "${SPECIFY_SCRIPTS_BASH}/". "${dest}/"
+}
+
+# Copy .specify/templates directory to the destination.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function copy-specify-templates() {
+
+  local dest="$1/.specify/templates"
+  mkdir -p "${dest}"
+
+  print-info "Copying .specify/templates to ${dest}"
+  cp -R "${SPECIFY_TEMPLATES}/". "${dest}/"
 }
 
 # Copy adr-template.md to the destination.
