@@ -2,37 +2,35 @@
 agent: speckit.plan
 ---
 
-You must adhere to the following mandatory planning requirements when creating a development plan.
+You **MUST** adhere to the following mandatory requirements when creating a development plan.
 
-## Documentation (Mandatory)
+**Workflow context:**
 
-When making architectural or significant technical decisions, document them as Architecture Decision Records (ADRs):
+- **Input:** `spec.md` (feature specification)
+- **Output:** `plan.md` (implementation plan)
+- **Next phase:** Tasks generation (`/speckit.tasks`)
 
-**What requires an ADR:**
+**Base requirements:** Follow all rules in [copilot-instructions.md](/.github/copilot-instructions.md), particularly:
 
-- [ ] Architectural style choices (e.g. event-driven vs layered, monolith vs microservices)
-- [ ] Architectural pattern choices (e.g. composition over inheritance, repository pattern, event sourcing)
-- [ ] Language and framework selections
-- [ ] Any other significant technical decision that shapes the system
+- Documentation ADRs
+- Toolchain Version
+- Repository Tooling
 
-**ADR requirements:**
+## Show & Tell Sections (Mandatory)
 
-- [ ] Use the template at [docs/adr/adr-template.md](/docs/adr/adr-template.md)
-- [ ] Follow the existing ADR format for consistency
-- [ ] Always present 3 or more options with trade-offs
-- [ ] Include the conversational context that led to the decision
-- [ ] Document decisions regardless of whether you made them independently or were guided by the user
+Each phase and user story in `plan.md` must include a `### Show & Tell` subsection. This subsection defines the demonstration steps that will be:
 
-This requirement is mandatory, especially during the spec-driven development cycle: `spec` → `plan` → `tasks` → `implement`.
+1. Expanded with specific commands in `tasks.md` (next phase)
+2. Executed by the user during implementation to verify completion
 
-## Toolchain Version (Mandatory)
+## Plan Completion Checklist (Mandatory)
 
-- [ ] Use the latest stable language, runtime, and framework versions at the time of change, search the internet for the latest versions
+Before marking `plan.md` as complete, verify:
 
-## Plan (Mandatory)
-
-- [ ] Plan each phase and user story to include a Show & Tell section with all instructions needed to demonstrate the completed work to stakeholders (e.g. terminal commands, browser navigation, API calls)
-- [ ] Plan to always bring the below capabilities as the minimum using the repository-template skill at [.github/skills/repository-template/SKILL.md](/.github/skills/repository-template/SKILL.md), and ensure they are up to date:
+- [ ] Plan addresses all requirements from `spec.md`
+- [ ] All architectural decisions have corresponding ADRs
+- [ ] Toolchain versions are specified
+- [ ] Repository-template capabilities are planned using the skill at [.github/skills/repository-template/SKILL.md](/.github/skills/repository-template/SKILL.md), including at minimum:
   - [ ] Core Make System
   - [ ] Pre-commit Hooks
   - [ ] Secret Scanning
@@ -40,3 +38,5 @@ This requirement is mandatory, especially during the spec-driven development cyc
   - [ ] Markdown Linting
   - [ ] Docker Support
   - [ ] Tool Version Management
+- [ ] Each phase and user story includes a `### Show & Tell` subsection
+- [ ] Show & Tell subsections are placed at the end of each phase or user story

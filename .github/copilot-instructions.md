@@ -9,7 +9,7 @@
 
 - [ ] Read and adhere to the [constitution](../.specify/memory/constitution.md) at all times
 
-## Documentation (Mandatory)
+## Documentation ADRs (Mandatory)
 
 When making architectural or significant technical decisions, document them as Architecture Decision Records (ADRs):
 
