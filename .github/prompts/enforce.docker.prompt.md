@@ -42,11 +42,11 @@ Enumerate every Dockerfile artefact in the repository, detect any discrepancies 
 
 ## Steps 👣
 
-> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompt-reports/docker-inventory.md`, `docs/prompt-reports/docker-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
+> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompts/docker-inventory.md`, `docs/prompts/docker-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
 
 ### 1) Build the Dockerfile artefact matrix
 
-1. Produce a table (for example in `docs/prompt-reports/docker-inventory.md`) listing each Dockerfile/variant, its purpose, stage names, base image pinning, metadata label location, and key instruction tags that apply.
+1. Produce a table (for example in `docs/prompts/docker-inventory.md`) listing each Dockerfile/variant, its purpose, stage names, base image pinning, metadata label location, and key instruction tags that apply.
 2. Highlight high-risk areas (unpinned `FROM`, missing cleanup, root user, missing `.dockerignore`, metadata not at end) where divergence is most likely.
 
 ### 2) Detect discrepancies against instructions
@@ -66,7 +66,7 @@ Enumerate every Dockerfile artefact in the repository, detect any discrepancies 
    - Files to touch (with justification)
    - Specific instruction tags they satisfy
    - Order of execution (prioritise security and reproducibility fixes first)
-3. Store the plan in `docs/prompt-reports/docker-instructions-alignment-plan.md` for traceability.
+3. Store the plan in `docs/prompts/docker-instructions-alignment-plan.md` for traceability.
 
 ### 4) Implement the changes (iterative, safe batches)
 
@@ -82,7 +82,7 @@ Enumerate every Dockerfile artefact in the repository, detect any discrepancies 
 
 ### 6) Summarise outcomes and next steps
 
-1. Append a final enforcement report to `docs/prompt-reports/docker-instructions-alignment-plan.md` covering:
+1. Append a final enforcement report to `docs/prompts/docker-instructions-alignment-plan.md` covering:
    - Resolved discrepancies (with references)
    - Remaining gaps / technical debt
    - Follow-up actions with owners and due dates

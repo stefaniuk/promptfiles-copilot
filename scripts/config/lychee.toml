@@ -4,5 +4,5 @@ accept = [200]
 exclude = [
   ".github/skills/repository-template/assets/**",
   "docs/codebase-overview/**",
-  "docs/prompt-reports/**",
+  "docs/prompts/**",
 ]

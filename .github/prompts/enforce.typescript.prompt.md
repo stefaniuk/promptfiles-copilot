@@ -42,11 +42,11 @@ Enumerate every TypeScript artefact in the repository, detect any discrepancies 
 
 ## Steps 👣
 
-> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompt-reports/typescript-inventory.md`, `docs/prompt-reports/typescript-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
+> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompts/typescript-inventory.md`, `docs/prompts/typescript-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
 
 ### 1) Build the TypeScript artefact matrix
 
-1. Produce a table (for example in `docs/prompt-reports/typescript-inventory.md`) listing each TypeScript/JavaScript file or folder, its role, and the key instruction tags that apply.
+1. Produce a table (for example in `docs/prompts/typescript-inventory.md`) listing each TypeScript/JavaScript file or folder, its role, and the key instruction tags that apply.
 2. Highlight high-risk areas (entrypoints, shared utilities, routing layers, data models) where divergence is most likely.
 
 ### 2) Detect discrepancies against instructions
@@ -65,7 +65,7 @@ Enumerate every TypeScript artefact in the repository, detect any discrepancies 
    - Files to touch (with justification)
    - Specific instruction tags they satisfy
    - Order of execution (prioritise safety-critical fixes first)
-3. Store the plan in `docs/prompt-reports/typescript-instructions-alignment-plan.md` for traceability.
+3. Store the plan in `docs/prompts/typescript-instructions-alignment-plan.md` for traceability.
 
 ### 4) Implement the changes (iterative, safe batches)
 
@@ -81,7 +81,7 @@ Enumerate every TypeScript artefact in the repository, detect any discrepancies 
 
 ### 6) Summarise outcomes and next steps
 
-1. Produce a final enforcement report (append to `docs/prompt-reports/typescript-instructions-alignment-plan.md`) covering:
+1. Produce a final enforcement report (append to `docs/prompts/typescript-instructions-alignment-plan.md`) covering:
    - Resolved discrepancies (with references)
    - Remaining gaps / technical debt
    - Follow-up actions with owners and due dates

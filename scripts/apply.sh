@@ -40,8 +40,8 @@ set -euo pipefail
 #   - .specify/scripts/bash
 #   - .specify/templates
 #   - adr-template.md
-#   - docs/codebase-overview/ (with .gitkeep)
-#   - docs/prompt-reports/ (with .gitignore)
+#   - docs/codebase-overview/
+#   - docs/prompts/
 #   - project.code-workspace (if not already present)
 #
 # Exit codes:
@@ -70,7 +70,7 @@ SPECIFY_SCRIPTS_BASH="${REPO_ROOT}/.specify/scripts/bash"
 SPECIFY_TEMPLATES="${REPO_ROOT}/.specify/templates"
 ADR_TEMPLATE="${REPO_ROOT}/docs/adr/adr-template.md"
 DOCS_CODEBASE_OVERVIEW="${REPO_ROOT}/docs/codebase-overview"
-DOCS_PROMPT_REPORTS="${REPO_ROOT}/docs/prompt-reports"
+DOCS_PROMPTS="${REPO_ROOT}/docs/prompts"
 WORKSPACE_FILE="${REPO_ROOT}/project.code-workspace"
 
 # Default instruction files (glue layer)
@@ -239,7 +239,7 @@ function main() {
   copy-specify-templates "${destination}"
   copy-adr-template "${destination}"
   copy-docs-codebase-overview "${destination}"
-  copy-docs-prompt-reports "${destination}"
+  copy-docs-prompts "${destination}"
   copy-workspace-file "${destination}"
 
   echo
@@ -545,16 +545,18 @@ function copy-docs-codebase-overview() {
   fi
 }
 
-# Copy docs/prompt-reports directory to the destination.
+# Copy docs/prompts directory to the destination.
 # Arguments (provided as function parameters):
 #   $1=[destination directory path]
-function copy-docs-prompt-reports() {
+function copy-docs-prompts() {
 
-  local dest="$1/docs/prompt-reports"
-  mkdir -p "${dest}"
+  local dest="$1/docs"
+  mkdir -p "${dest}/prompts"
 
-  print-info "Copying docs/prompt-reports to ${dest}"
-  cp -R "${DOCS_PROMPT_REPORTS}/." "${dest}/"
+  print-info "Copying docs/prompts to ${dest}/prompts"
+  cp -R "${DOCS_PROMPTS}/." "${dest}/prompts/"
+  print-info "Creating docs/.gitignore"
+  echo "prompts" > "${dest}/.gitignore"
 }
 
 # Copy project.code-workspace to the destination if it does not already exist.

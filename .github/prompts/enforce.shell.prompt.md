@@ -42,11 +42,11 @@ Enumerate every shell script artefact in the repository, detect any discrepancie
 
 ## Steps 👣
 
-> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompt-reports/shell-inventory.md`, `docs/prompt-reports/shell-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
+> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompts/shell-inventory.md`, `docs/prompts/shell-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
 
 ### 1) Build the shell artefact matrix
 
-1. Produce a table (for example in `docs/prompt-reports/shell-inventory.md`) listing each script/library, its role, and the key instruction tags that apply.
+1. Produce a table (for example in `docs/prompts/shell-inventory.md`) listing each script/library, its role, and the key instruction tags that apply.
 2. Highlight high-risk areas (missing headers, unsafe defaults, inconsistent function naming, unquoted variables, missing tests) where divergence is most likely.
 
 ### 2) Detect discrepancies against instructions
@@ -67,7 +67,7 @@ Enumerate every shell script artefact in the repository, detect any discrepancie
    - Files to touch (with justification)
    - Specific instruction tags they satisfy
    - Order of execution (prioritise safety and error-handling fixes first)
-3. Store the plan in `docs/prompt-reports/shell-instructions-alignment-plan.md` for traceability.
+3. Store the plan in `docs/prompts/shell-instructions-alignment-plan.md` for traceability.
 
 ### 4) Implement the changes (iterative, safe batches)
 
@@ -83,7 +83,7 @@ Enumerate every shell script artefact in the repository, detect any discrepancie
 
 ### 6) Summarise outcomes and next steps
 
-1. Append a final enforcement report to `docs/prompt-reports/shell-instructions-alignment-plan.md` covering:
+1. Append a final enforcement report to `docs/prompts/shell-instructions-alignment-plan.md` covering:
    - Resolved discrepancies (with references)
    - Remaining gaps / technical debt
    - Follow-up actions with owners and due dates

@@ -44,11 +44,11 @@ Enumerate every Playwright TypeScript test artefact in the repository, detect an
 
 ## Steps 👣
 
-> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompt-reports/playwright-typescript-inventory.md`, `docs/prompt-reports/playwright-typescript-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
+> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompts/playwright-typescript-inventory.md`, `docs/prompts/playwright-typescript-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
 
 ### 1) Build the Playwright TypeScript artefact matrix
 
-1. Produce a table (for example in `docs/prompt-reports/playwright-typescript-inventory.md`) listing each test file or folder, its role, and the key instruction tags that apply.
+1. Produce a table (for example in `docs/prompts/playwright-typescript-inventory.md`) listing each test file or folder, its role, and the key instruction tags that apply.
 2. Highlight high-risk areas (locator patterns, assertion usage, missing await, flaky test patterns) where divergence is most likely.
 
 ### 2) Detect discrepancies against instructions
@@ -67,7 +67,7 @@ Enumerate every Playwright TypeScript test artefact in the repository, detect an
    - Files to touch (with justification)
    - Specific instruction tags they satisfy
    - Order of execution (prioritise stability-critical fixes first)
-3. Store the plan in `docs/prompt-reports/playwright-typescript-instructions-alignment-plan.md` for traceability.
+3. Store the plan in `docs/prompts/playwright-typescript-instructions-alignment-plan.md` for traceability.
 
 ### 4) Implement the changes (iterative, safe batches)
 
@@ -84,7 +84,7 @@ Enumerate every Playwright TypeScript test artefact in the repository, detect an
 
 ### 6) Summarise outcomes and next steps
 
-1. Produce a final enforcement report (append to `docs/prompt-reports/playwright-typescript-instructions-alignment-plan.md`) covering:
+1. Produce a final enforcement report (append to `docs/prompts/playwright-typescript-instructions-alignment-plan.md`) covering:
    - Resolved discrepancies (with references)
    - Remaining gaps / technical debt
    - Follow-up actions with owners and due dates

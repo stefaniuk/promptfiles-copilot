@@ -43,11 +43,11 @@ Enumerate every Tauri artefact in the repository, detect any discrepancies again
 
 ## Steps 👣
 
-> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompt-reports/tauri-inventory.md`, `docs/prompt-reports/tauri-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
+> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompts/tauri-inventory.md`, `docs/prompts/tauri-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
 
 ### 1) Build the Tauri artefact matrix
 
-1. Produce a table (for example in `docs/prompt-reports/tauri-inventory.md`) listing each Tauri file or component, its role, and the key instruction tags that apply.
+1. Produce a table (for example in `docs/prompts/tauri-inventory.md`) listing each Tauri file or component, its role, and the key instruction tags that apply.
 2. Highlight high-risk areas (capability definitions, IPC commands, CSP configuration, filesystem access, update signing) where divergence is most likely.
 
 ### 2) Detect discrepancies against instructions
@@ -68,7 +68,7 @@ Enumerate every Tauri artefact in the repository, detect any discrepancies again
    - Files to touch (with justification)
    - Specific instruction tags they satisfy
    - Order of execution (prioritise security-critical fixes first — capabilities, CSP, remote content)
-3. Store the plan in `docs/prompt-reports/tauri-instructions-alignment-plan.md` for traceability.
+3. Store the plan in `docs/prompts/tauri-instructions-alignment-plan.md` for traceability.
 
 ### 4) Implement the changes (iterative, safe batches)
 
@@ -85,7 +85,7 @@ Enumerate every Tauri artefact in the repository, detect any discrepancies again
 
 ### 6) Summarise outcomes and next steps
 
-1. Produce a final enforcement report (append to `docs/prompt-reports/tauri-instructions-alignment-plan.md`) covering:
+1. Produce a final enforcement report (append to `docs/prompts/tauri-instructions-alignment-plan.md`) covering:
    - Resolved discrepancies (with references)
    - Remaining gaps / technical debt
    - Follow-up actions with owners and due dates

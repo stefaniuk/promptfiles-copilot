@@ -42,11 +42,11 @@ Enumerate every Makefile (including included `*.mk` modules), detect discrepanci
 
 ## Steps 👣
 
-> **Note:** On subsequent runs, detect whether artefacts from earlier executions (for example `docs/prompt-reports/makefile-inventory.md`, `docs/prompt-reports/makefile-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
+> **Note:** On subsequent runs, detect whether artefacts from earlier executions (for example `docs/prompts/makefile-inventory.md`, `docs/prompts/makefile-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
 
 ### 1) Build the Makefile artefact matrix
 
-1. Produce a table (for example in `docs/prompt-reports/makefile-inventory.md`) listing each Makefile/module, its scope (root, shared, CI-only), key public targets, and instruction tags that apply.
+1. Produce a table (for example in `docs/prompts/makefile-inventory.md`) listing each Makefile/module, its scope (root, shared, CI-only), key public targets, and instruction tags that apply.
 2. Highlight high-risk areas (help/UX coverage, shell safety, destructive targets, CI-only scripts) where divergence is most likely.
 
 ### 2) Detect discrepancies against instructions
@@ -65,7 +65,7 @@ Enumerate every Makefile (including included `*.mk` modules), detect discrepanci
    - Files/modules/scripts to touch (with justification)
    - Specific instruction tags they satisfy
    - Order of execution (prioritise safety-critical fixes first)
-3. Store the plan in `docs/prompt-reports/makefile-instructions-alignment-plan.md` for traceability.
+3. Store the plan in `docs/prompts/makefile-instructions-alignment-plan.md` for traceability.
 
 ### 4) Implement the changes (iterative, safe batches)
 
@@ -81,7 +81,7 @@ Enumerate every Makefile (including included `*.mk` modules), detect discrepanci
 
 ### 6) Summarise outcomes and next steps
 
-1. Append a final enforcement report to `docs/prompt-reports/makefile-instructions-alignment-plan.md` covering:
+1. Append a final enforcement report to `docs/prompts/makefile-instructions-alignment-plan.md` covering:
    - Resolved discrepancies (with references)
    - Remaining gaps / technical debt
    - Follow-up actions with owners and due dates

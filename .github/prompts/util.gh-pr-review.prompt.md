@@ -82,7 +82,7 @@ If the diff cannot be produced, record **Unknown from code – run git diff agai
 ### C. Detect prior reviews and new commits (incremental review)
 
 1. Define the review output file path for today:
-   - `docs/prompt-reports/pr-review-YYYYMMDD.md` (use today's date)
+   - `docs/prompts/pr-review-YYYYMMDD.report.md` (use today's date)
 2. If the file already exists:
    - Read it fully.
    - Treat it as the previous review baseline for this branch.
@@ -200,7 +200,7 @@ Use the following checklist and report findings with evidence links and file pat
 
 Write all review output to:
 
-- `docs/prompt-reports/pr-review-YYYYMMDD.md` (use today's date)
+- `docs/prompts/pr-review-YYYYMMDD.report.md` (use today's date)
 
 If the file exists, append a new section:
 
@@ -259,5 +259,5 @@ Use this snippet for each significant finding:
 
 ---
 
-> **Version**: 1.3.8
-> **Last Amended**: 2026-01-17
+> **Version**: 1.3.9
+> **Last Amended**: 2026-01-23

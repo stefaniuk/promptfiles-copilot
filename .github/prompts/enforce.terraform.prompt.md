@@ -42,11 +42,11 @@ Enumerate every Terraform artefact in the repository, detect any discrepancies a
 
 ## Steps 👣
 
-> **Note:** On subsequent runs, detect whether earlier artefacts (for example `docs/prompt-reports/terraform-inventory.md`, `docs/prompt-reports/terraform-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
+> **Note:** On subsequent runs, detect whether earlier artefacts (for example `docs/prompts/terraform-inventory.md`, `docs/prompts/terraform-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
 
 ### 1) Build the Terraform artefact matrix
 
-1. Produce a table (for example in `docs/prompt-reports/terraform-inventory.md`) listing each module/stack file or folder, its role, environments it affects, and key instruction tags that apply.
+1. Produce a table (for example in `docs/prompts/terraform-inventory.md`) listing each module/stack file or folder, its role, environments it affects, and key instruction tags that apply.
 2. Highlight high-risk areas (state backends, IAM, networking, encryption, CI/CD pipelines) where divergence is most likely.
 
 ### 2) Detect discrepancies against instructions
@@ -65,7 +65,7 @@ Enumerate every Terraform artefact in the repository, detect any discrepancies a
    - Files/stacks/modules to touch (with justification)
    - Specific instruction tags they satisfy
    - Order of execution (prioritise safety-critical fixes first)
-3. Store the plan in `docs/prompt-reports/terraform-instructions-alignment-plan.md` for traceability.
+3. Store the plan in `docs/prompts/terraform-instructions-alignment-plan.md` for traceability.
 
 ### 4) Implement the changes (iterative, safe batches)
 
@@ -81,7 +81,7 @@ Enumerate every Terraform artefact in the repository, detect any discrepancies a
 
 ### 6) Summarise outcomes and next steps
 
-1. Append a final enforcement report to `docs/prompt-reports/terraform-instructions-alignment-plan.md` covering:
+1. Append a final enforcement report to `docs/prompts/terraform-instructions-alignment-plan.md` covering:
    - Resolved discrepancies (with references)
    - Remaining gaps / technical debt
    - Follow-up actions with owners and due dates

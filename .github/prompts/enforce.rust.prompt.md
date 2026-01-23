@@ -42,11 +42,11 @@ Enumerate every Rust artefact in the repository, detect any discrepancies agains
 
 ## Steps 👣
 
-> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompt-reports/rust-inventory.md`, `docs/prompt-reports/rust-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
+> **Note:** On subsequent runs, check whether artefacts from earlier executions (for example `docs/prompts/rust-inventory.md`, `docs/prompts/rust-instructions-alignment-plan.md`) already exist and parse them so progress is cumulative rather than duplicated.
 
 ### 1) Build the Rust artefact matrix
 
-1. Produce a table (for example in `docs/prompt-reports/rust-inventory.md`) listing each Rust file or crate, its role, and the key instruction tags that apply.
+1. Produce a table (for example in `docs/prompts/rust-inventory.md`) listing each Rust file or crate, its role, and the key instruction tags that apply.
 2. Highlight high-risk areas (unsafe blocks, async boundaries, error handling, CLI entrypoints, public API surfaces) where divergence is most likely.
 
 ### 2) Detect discrepancies against instructions
@@ -64,7 +64,7 @@ Enumerate every Rust artefact in the repository, detect any discrepancies agains
    - Files to touch (with justification)
    - Specific instruction tags they satisfy
    - Order of execution (prioritise safety-critical fixes first — unsafe, async, error handling)
-3. Store the plan in `docs/prompt-reports/rust-instructions-alignment-plan.md` for traceability.
+3. Store the plan in `docs/prompts/rust-instructions-alignment-plan.md` for traceability.
 
 ### 4) Implement the changes (iterative, safe batches)
 
@@ -80,7 +80,7 @@ Enumerate every Rust artefact in the repository, detect any discrepancies agains
 
 ### 6) Summarise outcomes and next steps
 
-1. Produce a final enforcement report (append to `docs/prompt-reports/rust-instructions-alignment-plan.md`) covering:
+1. Produce a final enforcement report (append to `docs/prompts/rust-instructions-alignment-plan.md`) covering:
    - Resolved discrepancies (with references)
    - Remaining gaps / technical debt
    - Follow-up actions with owners and due dates
