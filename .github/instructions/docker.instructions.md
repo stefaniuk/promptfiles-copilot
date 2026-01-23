@@ -745,7 +745,7 @@ services:
 
 - [DF-CMP-019] Prefer `env_file` for non-sensitive, environment-specific config.
 - [DF-CMP-020] Use `.env` for Compose variable interpolation (project name, ports, feature flags).
-- [DF-CMP-021] Document all required environment variables in `.env.default` (committed) without values.
+- [DF-CMP-021] Document all required environment variables in `.env.example` (committed) without values.
 
 ### 15.7 Profiles for optional services
 
