@@ -26,7 +26,7 @@
 - [ ] I have added tests to cover my changes
 - [ ] I have updated the documentation accordingly
 - [ ] This PR is a result of pair or mob programming
-- [ ] This PR is a result of vibe engineering sessions
+- [ ] This PR is a result of AI-assisted development sessions
 
 ---
 

@@ -4,7 +4,7 @@
 
 [![Spec-Kit](https://img.shields.io/badge/spec--kit-powered-blue?style=for-the-badge)](https://github.com/stefaniuk/promptfiles)
 [![Licence](https://img.shields.io/badge/licence-MIT-green?style=for-the-badge)](LICENCE.md)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)](CONTRIBUTING.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)](./.github/contributing.md)
 
 **A curated, specification-first library of prompts, instruction packs, skills, and Copilot agents**
 
@@ -222,7 +222,7 @@ Prompts use a **prefix + category + verb** convention to keep fuzzy search fast 
 
 ## 🤝 Contributing
 
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
+We welcome contributions! See [contributing.md](./.github/contributing.md) for the full guide.
 
 **Quick checklist:**
 

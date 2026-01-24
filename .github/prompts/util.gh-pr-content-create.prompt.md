@@ -53,6 +53,17 @@ done
 2. Record the exact commands executed, their status, and any failures (include logs or pointer files when relevant).
 3. Note follow-up checks that must still run (for example integration tests in CI).
 
+### D. Detect prior content and determine output file
+
+1. Define the output file path for today:
+   - `docs/prompts/pr-content-YYYYMMDD.report.md` (use today's date)
+2. If the file already exists:
+   - Read it fully.
+   - Compare against the current diff to identify what has changed since the last run.
+   - Overwrite the file with updated content reflecting the latest branch state.
+3. If the file does not exist:
+   - Create it with the generated PR content.
+
 ---
 
 ## Steps 👣
@@ -82,13 +93,17 @@ done
    - Use **Unknown from code – run {command}** where evidence is missing.
 8. **Call out follow-ups**
    - If additional work is deferred, list it succinctly (for example documentation gaps, pending ADRs) under Description or Context as bullet points.
+9. **Write the output file (required)**
+   - Write all generated PR content to `docs/prompts/pr-content-YYYYMMDD.report.md` (use today's date).
+   - If the file exists, overwrite it with the updated content.
+   - Include a **Generated** footer with the current timestamp.
 
 ---
 
 ## Output requirements 📋
 
-- Produce copy-ready Markdown using the structure below (include the title and every section in order).
-- Do not surround the output in triple backticks; emit raw Markdown.
+- Write the generated content to `docs/prompts/pr-content-YYYYMMDD.report.md`.
+- Produce copy-ready raw Markdown using the structure below (include the title and every section in order).
 - Replace placeholder ellipses with actual content; never leave template instructions in the final text.
 - Use workspace-relative Markdown links (for example `[scripts/apply.sh](scripts/apply.sh#L10-L40)`).
 - Maintain ASCII-only content unless evidence requires Unicode.
@@ -104,6 +119,10 @@ done
 
 {why the change is needed, linked artefacts/specs}
 
+## How to test it
+
+{steps to verify the change, commands run, evidence}
+
 ## Type of changes
 
 - [ ] Refactoring (non-breaking change)
@@ -118,16 +137,20 @@ done
 - [ ] I have added tests to cover my changes
 - [ ] I have updated the documentation accordingly
 - [ ] This PR is a result of pair or mob programming
-- [ ] This PR is a result of vibe engineering sessions
+- [ ] This PR is a result of AI-assisted development sessions
 
 ## Sensitive Information Declaration
 
 - [ ] I confirm that neither PII/PID nor sensitive data are included in this PR and the codebase changes.
+
+---
+
+> Generated: YYYY-MM-DD hh:mm:ss
 ```
 
 Add additional sections (for example "Testing", "Follow-ups") **only** if the template explicitly gains them in future revisions, and keep the order consistent with the template file.
 
 ---
 
-> **Version**: 1.0.0
+> **Version**: 1.1.0
 > **Last Amended**: 2026-01-24
