@@ -4,14 +4,10 @@ description: Generate pull request review using codebase overview context
 
 **Mandatory preparation:**
 
-- Read [codebase overview](../instructions/includes/codebase-overview-baseline.include.md) in full and follow strictly its rules before executing any step below.
-- Read the technology-specific instructions for each language touched in this PR and use them to support the review. Common ones:
-  - [Makefile](../instructions/makefile.instructions.md)
-  - [Shell](../instructions/shell.instructions.md)
-  - [Docker](../instructions/docker.instructions.md)
-  - [Python](../instructions/python.instructions.md)
-  - [TypeScript](../instructions/typescript.instructions.md)
-  - [Terraform](../instructions/terraform.instructions.md)
+- Read the [constitution](../../.specify/memory/constitution.md) and honour its non-negotiable rules.
+- Read the Pull Request template at [pull_request_template.md](../pull_request_template.md) so the generated content mirrors it exactly.
+- Read the technology-specific instructions for every language touched in the diff (for example [python.instructions.md](../instructions/python.instructions.md), [shell.instructions.md](../instructions/shell.instructions.md), [makefile.instructions.md](../instructions/makefile.instructions.md)).
+- Review the design context under `docs/codebase-overview/` to describe affected components accurately.
 
 ## Goal 🎯
 
@@ -60,8 +56,8 @@ for cmd in \
 done
 ```
 
-1. Use `git diff --stat` for the overview and `git diff main...HEAD` for full context.
-2. Capture branch/working-tree details from `git status -sb` and `git rev-parse --abbrev-ref HEAD`.
+1. Use `git diff --stat` for the overview and `git diff main...HEAD` for detailed evidence.
+2. Capture branch/working-tree information from `git status -sb` and `git rev-parse --abbrev-ref HEAD`.
 3. Identify the change category (one or more):
    - Bug fix
    - New feature
@@ -259,5 +255,5 @@ Use this snippet for each significant finding:
 
 ---
 
-> **Version**: 1.3.9
-> **Last Amended**: 2026-01-23
+> **Version**: 1.3.10
+> **Last Amended**: 2026-01-24

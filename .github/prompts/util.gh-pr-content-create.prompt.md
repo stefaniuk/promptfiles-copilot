@@ -1,0 +1,133 @@
+---
+description: Create pull request content from the current branch changes
+---
+
+**Mandatory preparation:**
+
+- Read the [constitution](../../.specify/memory/constitution.md) and honour its non-negotiable rules.
+- Read the Pull Request template at [pull_request_template.md](../pull_request_template.md) so the generated content mirrors it exactly.
+- Read the technology-specific instructions for every language touched in the diff (for example [python.instructions.md](../instructions/python.instructions.md), [shell.instructions.md](../instructions/shell.instructions.md), [makefile.instructions.md](../instructions/makefile.instructions.md)).
+- Review the design context under `docs/codebase-overview/` to describe affected components accurately.
+
+## Goal 🎯
+
+Craft a diff-driven pull request title and body, ready to copy/paste, that compares the current branch (plus staged/unstaged changes) against `main`, summarises behaviour, lists verification evidence, and fills every section of [pull_request_template.md](../pull_request_template.md).
+
+---
+
+## Discovery (run before writing) 🔍
+
+### A. Establish the diff against `main`
+
+Run the labelled batch below **once** from the repository root so each command prints `>>> <command>` before its output:
+
+```bash
+if ! git show-ref --verify --quiet refs/heads/main; then
+  printf '\n>>> %s\n' "git fetch origin main:main"
+  git fetch origin main:main
+fi
+for cmd in \
+  "git diff --stat main...HEAD" \
+  "git diff main...HEAD" \
+  "git status -sb" \
+  "git rev-parse --abbrev-ref HEAD"; do
+    printf '\n>>> %s\n' "$cmd"
+    eval "$cmd"
+done
+```
+
+- Use `git diff --stat` for the overview and `git diff main...HEAD` for detailed evidence.
+- Capture branch/working-tree information from `git status -sb` and `git rev-parse --abbrev-ref HEAD`.
+- If there is no diff, stop and report **"No diff vs main – nothing to raise."**
+
+### B. Summarise behavioural impact
+
+1. Enumerate the files, components, and flows touched (map component names to `docs/codebase-overview/*`).
+2. Identify change categories (bug fix, feature, refactor, documentation, tooling) and note any public interfaces affected.
+3. Record configuration, schema, or dependency updates.
+4. Capture open questions as **Unknown from code – {action needed}**.
+
+### C. Quality gates & evidence
+
+1. Run the repository-quality gates (for example `make lint`, `make test`, tool-specific suites) after syncing dependencies.
+2. Record the exact commands executed, their status, and any failures (include logs or pointer files when relevant).
+3. Note follow-up checks that must still run (for example integration tests in CI).
+
+---
+
+## Steps 👣
+
+1. **Derive the pull request title**
+   - Use Conventional Commit style `type(scope): summary` with lower-case type and bracketed scope (for example `feat(shell): tighten hook logging`).
+   - Keep it ≤ 72 characters, action-oriented, British English.
+   - Reflect the dominant change category and scope (for example `fix(ci): stabilise markdown lint`).
+   - Mention breaking changes explicitly by adding `!` after the type/scope (for example `feat(api)!: ...`).
+2. **Populate the Description section**
+   - Summarise behaviour changes in 1–2 sentences referencing affected components.
+   - Use bullet points for specifics (inputs, outputs, contracts, migrations, configuration).
+   - Reference evidence via workspace-relative Markdown links wherever possible.
+3. **Populate the Context section**
+   - Explain the problem statement, user need, or specification driver.
+   - Call out linked specs/ADRs/tasks via Markdown links.
+4. **Set the "Type of changes" checkboxes**
+   - Choose `x` for every applicable category (Refactoring, New feature, Breaking change, Bug fix) based on the diff.
+   - Leave non-applicable items unchecked (`[ ]`). Never delete a line from the template.
+5. **Update the Checklist section**
+   - Reflect actual work done (`[x]`) vs outstanding (`[ ]`).
+   - Always reference whether tests/docs were updated, style guidelines were followed, and collaboration mode (pair/mob/vibe) occurred.
+6. **Populate "Sensitive Information Declaration"**
+   - Confirm (`[x]`) only if you verified no PII/PID/sensitive data exists in the changes; otherwise leave unchecked and note required remediation.
+7. **Highlight verification evidence**
+   - Mention commands run (`make lint`, `make test`, bespoke scripts) and their outcomes inside Description or Context bullets.
+   - Use **Unknown from code – run {command}** where evidence is missing.
+8. **Call out follow-ups**
+   - If additional work is deferred, list it succinctly (for example documentation gaps, pending ADRs) under Description or Context as bullet points.
+
+---
+
+## Output requirements 📋
+
+- Produce copy-ready Markdown using the structure below (include the title and every section in order).
+- Do not surround the output in triple backticks; emit raw Markdown.
+- Replace placeholder ellipses with actual content; never leave template instructions in the final text.
+- Use workspace-relative Markdown links (for example `[scripts/apply.sh](scripts/apply.sh#L10-L40)`).
+- Maintain ASCII-only content unless evidence requires Unicode.
+
+```markdown
+# {pull request title}
+
+## Description
+
+{3-5 bullet points grounded in the diff}
+
+## Context
+
+{why the change is needed, linked artefacts/specs}
+
+## Type of changes
+
+- [ ] Refactoring (non-breaking change)
+- [ ] New feature (non-breaking change which adds functionality)
+- [ ] Breaking change (fix or feature that would change existing functionality)
+- [ ] Bug fix (non-breaking change which fixes an issue)
+
+## Checklist
+
+- [ ] I am familiar with the contributing guidelines
+- [ ] I have followed the code style of the project
+- [ ] I have added tests to cover my changes
+- [ ] I have updated the documentation accordingly
+- [ ] This PR is a result of pair or mob programming
+- [ ] This PR is a result of vibe engineering sessions
+
+## Sensitive Information Declaration
+
+- [ ] I confirm that neither PII/PID nor sensitive data are included in this PR and the codebase changes.
+```
+
+Add additional sections (for example "Testing", "Follow-ups") **only** if the template explicitly gains them in future revisions, and keep the order consistent with the template file.
+
+---
+
+> **Version**: 1.0.0
+> **Last Amended**: 2026-01-24

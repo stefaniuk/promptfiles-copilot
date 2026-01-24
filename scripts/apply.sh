@@ -36,6 +36,7 @@ set -euo pipefail
 #   - Default templates (Makefile, Dockerfile, compose.yaml, shell-script)
 #   - repository-template skill
 #   - copilot-instructions.md
+#   - pull_request_template.md (if not already present)
 #   - constitution.md
 #   - .specify/scripts/bash
 #   - .specify/templates
@@ -65,6 +66,7 @@ INSTRUCTIONS_DIR="${REPO_ROOT}/.github/instructions"
 PROMPTS_DIR="${REPO_ROOT}/.github/prompts"
 SKILLS_DIR="${REPO_ROOT}/.github/skills"
 COPILOT_INSTRUCTIONS="${REPO_ROOT}/.github/copilot-instructions.md"
+PULL_REQUEST_TEMPLATE="${REPO_ROOT}/.github/pull_request_template.md"
 CONSTITUTION="${REPO_ROOT}/.specify/memory/constitution.md"
 SPECIFY_SCRIPTS_BASH="${REPO_ROOT}/.specify/scripts/bash"
 SPECIFY_TEMPLATES="${REPO_ROOT}/.specify/templates"
@@ -234,6 +236,7 @@ function main() {
   copy-prompts "${destination}"
   copy-skills "${destination}"
   copy-copilot-instructions "${destination}"
+  copy-pull-request-template "${destination}"
   copy-constitution "${destination}"
   copy-specify-scripts-bash "${destination}"
   copy-specify-templates "${destination}"
@@ -471,6 +474,22 @@ function copy-copilot-instructions() {
 
   print-info "Copying copilot-instructions.md to ${dest}"
   cp "${COPILOT_INSTRUCTIONS}" "${dest}/"
+}
+
+# Copy pull_request_template.md to the destination if missing.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function copy-pull-request-template() {
+
+  local dest_file="$1/.github/pull_request_template.md"
+  mkdir -p "$(dirname "${dest_file}")"
+
+  if [[ -f "${dest_file}" ]]; then
+    print-info "Skipping pull_request_template.md (already exists)"
+  else
+    print-info "Copying pull_request_template.md to ${dest_file}"
+    cp "${PULL_REQUEST_TEMPLATE}" "${dest_file}"
+  fi
 }
 
 # Copy constitution.md to the destination.
