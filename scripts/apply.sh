@@ -76,7 +76,7 @@ DOCS_PROMPTS="${REPO_ROOT}/docs/prompts"
 WORKSPACE_FILE="${REPO_ROOT}/project.code-workspace"
 
 # Default instruction files (glue layer)
-DEFAULT_INSTRUCTIONS=("docker" "makefile" "shell")
+DEFAULT_INSTRUCTIONS=("docker" "makefile" "readme" "shell")
 
 # Default prompt patterns (glue layer and spec-kit)
 DEFAULT_PROMPT_PATTERNS=("codebase.*" "enforce.docker" "enforce.makefile" "enforce.shell" "review.speckit-*" "speckit.*" "util.*")
