@@ -75,8 +75,8 @@ Before finalising, confirm:
 
 - `[RD-VAL-001]` The opening section answers purpose, benefit, problem, and high-level approach.
 - `[RD-VAL-002]` Quick start is runnable or marked with `TODO:` placeholders.
-- `[RD-VAL-003]` Contributing links to `.github/contributing.md` (or records TODO).
-- `[RD-VAL-004]` Licence links to `LICENCE.md` (or records TODO).
+- `[RD-VAL-003]` Contributing links to `.github/contributing.md`.
+- `[RD-VAL-004]` Licence links to `LICENCE.md`.
 - `[RD-VAL-005]` Every statement is evidence-backed; no invented claims.
 - `[RD-VAL-006]` British English spelling and punctuation throughout.
 
@@ -106,5 +106,5 @@ If you created a README from scratch, include a short "Assumptions and TODOs" li
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-01-25
+> **Version**: 1.0.1
+> **Last Amended**: 2026-01-26

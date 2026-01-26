@@ -124,7 +124,7 @@ They are **non-negotiable** unless an explicit ADR grants a scoped, time-bound e
 
 ### 6.7 Contributing
 
-- [RD-SEC-025] Link to `.github/contributing.md`; if it does not exist, add `TODO: add a contributing file`.
+- [RD-SEC-025] Link to `.github/contributing.md`; if it does not exist, create a contributing file.
 - [RD-SEC-026] Summarise development setup steps (dependencies, local run commands) at a high level.
 - [RD-SEC-027] List the quality commands (linting, testing, formatting) that contributors must run.
 - [RD-SEC-028] Explain how to propose changes (issues, pull requests, review expectations) without duplicating the full contributing guide.
@@ -138,7 +138,7 @@ They are **non-negotiable** unless an explicit ADR grants a scoped, time-bound e
 ### 6.9 Licence
 
 - [RD-SEC-033] State the licence name exactly as defined in `LICENCE.md`.
-- [RD-SEC-034] Link to the licence file using a relative link; if the file is missing, add `TODO: add a licence file`.
+- [RD-SEC-034] Link to the licence file using a relative link; if the file is missing, create an MIT licence file.
 
 ## 7. Standard links 🔗
 
