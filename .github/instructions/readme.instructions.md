@@ -171,5 +171,5 @@ Before finalising the README, confirm:
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-01-25
+> **Version**: 1.0.1
+> **Last Amended**: 2026-01-26
