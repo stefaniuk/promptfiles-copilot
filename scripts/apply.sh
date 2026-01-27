@@ -18,10 +18,10 @@ set -euo pipefail
 #   all=true                # Include all technology-specific files
 #   python=true             # Include Python instruction and enforcement prompt
 #   typescript=true         # Include TypeScript instruction and enforcement prompt
-#   react=true              # Include React instruction and enforcement prompt
+#   reactjs=true            # Include ReactJS instruction and enforcement prompt
 #   rust=true               # Include Rust instruction and enforcement prompt
 #   terraform=true          # Include Terraform instruction and enforcement prompt
-#   tauri=true              # Include Tauri instruction and enforcement prompt (auto-enables rust, typescript, react)
+#   tauri=true              # Include Tauri instruction and enforcement prompt (auto-enables rust, typescript, reactjs)
 #   playwright=true         # Include Playwright instruction and prompt (requires python or typescript)
 #   django=true             # Include Django skill (auto-enables python)
 #   fastapi=true            # Include FastAPI skill (auto-enables python)
@@ -88,7 +88,7 @@ DEFAULT_TEMPLATES=("Makefile.template" "Dockerfile.template" "compose.yaml.templ
 DEFAULT_SKILLS=("repository-template")
 
 # All technology switches (for iteration)
-ALL_TECHS=("python" "typescript" "react" "rust" "terraform" "tauri" "playwright" "django" "fastapi")
+ALL_TECHS=("python" "typescript" "reactjs" "rust" "terraform" "tauri" "playwright" "django" "fastapi")
 
 # ==============================================================================
 
@@ -101,7 +101,7 @@ function get-tech-instruction() {
   case "$1" in
     python) echo "python" ;;
     typescript) echo "typescript" ;;
-    react) echo "reactjs" ;;
+    reactjs) echo "reactjs" ;;
     rust) echo "rust" ;;
     terraform) echo "terraform" ;;
     tauri) echo "tauri" ;;
@@ -130,7 +130,7 @@ function get-tech-prompt() {
   case "$1" in
     python) echo "enforce.python" ;;
     typescript) echo "enforce.typescript" ;;
-    react) echo "enforce.reactjs" ;;
+    reactjs) echo "enforce.reactjs" ;;
     rust) echo "enforce.rust" ;;
     terraform) echo "enforce.terraform" ;;
     tauri) echo "enforce.tauri" ;;
@@ -183,11 +183,11 @@ function main() {
     exit 1
   fi
 
-  # Auto-enable rust, typescript, and react if tauri is specified
+  # Auto-enable rust, typescript, and reactjs if tauri is specified
   if is-arg-true "${tauri:-false}"; then
     rust=true
     typescript=true
-    react=true
+    reactjs=true
   fi
 
   # Auto-enable python if django or fastapi is specified
@@ -628,10 +628,10 @@ Technology switches (set to 'true' to include):
     all=true                Include all technology-specific files
     python=true             Python instruction and prompt
     typescript=true         TypeScript instruction and prompt
-    react=true              React instruction and prompt
+    reactjs=true            ReactJS instruction and prompt
     rust=true               Rust instruction and prompt
     terraform=true          Terraform instruction and prompt
-    tauri=true              Tauri instruction and prompt (auto-enables rust, typescript, react)
+    tauri=true              Tauri instruction and prompt (auto-enables rust, typescript, reactjs)
     playwright=true         Playwright instruction and prompt (requires python or typescript)
     django=true             Django skill (auto-enables python)
     fastapi=true            FastAPI skill (auto-enables python)
