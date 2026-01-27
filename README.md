@@ -1,26 +1,52 @@
-<div align="center">
+# Prompt Files
 
-# 🤖 AI-assisted Development Prompt Files
+A curated, specification-first library of prompts, instruction packs, skills, and Copilot agents that keeps AI helpers aligned with the spec-kit operating model.
 
 [![Spec-Kit](https://img.shields.io/badge/spec--kit-powered-blue?style=for-the-badge)](https://github.com/stefaniuk/promptfiles)
 [![Licence](https://img.shields.io/badge/licence-MIT-green?style=for-the-badge)](LICENCE.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=for-the-badge)](./.github/contributing.md)
 
-**A curated, specification-first library of prompts, instruction packs, skills, and Copilot agents**
+## Why this project exists
 
-_Keep AI helpers aligned with the spec-kit operating model • Copy-and-paste reuse • Deterministic workflows_
+### Purpose
 
-[Quick Start](#-quick-start) •
-[Features](#-why-use-this-library) •
-[Artefacts](#-featured-artefacts) •
-[Workflow](#-operational-workflow) •
-[Contributing](#-contributing)
+This library provides a central source of reusable prompts, instruction packs, skills, and Copilot agents for AI-assisted development workflows. It enables specification-driven development by keeping AI helpers aligned with a shared operating model.
 
-</div>
+### Benefit to the user
 
----
+Teams gain consistent, deterministic automation across repositories. Copy-paste reuse makes onboarding faster, and governance gates ensure that specifications, code, and documentation stay synchronised.
 
-## 🚀 Quick Start
+### Problem it solves
+
+Without shared prompt files, AI assistants drift from agreed standards, produce inconsistent outputs, and lack deterministic validation. Teams end up reinventing the same prompts and struggling to maintain alignment across projects.
+
+### How it solves it (high level)
+
+Prompts, agents, and skills are written directly against the spec-kit constitution. Instruction packs apply deterministic lint, test, and review rules. Every workflow leans on `make lint`, `make test`, and explicit governance gates, keeping behaviour measurable and testable.
+
+## Quick start
+
+### Prerequisites
+
+- Git
+- Make (GNU Make 3.82+)
+- A text editor (VS Code recommended for Copilot integration)
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/stefaniuk/promptfiles.git
+cd promptfiles
+
+# Configure the development environment
+make config
+
+# Verify quality gates work
+make lint && make test
+```
+
+### First run
 
 Get up and running in minutes:
 
@@ -32,59 +58,35 @@ Get up and running in minutes:
 | **4** | 🧪 **Validate** by running `make lint` and `make test` whenever you touch source material                           |
 | **5** | 🧠 **Document** architectural reasoning in `docs/adr` for future context                                            |
 
----
+**Expected output:** `make lint` and `make test` complete successfully with exit code 0.
 
-## ✨ Why Use This Library
+## What it does
 
-<table>
-<tr>
-<td width="50%">
+### Key features
 
-### 📜 Specification-First Truth
+- **Specification-first truth** — prompts, agents, and skills are written directly against the spec-kit constitution, so code, docs, and governance remain synchronised
+- **Consistent guardrails** — instruction packs apply deterministic lint, test, and review rules across every repo, ensuring Copilot never drifts from agreed standards
+- **Deterministic automation** — every workflow leans on `make lint`, `make test`, and explicit governance gates, keeping behaviour measurable and testable
+- **Copy-ready building blocks** — everything is shippable by folder, making large organisations faster to onboard
+- **Governance gates** — explicit checkpoints between specification and implementation
 
-Prompts, agents, and skills are written directly against the spec-kit constitution, so code, docs, and governance remain synchronised.
+### Non-goals
 
-### 🛡️ Consistent Guardrails
+- This library does not implement the underlying spec-kit framework itself
+- It does not provide runtime execution environments for prompts
+- It is not a replacement for language-specific linters or test frameworks
 
-Instruction packs apply deterministic lint, test, and review rules across every repo, ensuring Copilot never drifts from agreed standards.
+## How it solves the problem
 
-</td>
-<td width="50%">
+The spec-kit lifecycle follows a structured flow:
 
-### ⚙️ Deterministic Automation
-
-Every workflow leans on `make lint`, `make test`, and explicit governance gates, keeping behaviour measurable and testable.
-
-### 📦 Copy-Ready Building Blocks
-
-Everything is shippable by folder, making large organisations faster to onboard.
-
-</td>
-</tr>
-</table>
-
----
-
-## 📦 Featured Artefacts
-
-> **Tip:** Each pack is designed for copy-paste reuse. Pick what you need!
-
-| Pack                                                        | Description                                                                                                                                           |
-| :---------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 🤖 **[.github/agents](.github/agents)**                     | Ready-to-run Copilot agents (analyze, checklist, clarify, constitution, implement, plan, specify, tasks, taskstoissues) tuned for spec-kit ceremonies |
-| 💬 **[.github/prompts](.github/prompts)**                   | Focused prompt files for documentation reviews, governance gates, tests, and refactoring support                                                      |
-| 📋 **[.github/instructions](.github/instructions)**         | Coding standards and best practice packs scoped by file glob so Copilot always sees the right rules                                                   |
-| 🧠 **[.github/skills](.github/skills)**                     | Bundled instructions plus helper assets that extend Copilot's capabilities for niche workflows                                                        |
-| 📝 **[.specify/templates](.specify/templates)**             | Seed specs, plans, and tasks for new features                                                                                                         |
-| 📄 **[docs/adr/adr-template.md](docs/adr/adr-template.md)** | Opinionated ADR template aligned with spec-kit identifiers                                                                                            |
-
----
-
-## 🔄 Operational Workflow
-
-The spec-kit lifecycle: **discover** the right prompt → **ground** it in a specification → **automate** every validation step.
-
-### 📊 Workflow Diagram
+1. **Discover** the right prompt from the library
+2. **Ground** it in a specification using agents like `/speckit.specify`
+3. **Plan** the implementation with `/speckit.plan`
+4. **Generate tasks** with `/speckit.tasks`
+5. **Implement** with `/speckit.implement`
+6. **Review** with governance gates (`/review.speckit-documentation`, `/review.speckit-code`, `/review.speckit-test`)
+7. **Automate** every validation step with `make lint` and `make test`
 
 ```mermaid
 flowchart TD
@@ -129,7 +131,15 @@ flowchart TD
   class specifyNote,checklistNote,planNote,tasksNote,implementNote,reviewDocsNote note;
 ```
 
-### 📤 Sync Prompt Files
+## How to use
+
+### Configuration
+
+No additional configuration is required beyond the initial setup. The library uses convention over configuration with sensible defaults.
+
+### Common workflows
+
+#### Sync prompt files to a target repository
 
 ```bash
 make apply dest=/absolute/path/to/target
@@ -147,7 +157,7 @@ make apply dest=/absolute/path/to/target
 
 > **Next step:** Review git status in the target repo, commit, and run `make lint && make test`
 
-### 📊 Estimate Context Window Usage
+#### Estimate context window usage
 
 ```bash
 # Default: scan Copilot prompt files
@@ -166,9 +176,7 @@ The report shows:
 - **No IDs** — counts with identifiers like `[ID-<prefix>-NNN]` stripped
 - **Usage %** — context window usage (200K baseline)
 
-### 🛡️ Governance Gates
-
-Explicit checkpoints between specification and implementation:
+#### Run governance gates
 
 | Gate                   | Command                         | Purpose                                       |
 | :--------------------- | :------------------------------ | :-------------------------------------------- |
@@ -188,9 +196,20 @@ Explicit checkpoints between specification and implementation:
 
 </details>
 
----
+### Examples
 
-## 🧭 Prompt Naming Convention
+#### Featured artefacts
+
+| Pack                                                        | Description                                                                                                                                           |
+| :---------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 🤖 **[.github/agents](.github/agents)**                     | Ready-to-run Copilot agents (analyze, checklist, clarify, constitution, implement, plan, specify, tasks, taskstoissues) tuned for spec-kit ceremonies |
+| 💬 **[.github/prompts](.github/prompts)**                   | Focused prompt files for documentation reviews, governance gates, tests, and refactoring support                                                      |
+| 📋 **[.github/instructions](.github/instructions)**         | Coding standards and best practice packs scoped by file glob so Copilot always sees the right rules                                                   |
+| 🧠 **[.github/skills](.github/skills)**                     | Bundled instructions plus helper assets that extend Copilot's capabilities for niche workflows                                                        |
+| 📝 **[.specify/templates](.specify/templates)**             | Seed specs, plans, and tasks for new features                                                                                                         |
+| 📄 **[docs/adr/adr-template.md](docs/adr/adr-template.md)** | Opinionated ADR template aligned with spec-kit identifiers                                                                                            |
+
+#### Prompt naming convention
 
 Prompts use a **prefix + category + verb** convention to keep fuzzy search fast and predictable:
 
@@ -202,7 +221,53 @@ Prompts use a **prefix + category + verb** convention to keep fuzzy search fast 
 | `review.`   | Review and audit prompts                    | `review.speckit-code.prompt.md`        |
 | `util.`     | Operational utilities                       | `util.gh-pr-review.prompt.md`          |
 
-## 🗺️ Roadmap
+## Resources
+
+| Resource            | Link                                                                                         |
+| :------------------ | :------------------------------------------------------------------------------------------- |
+| Custom Prompts      | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/prompt-files)        |
+| Custom Instructions | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/custom-instructions) |
+| Custom Agents       | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/custom-agents)       |
+| Custom Skills       | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/agent-skills)        |
+| Awesome Copilot     | [GitHub](https://github.com/github/awesome-copilot)                                          |
+
+## Contributing
+
+We welcome contributions! See [.github/contributing.md](.github/contributing.md) for the full guide.
+
+### Development setup
+
+```bash
+git clone https://github.com/stefaniuk/promptfiles.git
+cd promptfiles
+make config
+```
+
+### Quality commands
+
+```bash
+make lint   # Run linters (file format, markdown format, markdown links)
+make test   # Run tests
+```
+
+### Quick checklist
+
+1. **Raise an issue or PR** describing your planned changes
+2. **Keep artefacts in sync** — specs, plans, tasks, and docs must align
+3. **Run quality gates** — `make lint && make test` before opening a PR
+4. **Follow the constitution** and NHS Engineering guidance
+
+## Repository layout
+
+- `.github/agents/` — Copilot agent definitions for spec-kit ceremonies
+- `.github/instructions/` — Coding standards by language/framework
+- `.github/prompts/` — Task-specific prompt files
+- `.github/skills/` — Bundled capabilities with supporting assets
+- `.specify/` — Spec-kit templates and project constitution
+- `docs/adr/` — Architecture decision records
+- `scripts/` — Build and utility scripts
+
+## Roadmap
 
 <details>
 <summary><strong>📝 New Prompts</strong></summary>
@@ -218,35 +283,6 @@ Prompts use a **prefix + category + verb** convention to keep fuzzy search fast 
 
 </details>
 
----
+## Licence
 
-## 🤝 Contributing
-
-We welcome contributions! See [contributing.md](./.github/contributing.md) for the full guide.
-
-**Quick checklist:**
-
-1. **Raise an issue or PR** describing your planned changes
-2. **Keep artefacts in sync** — specs, plans, tasks, and docs must align
-3. **Run quality gates** — `make lint && make test` before opening a PR
-4. **Follow the constitution** and NHS Engineering guidance
-
----
-
-## 📚 Resources
-
-| Resource            | Link                                                                                         |
-| :------------------ | :------------------------------------------------------------------------------------------- |
-| Custom Prompts      | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/prompt-files)        |
-| Custom Instructions | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/custom-instructions) |
-| Custom Agents       | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/custom-agents)       |
-| Custom Skills       | [VS Code Docs](https://code.visualstudio.com/docs/copilot/customization/agent-skills)        |
-| Awesome Copilot     | [GitHub](https://github.com/github/awesome-copilot)                                          |
-
----
-
-<div align="center">
-
-**Made with ❤️ for specification-driven development**
-
-</div>
+This project is licensed under the MIT Licence. See [LICENCE.md](LICENCE.md) for details.
