@@ -1,6 +1,8 @@
 ---
-description: Evaluate and enforce Python logging discipline across the codebase
+description: Evaluate and enforce specific logging discipline across the codebase
 ---
+
+**Input argument:** `Language` (for example `Python` or `TypeScript`).
 
 ## Goal 🎯
 
@@ -8,16 +10,16 @@ Audit every Python file in this repository against the logging standards defined
 
 ## Steps 👣
 
-### Step 1: Discover Python files
+### Step 1: Discover language-specific files
 
-1. Run `git ls-files '*.py'` to enumerate all tracked Python files.
-2. For each file, search for **any** diagnostic output pattern:
-   - Logging imports: `logging`, `structlog`, `loguru`, or project logger
-   - Direct stderr: `sys.stderr.write`, `sys.stderr.flush`
-   - Print to stderr: `print(..., file=sys.stderr)`
-   - Print for diagnostics: `print(` used for status/error output
+1. Detect the `Language` (Python or TypeScript) before running any file discovery.
+2. Run `git ls-files '*.<ext>'` to enumerate tracked files for the detected language (for example `.py`, `.ts`, `.tsx`).
+3. For each file, search for **any** diagnostic output pattern:
+   - Logging imports: language-standard logger, structured logger, or project logger
+   - Direct stderr writes or console error output
+   - Print/console output used for diagnostics
    - Logger references: `logger`, `log`, `_log`
-3. Flag files with diagnostic output that do **not** import the central logger.
+4. Flag files with diagnostic output that do **not** import the central logger.
 
 ### Step 2: Assess logging practices
 
@@ -28,7 +30,7 @@ For every file that uses logging (or should but does not), evaluate compliance a
 ### Anti-patterns (flag and fix immediately) 🚫
 
 - **Bypassing central logger**: `sys.stderr.write()`, `print(file=sys.stderr)`, or raw `print()` for diagnostic output — route through central logger instead.
-- **Direct logging import**: `import logging` / `logging.getLogger()` instead of project factory — use the central logger factory.
+- **Direct logging import**: language-standard logger import instead of project factory — use the central logger factory.
 - **Inline helper functions**: local `_log_*()` wrappers that write directly to stderr rather than delegating to the central service.
 - **Silent failures**: bare `except:` or `except Exception:` without logging.
 - **Mixed output channels**: some modules using central logger while others bypass it.
@@ -51,7 +53,7 @@ For every file that uses logging (or should but does not), evaluate compliance a
 
 ### Class-level logging 🧩
 
-- **Bound logger pattern (mandatory)**: use the factory function `get_logger(component="ClassName")` which returns a `BoundLogger` pre-bound to the component name. Call log methods directly on the bound logger (`self._logger.debug(...)`) rather than defining per-class wrapper methods (`_log_debug`, `_log_info`, etc.). This eliminates boilerplate and ensures a single point of change.
+- **Bound logger pattern (mandatory)**: use the factory function `get_logger(component="ClassName")` which returns a bound logger pre-bound to the component name. Call log methods directly on the bound logger (`self._logger.debug(...)`) rather than defining per-class wrapper methods (`_log_debug`, `_log_info`, etc.). This eliminates boilerplate and ensures a single point of change.
 - **One logger per class/module**: instantiate a logger with the class or module name so context is always present.
 - **Constructor logging**: log significant configuration or injected dependencies once at INFO when the object is created.
 - **Lifecycle events**: log state transitions (started, stopped, reloaded) at INFO or WARN as appropriate.
@@ -103,21 +105,21 @@ Flag any misuse (e.g., logging an error condition at INFO).
 
 ## Output requirements 📋
 
-1. **Findings per file**: for each category above and each of its bullet point, state "Compliant" or "Issue" with a brief explanation.
+1. **Findings per file**: for each category above and each of its bullet point, state one of the following statuses with a brief explanation and the emoji shown: ✅ Fully compliant, ⚠️ Partially compliant, ❌ Not compliant.
 2. **Evidence links**: reference specific lines using workspace-relative Markdown links (e.g., `[src/app.py](src/app.py#L10-L40)`).
 3. **Immediate fixes**: apply sensible defaults inline where possible; do not defer trivial remediations.
 4. **Unknowns**: when information is missing, record **Unknown from code – {suggested action}** rather than guessing.
 5. **Summary checklist**: after processing all files, confirm overall compliance with:
-   - Principles
-   - Project-level logger configuration
-   - Class-level logging
-   - Method-level logging
-   - Log levels
-   - Content
-   - Console visualisation
-   - Performance
+   - [ ] Principles
+   - [ ] Project-level logger configuration
+   - [ ] Class-level logging
+   - [ ] Method-level logging
+   - [ ] Log levels
+   - [ ] Content
+   - [ ] Console visualisation
+   - [ ] Performance
 
 ---
 
-> **Version**: 1.1.1
-> **Last Amended**: 2026-01-28
+> **Version**: 1.1.3
+> **Last Amended**: 2026-01-29
