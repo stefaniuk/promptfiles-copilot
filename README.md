@@ -98,8 +98,9 @@ flowchart TD
   clarify --> specify
   needClarification -- No --> plan["/speckit.plan"]
   plan -.- planNote["💡 Example (run +1): Run again to verify all items on the Plan Completion Checklist are satisfied"]
+  plan -.- planNote2["💡 Example: Use Python, uv and pytest as the implementation technologies"]
 
-  plan --> domainCoverage{Check domain coverage?}
+  plan --> domainCoverage{Anything missing?}
   domainCoverage -- Yes --> checklist["/speckit.checklist"]
   checklist --> plan
   checklist -.- checklistNote["💡 Example: Create a checklist for building, assembling and testing the deployment artefacts of all the components being implemented"]
@@ -128,7 +129,7 @@ flowchart TD
   class needClarification,domainCoverage,consistency question;
   class clarify,checklist,analyze review;
   class reviewDocs,reviewCode,reviewTest docReview;
-  class specifyNote,checklistNote,planNote,tasksNote,implementNote,reviewDocsNote note;
+  class specifyNote,checklistNote,planNote,planNote2,tasksNote,implementNote,reviewDocsNote note;
 ```
 
 ## How to use
