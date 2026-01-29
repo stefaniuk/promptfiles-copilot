@@ -51,9 +51,8 @@ count-tokens: # Count LLM tokens for key instruction packs; optional: args=[file
 			.github/instructions/shell.instructions.md \
 			.github/instructions/docker.instructions.md \
 			.github/instructions/python.instructions.md \
-			.github/instructions/typescript.instructions.md \
-			.github/instructions/terraform.instructions.md \
 			.github/instructions/includes \
+			.github/skills/repository-template/SKILL.md \
 		)
 
 clean:: # Remove project-specific generated files (main) @Operations
