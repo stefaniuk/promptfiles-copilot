@@ -1,6 +1,6 @@
 ---
 name: repository-template
-description: Toolkit for creating a code repository from template, or/and updating it in parts from the content of the template that contains example of use of tools like make, pre-commit git hooks, Docker, and quality checks.
+description: Create code repository from template, or/and update it in parts from the content of the template that contains example of use of tools like make, pre-commit git hooks, Docker, and quality checks.
 ---
 
 # Repository Template Skill 🧩
@@ -77,6 +77,15 @@ When adopting **any** capability from this skill, AI assistants **must** follow 
 - **Not supported**: Windows-native shells and PowerShell workflows
 - **Core tooling expectations**: GNU Make 3.82+ and a POSIX-compatible shell
 - **Optional tooling**: asdf for version pinning, Docker/Podman for container-related capabilities
+
+## Prerequisites ✅
+
+- **GNU Make 3.82+** (macOS users may need `brew install make` and to update `$PATH`)
+- **Docker or Podman** for container-related tasks
+- **asdf** for pinned tool versions (optional if you manage versions another way)
+- **Python** required for Git hooks
+- **jq** for JSON processing in scripts
+- **GNU sed, GNU grep, GNU coreutils, GNU binutils** for script compatibility (especially on macOS)
 
 ## Troubleshooting 🛠️
 
@@ -163,7 +172,22 @@ make help              # Show all available targets with descriptions
 make config            # Configure development environment
 make clean             # Remove generated files
 make list-variables    # Debug: show all make variables
+make scan-secrets      # Scan for secrets
+make check-file-format # Check file format compliance
+make check-markdown-format # Check Markdown formatting
+make check-markdown-links # Check Markdown links
+make check-shell-lint  # Lint shell scripts
+make version-create-effective-file # Create .version from VERSION
 ```
+
+**Template project targets (from `assets/Makefile`)**:
+
+- `make env` — Set up project environment (placeholder)
+- `make deps` — Install project dependencies (placeholder)
+- `make format` — Auto-format code (placeholder)
+- `make lint-file-format`, `make lint-markdown-format`, `make lint-markdown-links` — Run individual checks
+- `make lint` — Runs the three lint targets above
+- `make typecheck`, `make test`, `make build`, `make publish`, `make deploy` — Project-specific placeholders you implement
 
 **To adopt**:
 
@@ -180,15 +204,21 @@ make list-variables    # Debug: show all make variables
 
 **Essential make targets from `init.mk`** (do not remove or modify):
 
-| Target                  | Purpose                                          |
-| ----------------------- | ------------------------------------------------ |
-| `help`                  | Self-documenting target list                     |
-| `config`                | Base configuration (extended via `config::`)     |
-| `clean`                 | Base cleanup (extended via `clean::`)            |
-| `_install-dependencies` | Install all tools from `.tool-versions` via asdf |
-| `_install-dependency`   | Install a single asdf tool                       |
-| `githooks-config`       | Install pre-commit hooks                         |
-| `githooks-run`          | Run all pre-commit hooks                         |
+| Target                          | Purpose                                                     |
+| ------------------------------- | ----------------------------------------------------------- |
+| `help`                          | Self-documenting target list                                |
+| `config`                        | Base configuration (extended via `config::`)                |
+| `clean`                         | Base cleanup (extended via `clean::`)                       |
+| `scan-secrets`                  | Scan for secrets using the gitleaks wrapper                 |
+| `check-file-format`             | Check EditorConfig compliance                               |
+| `check-markdown-format`         | Check Markdown formatting                                   |
+| `check-markdown-links`          | Check Markdown links                                        |
+| `check-shell-lint`              | Lint shell scripts (reports issues without failing the run) |
+| `version-create-effective-file` | Create the `.version` file from `VERSION` placeholders      |
+| `_install-dependencies`         | Install all tools from `.tool-versions` via asdf            |
+| `_install-dependency`           | Install a single asdf tool                                  |
+| `githooks-config`               | Install pre-commit hooks                                    |
+| `githooks-run`                  | Run all pre-commit hooks                                    |
 
 **Verification** (run after adoption):
 
@@ -304,6 +334,10 @@ pre-commit run --config scripts/config/pre-commit.yaml --all-files
 - [`scripts/config/gitleaks.toml`](assets/scripts/config/gitleaks.toml) — Gitleaks configuration
 - [`scripts/config/.gitleaksignore`](assets/scripts/config/.gitleaksignore) — Ignore file for false positives
 
+**Optional baseline file**:
+
+- If you create `scripts/config/.gitleaks-baseline.json`, the wrapper will include it automatically.
+
 **Configuration** (`scripts/config/gitleaks.toml`):
 
 - Extends default Gitleaks rules
@@ -406,6 +440,13 @@ check=working-tree-changes ./scripts/quality/check-file-format.sh # Working tree
 check=branch ./scripts/quality/check-file-format.sh             # Changes since branching
 ```
 
+**Extra options**:
+
+- `BRANCH_NAME=origin/main` to override the branch used for `check=branch`
+- `dry_run=true` to list issues without failing the check
+- `FORCE_USE_DOCKER=true` to force Docker execution
+- `VERBOSE=true` to show commands
+
 **Usage**:
 
 ```bash
@@ -486,6 +527,12 @@ check=working-tree-changes ./scripts/quality/check-markdown-format.sh # Working 
 check=branch ./scripts/quality/check-markdown-format.sh              # Changes since branching
 ```
 
+**Extra options**:
+
+- `BRANCH_NAME=origin/main` to override the branch used for `check=branch`
+- `FORCE_USE_DOCKER=true` to force Docker execution
+- `VERBOSE=true` to show commands
+
 **Usage**:
 
 ```bash
@@ -555,6 +602,12 @@ check=working-tree-changes ./scripts/quality/check-markdown-links.sh # Working t
 check=branch ./scripts/quality/check-markdown-links.sh              # Changes since branching
 ```
 
+**Extra options**:
+
+- `BRANCH_NAME=origin/main` to override the branch used for `check=branch`
+- `FORCE_USE_DOCKER=true` to force Docker execution
+- `VERBOSE=true` to show commands
+
 **Usage**:
 
 ```bash
@@ -617,6 +670,11 @@ lychee --config scripts/config/lychee.toml --no-progress --quiet "**/*.md"
 - All scripts: `make check-shell-lint` (scans every `*.sh` in the repo)
 - Single script: `file=path/to/script.sh ./scripts/quality/check-shell-lint.sh`
 
+**Extra options**:
+
+- `FORCE_USE_DOCKER=true` to force Docker execution
+- `VERBOSE=true` to show commands
+
 **Usage**:
 
 ```bash
@@ -678,15 +736,19 @@ make check-shell-lint
 **Make targets**:
 
 ```bash
-make docker-build      # Build image with metadata
-make docker-lint       # Lint Dockerfile with hadolint
-make docker-push       # Push to registry
-make docker-run        # Run container
+make docker-bake-dockerfile # Create Dockerfile.effective
+make docker-build           # Build image with metadata
+make docker-lint            # Lint Dockerfile with hadolint
+make docker-push            # Push to registry
+make docker-run             # Run container
+make docker-shellscript-lint # Lint Docker module shell scripts
+make docker-test-suite-run  # Run Docker test suite
 ```
 
 **Features**:
 
 - Automatic `Dockerfile.effective` generation with version baking
+- Version metadata generation via `.version` created from `VERSION` placeholders
 - OCI-compliant image labels (title, version, git info, build date)
 - Trusted registry allowlist in hadolint config
 - Test suite support with dgoss
@@ -731,7 +793,7 @@ file=path/to/Dockerfile ./scripts/docker/dockerfile-linter.sh
 hadolint --config scripts/config/hadolint.yaml path/to/Dockerfile
 
 # Verify docker make targets exist
-make help | grep -E "docker-build|docker-lint|docker-push"
+make help | grep -E "docker-bake-dockerfile|docker-build|docker-lint|docker-push|docker-run|docker-shellscript-lint|docker-test-suite-run"
 
 # Expected: Exit code 0 if Dockerfile is valid
 # Success indicator: No lint errors, make targets visible in help
@@ -751,7 +813,7 @@ make help | grep -E "docker-build|docker-lint|docker-push"
 
 **How it solves it**: Reusable workflows and composite actions provide a single source of truth for stages and checks, reducing duplication and drift.
 
-**Dependencies**: GitHub repository with Actions enabled
+**Dependencies**: GitHub repository with Actions enabled; GitHub CLI available on runners (used to detect pull requests); `contents: read` and `pull-requests: read` permissions for the metadata job
 
 **Source files** (in `assets/`):
 
@@ -764,12 +826,17 @@ make help | grep -E "docker-build|docker-lint|docker-push"
 - [`assets/.github/workflows/stage-4-acceptance.yaml`](assets/.github/workflows/stage-4-acceptance.yaml) — Acceptance stage
 - [`assets/.github/actions/`](assets/.github/actions/) — Composite actions for each check
 
+**Metadata job**:
+
+- Captures build timestamps, epoch, Node.js/Python versions (when present in `.tool-versions`), and generates `.version`
+- Detects whether a pull request exists using `gh pr list` to gate downstream stages
+
 **Pipeline stages**:
 
 1. **Commit stage** (~2 min): Secret scan, file format, Markdown format, Markdown links
 2. **Test stage** (~5 min): Unit tests (`make test` placeholder)
-3. **Build stage** (~3 min): Artefact build placeholders
-4. **Acceptance stage** (~10 min): Environment setup and test placeholders
+3. **Build stage** (~3 min): Artefact build placeholders (runs only when a PR exists or on opened/reopened PR events)
+4. **Acceptance stage** (~10 min): Environment setup, contract/security/UI/performance/integration/accessibility/load tests, then teardown (runs only when a PR exists or on opened/reopened PR events)
 
 **Composite actions** (`.github/actions/`):
 
@@ -884,16 +951,32 @@ yq eval '.updates[].package-ecosystem' .github/dependabot.yaml
 - [`.vscode/settings.json`](assets/.vscode/settings.json) — Workspace settings
 - [`project.code-workspace`](assets/project.code-workspace) — Multi-root workspace file
 
-**Key extensions**:
+**Recommended extensions**:
 
-- `editorconfig.editorconfig` — EditorConfig support
+- `alefragnani.bookmarks` — Bookmarks
 - `davidanson.vscode-markdownlint` — Markdown linting
-- `ms-azuretools.vscode-docker` — Docker support
-- `github.vscode-github-actions` — GitHub Actions
+- `dbaeumer.vscode-eslint` — ESLint
 - `eamodio.gitlens` — Git enhancements
+- `editorconfig.editorconfig` — EditorConfig support
 - `esbenp.prettier-vscode` — Formatting support
+- `github.github-vscode-theme` — GitHub theme
+- `github.vscode-github-actions` — GitHub Actions
+- `github.vscode-pull-request-github` — GitHub PRs
+- `johnpapa.vscode-peacock` — Workspace colour
+- `mhutchie.git-graph` — Git graph
+- `ms-azuretools.vscode-docker` — Docker support
+- `ms-vscode.hexeditor` — Hex editor
+- `ms-vscode.live-server` — Live server
+- `ms-vsliveshare.vsliveshare` — Live Share
+- `redhat.vscode-xml` — XML support
 - `streetsidesoftware.code-spell-checker-british-english` — British English spellchecking
+- `tamasfe.even-better-toml` — TOML support
+- `tomoki1207.pdf` — PDF preview
+- `vscode-icons-team.vscode-icons` — File icons
 - `vstirbu.vscode-mermaid-preview` — Mermaid diagram preview
+- `wayou.vscode-todo-highlight` — TODO highlighting
+- `yzhang.dictionary-completion` — Dictionary completion
+- `yzhang.markdown-all-in-one` — Markdown tooling
 
 **Verification** (run after adoption):
 
