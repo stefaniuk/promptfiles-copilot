@@ -44,6 +44,7 @@ set -euo pipefail
 #   - docs/codebase-overview/
 #   - docs/prompts/
 #   - project.code-workspace (if not already present)
+#   - .gitignore content (managed section with begin/end markers)
 #
 # Exit codes:
 #   0 - All files copied successfully
@@ -74,6 +75,11 @@ ADR_TEMPLATE="${REPO_ROOT}/docs/adr/ADR-nnn_Any_Decision_Record_Template.md"
 DOCS_CODEBASE_OVERVIEW="${REPO_ROOT}/docs/codebase-overview"
 DOCS_PROMPTS="${REPO_ROOT}/docs/prompts"
 WORKSPACE_FILE="${REPO_ROOT}/project.code-workspace"
+GITIGNORE_PROMPTFILES="${REPO_ROOT}/.gitignore.promptfiles"
+
+# Begin/end markers for managed .gitignore content
+GITIGNORE_BEGIN_MARKER="# >>> promptfiles-copilot managed content - DO NOT EDIT BELOW THIS LINE >>>"
+GITIGNORE_END_MARKER="# <<< promptfiles-copilot managed content - DO NOT EDIT ABOVE THIS LINE <<<"
 
 # Default instruction files (glue layer)
 DEFAULT_INSTRUCTIONS=("docker" "makefile" "readme" "shell")
@@ -244,6 +250,7 @@ function main() {
   copy-docs-codebase-overview "${destination}"
   copy-docs-prompts "${destination}"
   copy-workspace-file "${destination}"
+  update-gitignore "${destination}"
 
   echo
   echo "Done. Assets copied to ${destination}"
@@ -591,6 +598,62 @@ function copy-workspace-file() {
     print-info "Copying project.code-workspace to $1"
     cp "${WORKSPACE_FILE}" "$1/"
   fi
+}
+
+# Update .gitignore with promptfiles managed content.
+# Creates .gitignore if it doesn't exist, or updates the managed section if it does.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function update-gitignore() {
+
+  local dest_gitignore="$1/.gitignore"
+  local source_content
+  source_content=$(cat "${GITIGNORE_PROMPTFILES}")
+
+  if [[ ! -f "${dest_gitignore}" ]]; then
+    # No .gitignore exists, create it with markers and content
+    print-info "Creating .gitignore with promptfiles managed content"
+    {
+      echo "${GITIGNORE_BEGIN_MARKER}"
+      echo "${source_content}"
+      echo "${GITIGNORE_END_MARKER}"
+    } > "${dest_gitignore}"
+  else
+    # .gitignore exists, check for existing managed content
+    if grep -qF "${GITIGNORE_BEGIN_MARKER}" "${dest_gitignore}"; then
+      # Remove existing managed content (between markers, inclusive)
+      print-info "Updating promptfiles managed content in .gitignore"
+      local temp_file
+      temp_file=$(mktemp)
+      awk -v begin="${GITIGNORE_BEGIN_MARKER}" -v end="${GITIGNORE_END_MARKER}" '
+        $0 == begin { skip = 1; next }
+        $0 == end { skip = 0; next }
+        !skip { print }
+      ' "${dest_gitignore}" > "${temp_file}"
+      # Remove trailing blank lines from temp file
+      sed -i '' -e :a -e '/^\n*$/{$d;N;ba' -e '}' "${temp_file}" 2>/dev/null || sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "${temp_file}"
+      # Write back with new managed content
+      {
+        cat "${temp_file}"
+        echo ""
+        echo "${GITIGNORE_BEGIN_MARKER}"
+        echo "${source_content}"
+        echo "${GITIGNORE_END_MARKER}"
+      } > "${dest_gitignore}"
+      rm -f "${temp_file}"
+    else
+      # No managed content exists, append it
+      print-info "Appending promptfiles managed content to .gitignore"
+      {
+        echo ""
+        echo "${GITIGNORE_BEGIN_MARKER}"
+        echo "${source_content}"
+        echo "${GITIGNORE_END_MARKER}"
+      } >> "${dest_gitignore}"
+    fi
+  fi
+
+  return 0
 }
 
 # Copy a directory without bringing across any nested .git metadata.

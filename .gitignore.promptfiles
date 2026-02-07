@@ -1,0 +1,66 @@
+# ==============================================================================
+# Prompt Files - Managed Assets
+# ==============================================================================
+# This .gitignore file lists all files and directories that are copied by the
+# apply.sh script from the promptfiles-copilot repository. These are managed
+# assets that should typically be excluded from version control in the
+# destination repository.
+#
+# To use: Copy this file to your repository root as .gitignore (or merge with
+# an existing .gitignore).
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# GitHub Copilot configuration
+# ------------------------------------------------------------------------------
+
+# Agents (spec-kit)
+.github/agents/
+
+# Instructions (shell, docker, makefile, readme, and technology-specific)
+.github/instructions/
+
+# Prompts (codebase, enforce, review, speckit, util)
+.github/prompts/
+
+# Skills (repository-template and technology-specific)
+.github/skills/
+
+# Copilot instructions
+.github/copilot-instructions.md
+
+# Pull request template (only copied if not present)
+# .github/pull_request_template.md
+
+# ------------------------------------------------------------------------------
+# Specify framework
+# ------------------------------------------------------------------------------
+
+# Constitution
+.specify/memory/constitution.md
+
+# Bash scripts
+.specify/scripts/bash/
+
+# Templates
+.specify/templates/
+
+# ------------------------------------------------------------------------------
+# Documentation
+# ------------------------------------------------------------------------------
+
+# ADR template
+docs/adr/ADR-nnn_Any_Decision_Record_Template.md
+
+# Codebase overview (placeholder)
+docs/codebase-overview/.gitkeep
+
+# Prompts documentation
+docs/prompts/
+
+# ------------------------------------------------------------------------------
+# Workspace configuration
+# ------------------------------------------------------------------------------
+
+# VS Code workspace file (only copied if not present)
+# project.code-workspace
