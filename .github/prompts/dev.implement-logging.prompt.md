@@ -2,18 +2,18 @@
 description: Evaluate and enforce specific logging discipline across the codebase
 ---
 
-**Input argument:** `Language` (for example `Python` or `TypeScript`).
+**Input argument:** `Language` (for example `Python`, `TypeScript`, `Go`, `Rust`).
 
 ## Goal 🎯
 
-Review every Python file against the logging standards below. Report compliance with evidence and fix gaps using the defaults in this prompt and the baseline.
+Review every source file for the selected language against the logging standards below. Report compliance with evidence and fix gaps using the defaults in this prompt and the baseline.
 
 ## Steps 👣
 
 ### Step 1: Discover language-specific files
 
-1. Detect the `Language` (Python or TypeScript) before running any file discovery.
-2. Run `git ls-files '*.<ext>'` to enumerate tracked files for the detected language (for example `.py`, `.ts`, `.tsx`).
+1. Use the provided `Language` input to drive file discovery.
+2. Run `git ls-files '*.<ext>'` to enumerate tracked files for the detected language (for example `.py`, `.ts`, `.tsx`, `.go`, `.rs`).
 3. For each file, search for **any** diagnostic output pattern:
    - Logging imports: language-standard logger, structured logger, or project logger
    - Direct stderr writes or console error output
@@ -35,10 +35,10 @@ Use it for context and evaluate each runtime that emits structured logs against 
 
 ### Anti-patterns (flag and fix immediately) 🚫
 
-- **Bypassing central logger**: `sys.stderr.write()`, `print(file=sys.stderr)`, or raw `print()` for diagnostic output — route through central logger instead.
+- **Bypassing central logger**: direct stdout/stderr writes (for example `print(...)`, `fmt.Fprint(os.Stderr, ...)`, `console.error(...)`) for diagnostic output — route through the central logger instead.
 - **Direct logging import**: language-standard logger import instead of project factory — use the central logger factory.
 - **Inline helper functions**: local `_log_*()` wrappers that write directly to stderr rather than delegating to the central service.
-- **Silent failures**: bare `except:` or `except Exception:` without logging.
+- **Silent failures**: catch-all exception handling without logging (for example `except Exception`, `catch (...)`).
 - **Mixed output channels**: some modules using central logger while others bypass it.
 
 ### Principles 🧭
@@ -59,7 +59,7 @@ Use it for context and evaluate each runtime that emits structured logs against 
 
 ### Class-level logging 🧩
 
-- **Bound logger pattern (mandatory)**: use the factory function `get_logger(component="ClassName")` which returns a bound logger pre-bound to the component name. Call log methods directly on the bound logger (`self._logger.debug(...)`) rather than defining per-class wrapper methods (`_log_debug`, `_log_info`, etc.). This eliminates boilerplate and ensures a single point of change.
+- **Bound logger pattern (mandatory)**: use the project logger factory (for example `get_logger(component="ClassName")` or `logger.For("ClassName")`) to obtain a bound logger. Call log methods directly on the bound logger rather than defining per-class wrapper methods (`_log_debug`, `_log_info`, etc.). This eliminates boilerplate and ensures a single point of change.
 - **One logger per class/module**: instantiate a logger with the class or module name so context is always present.
 - **Constructor logging**: log significant configuration or injected dependencies once at INFO when the object is created.
 - **Lifecycle events**: log state transitions (started, stopped, reloaded) at INFO or WARN as appropriate.
@@ -105,14 +105,14 @@ Flag any misuse (e.g., logging an error condition at INFO).
 
 ### Performance ⚡
 
-- **Guard expensive construction**: wrap costly string formatting or object serialisation in a level check (e.g., `if logger.isEnabledFor(DEBUG)`).
+- **Guard expensive construction**: wrap costly string formatting or object serialisation in a level check (for example `if logger.isEnabled(DEBUG)` or equivalent).
 - **Avoid tight-loop logging**: do not log inside hot loops unless sampled or rate-limited.
 - **Metrics vs logs**: use metrics for counts and latency; reserve logs for discrete events.
 
 ## Output requirements 📋
 
 1. **Findings per file**: for each category above and each of its bullet point, state one of the following statuses with a brief explanation and the emoji shown: ✅ Fully compliant, ⚠️ Partially compliant, ❌ Not compliant.
-2. **Evidence links**: reference specific lines using workspace-relative Markdown links (e.g., `[src/app.py](src/app.py#L10-L40)`).
+2. **Evidence links**: reference specific lines using workspace-relative Markdown links (e.g., `[src/app.ext](src/app.ext#L10-L40)`).
 3. **Immediate fixes**: apply sensible defaults inline where possible; do not defer trivial remediations.
 4. **Unknowns**: when information is missing, record **Unknown from code – {suggested action}** rather than guessing.
 5. **Summary checklist**: after processing all files, confirm overall compliance with:
@@ -127,5 +127,5 @@ Flag any misuse (e.g., logging an error condition at INFO).
 
 ---
 
-> **Version**: 1.1.3
-> **Last Amended**: 2026-01-29
+> **Version**: 1.1.4
+> **Last Amended**: 2026-02-08

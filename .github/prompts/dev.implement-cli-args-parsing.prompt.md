@@ -2,7 +2,7 @@
 description: Evaluate and enforce specific CLI argument parsing discipline across the codebase
 ---
 
-**Input argument:** `Language` (for example `Python` or `TypeScript`).
+**Input argument:** `Language` (for example `Python`, `TypeScript`, `Go`, `Rust`).
 
 ## Goal 🎯
 
@@ -12,8 +12,8 @@ Review every CLI entrypoint and argument parser against the CLI standards below.
 
 ### Step 1: Discover CLI entrypoints
 
-1. Detect the `Language` (Python or TypeScript) before running any file discovery.
-2. Run `git ls-files '*.<ext>'` to enumerate tracked files for the detected language (for example `.py`, `.ts`, `.tsx`).
+1. Use the provided `Language` input to drive file discovery.
+2. Run `git ls-files '*.<ext>'` to enumerate tracked files for the detected language (for example `.py`, `.ts`, `.tsx`, `.go`, `.rs`).
 3. Locate CLI entrypoints in each language and runtime, including:
    - Conventional entry files (for example `__main__`, `main`, `cli`, `bin/`, `scripts/`).
    - Package metadata that registers commands (for example `pyproject.toml`, `setup.cfg`, `setup.py`, `package.json`, `Cargo.toml`).
@@ -21,7 +21,7 @@ Review every CLI entrypoint and argument parser against the CLI standards below.
 
 ### Step 2: Identify argument parsing logic
 
-1. For each CLI, find the argument parsing library (for example argparse, click, typer, clap, cobra, commander, yargs).
+1. For each CLI, find the argument parsing library (for example flag, cobra, urfave/cli, argparse, click, typer, clap, picocli, commander, yargs).
 2. Flag manual parsing (`sys.argv`, `os.Args`, `process.argv`) or ad-hoc split logic that bypasses a parser.
 3. Record where validation and default handling occur.
 
@@ -138,7 +138,7 @@ Use it for context and evaluate each CLI against the CLI Contract Baseline:
 - Keep CLI entrypoints thin and delegate domain logic to shared libraries.
 - Align wrapper validation rules and defaults with the underlying library API.
 - Centralise shared parsing or logging helpers across related CLIs.
-- Expose a `main(args: list[str]) -> int` or equivalent entrypoint where possible.
+- Expose a `main(args) -> int` (or equivalent) entrypoint where possible.
 
 ### Cloud and serverless workloads ☁️
 
@@ -159,7 +159,7 @@ Use it for context and evaluate each CLI against the CLI Contract Baseline:
 ## Output requirements 📋
 
 1. **Findings per file**: for each category above and each of its bullet point, state one of the following statuses with a brief explanation and the emoji shown: ✅ Fully compliant, ⚠️ Partially compliant, ❌ Not compliant.
-2. **Evidence links**: reference specific lines using workspace-relative Markdown links (e.g., `[src/app.py](src/app.py#L10-L40)`).
+2. **Evidence links**: reference specific lines using workspace-relative Markdown links (e.g., `[src/app.ext](src/app.ext#L10-L40)`).
 3. **Immediate fixes**: apply sensible defaults inline where possible; do not defer trivial remediations.
 4. **Unknowns**: when information is missing, record **Unknown from code – {suggested action}** rather than guessing.
 5. **Summary checklist**: after processing all CLIs, confirm overall compliance with:
@@ -177,5 +177,5 @@ Use it for context and evaluate each CLI against the CLI Contract Baseline:
 
 ---
 
-> **Version**: 1.0.1
-> **Last Amended**: 2026-01-29
+> **Version**: 1.0.2
+> **Last Amended**: 2026-02-08

@@ -2,7 +2,7 @@
 description: Evaluate and enforce specific development commands discipline across the codebase
 ---
 
-**Input argument:** `Language` (for example `Python` or `TypeScript`).
+**Input argument:** `Language` (for example `Python`, `TypeScript`, `Go`, `Rust`).
 
 ## Goal 🎯
 
@@ -132,7 +132,7 @@ At minimum, the lint suite must include these targets (or equivalent scripts) an
 ## Output requirements 📋
 
 1. **Findings per file**: for each category above and each of its bullet point, state one of the following statuses with a brief explanation and the emoji shown: ✅ Fully compliant, ⚠️ Partially compliant, ❌ Not compliant.
-2. **Evidence links**: reference specific lines using workspace-relative Markdown links (e.g., `[src/app.py](src/app.py#L10-L40)`).
+2. **Evidence links**: reference specific lines using workspace-relative Markdown links (e.g., `[src/app.ext](src/app.ext#L10-L40)`).
 3. **Immediate fixes**: apply sensible defaults inline where possible; do not defer trivial remediations.
 4. **Unknowns**: when information is missing, record **Unknown from code – {suggested action}** rather than guessing.
 5. **Summary checklist**: after processing all CLIs, confirm overall compliance with:
@@ -148,5 +148,5 @@ At minimum, the lint suite must include these targets (or equivalent scripts) an
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-01-29
+> **Version**: 1.0.1
+> **Last Amended**: 2026-02-08
