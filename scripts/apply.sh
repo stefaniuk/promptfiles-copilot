@@ -18,6 +18,7 @@ set -euo pipefail
 #   all=true                # Include all technology-specific files
 #   python=true             # Include Python instruction and enforcement prompt
 #   typescript=true         # Include TypeScript instruction and enforcement prompt
+#   go=true                 # Include Go instruction and enforcement prompt
 #   reactjs=true            # Include ReactJS instruction and enforcement prompt
 #   rust=true               # Include Rust instruction and enforcement prompt
 #   terraform=true          # Include Terraform instruction and enforcement prompt
@@ -95,7 +96,7 @@ DEFAULT_TEMPLATES=("Makefile.template" "Dockerfile.template" "compose.yaml.templ
 DEFAULT_SKILLS=("repository-template")
 
 # All technology switches (for iteration)
-ALL_TECHS=("python" "typescript" "reactjs" "rust" "terraform" "tauri" "playwright" "django" "fastapi")
+ALL_TECHS=("python" "typescript" "go" "reactjs" "rust" "terraform" "tauri" "playwright" "django" "fastapi")
 
 # ==============================================================================
 
@@ -108,6 +109,7 @@ function get-tech-instruction() {
   case "$1" in
     python) echo "python" ;;
     typescript) echo "typescript" ;;
+    go) echo "go" ;;
     reactjs) echo "reactjs" ;;
     rust) echo "rust" ;;
     terraform) echo "terraform" ;;
@@ -137,6 +139,7 @@ function get-tech-prompt() {
   case "$1" in
     python) echo "enforce.python" ;;
     typescript) echo "enforce.typescript" ;;
+    go) echo "enforce.go" ;;
     reactjs) echo "enforce.reactjs" ;;
     rust) echo "enforce.rust" ;;
     terraform) echo "enforce.terraform" ;;
