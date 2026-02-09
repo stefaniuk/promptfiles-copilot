@@ -34,14 +34,24 @@ Use this shared baseline for the **canonical CLI contract** (exit codes and stre
 - [CLI-DOC-004] Help output (`--help`, `-h`) must describe the primary flags, mutually exclusive options, default value sources (env vars, config files), and provide a short usage example that demonstrates piping/JSON output when relevant.
 - [CLI-DOC-005] Include smoke tests for wrapper CLIs proving that upstream failures still yield deterministic codes/diagnostics.
 
-## 4. Developer ergonomics 🧑‍💻
+## 4. Colour and rich output 🎨
+
+- [CLI-COL-001] Use colour only as a hinting system (headings, command names, required vs optional, warnings). Avoid colouring full paragraphs.
+- [CLI-COL-002] Enable colour only when output is a TTY, respect `NO_COLOR` and `TERM=dumb`, and expose `--color=auto|always|never` (or `--no-color`).
+- [CLI-COL-003] Keep output readable without colour; never rely on colour alone to convey meaning.
+- [CLI-COL-004] Prefer well-formatted layouts that feel TUI-like but remain stream-friendly: aligned tables, grouped sections, and consistent 2-space indentation.
+- [CLI-COL-005] Use progress spinners/bars only for long-running tasks and emit them to `stderr` so `stdout` remains pipe-safe.
+- [CLI-COL-006] Avoid ANSI control codes in machine-readable outputs (`--json`) and in logs captured by cloud runtimes unless explicitly supported.
+- [CLI-COL-007] When using styling helpers (`rich`, `chalk`, `fatih/color`, or `clap` styling), keep a single accent colour, wrap lines at 80–100 columns, and ensure placeholders are dimmed rather than bright.
+
+## 5. Developer ergonomics 🧑‍💻
 
 - [CLI-ERG-001] Provide `--help`, `--version`, and `--verbose` (or `--quiet`) switches consistently so that scripts can introspect capabilities and humans can self-serve.
 - [CLI-ERG-002] Prefer explicit flags over positional arguments once more than two inputs are required; accept configuration via environment variables only when documented, and echo which sources were used in verbose diagnostics.
 - [CLI-ERG-003] Offer `--dry-run` when the command mutates resources so that automation can validate intent without side effects.
 - [CLI-ERG-004] Keep interactive prompts opt-in (`--interactive` or detection of TTY) and always provide a non-interactive equivalent flag for CI/CD use.
 
-## 5. Wrappers and shared libraries 📦
+## 6. Wrappers and shared libraries 📦
 
 - [CLI-WRP-001] Keep CLI entrypoints as thin adapters: parse/validate input, hand off to shared library functions, and forward exit codes. No business logic or domain processing belongs in the CLI handler itself.
 - [CLI-WRP-002] When discrepancies arise between CLI behaviour and the underlying library (forked validation, duplicated transformations, etc.), schedule and execute a refactor to relocate the logic back into the shared code before adding new features.
@@ -49,7 +59,7 @@ Use this shared baseline for the **canonical CLI contract** (exit codes and stre
 - [CLI-WRP-004] If multiple CLIs share common parsing or logging helpers, centralise that code in a module to keep flag semantics identical (for example the same `--region`, `--profile`, `--timeout` handling everywhere).
 - [CLI-WRP-005] Ensure wrapper CLIs can be imported as libraries themselves where sensible (for example `main(args: list[str]) -> int`) so that AWS Lambda or other orchestrators can reuse the parsing logic without shelling out.
 
-## 6. Cloud and serverless workloads
+## 7. Cloud and serverless workloads
 
 - [CLI-CLD-001] Design CLIs so they run cleanly inside short-lived containers/functions: avoid relying on background daemons, global temp dirs, or writable current directories unless you provision them explicitly.
 - [CLI-CLD-002] Honour platform-imposed timeouts by surfacing `--timeout` flags and by writing periodic progress logs to `stderr` so that CloudWatch / Stackdriver shows activity.
@@ -58,5 +68,5 @@ Use this shared baseline for the **canonical CLI contract** (exit codes and stre
 
 ---
 
-> **Version**: 1.2.2
-> **Last Amended**: 2026-01-17
+> **Version**: 1.2.3
+> **Last Amended**: 2026-02-09
