@@ -7,7 +7,7 @@
 - [Type checking](ADR-001c_Python_Type_Checking.md): `mypy`
 - [Testing](ADR-001d_Python_Testing_Tooling.md): `pytest`
 - [Logging](ADR-001e_Python_Logging.md): `structlog` or `Powertools for AWS Lambda`
-- [CLI argument parsing](ADR-001f_Python_CLI_Argument_Parsing.md): `typer`
+- [CLI argument parsing](ADR-001f_Python_CLI_Argument_Parsing.md): `typer` + `rich`
 
 ## TypeScript tech stack
 
@@ -16,7 +16,7 @@
 - [Type checking](ADR-002c_TypeScript_Type_Checking.md): `tsc`
 - [Testing](ADR-002d_TypeScript_Testing_Tooling.md): `vitest`
 - [Logging](ADR-002e_TypeScript_Logging.md): `winston` or `Powertools for AWS Lambda`
-- [CLI argument parsing](ADR-002f_TypeScript_CLI_Argument_Parsing.md): `commander`
+- [CLI argument parsing](ADR-002f_TypeScript_CLI_Argument_Parsing.md): `commander` + `chalk`
 
 ## Go tech stack
 
@@ -25,7 +25,7 @@
 - [Type checking](ADR-003c_Go_Static_Analysis_and_Type_Checking.md): `staticcheck`
 - [Testing](ADR-003d_Go_Testing_Tooling.md): `go test`
 - [Logging](ADR-003e_Go_Logging.md): `zap`
-- [CLI argument parsing](ADR-003f_Go_CLI_Argument_Parsing.md): `cobra`
+- [CLI argument parsing](ADR-003f_Go_CLI_Argument_Parsing.md): `cobra` + `fatih/color`
 
 ## Rust tech stack
 
@@ -34,11 +34,13 @@
 - [Type checking](ADR-004c_Rust_Type_Checking.md): `cargo check`
 - [Testing](ADR-004d_Rust_Testing_Tooling.md): `cargo test`
 - [Logging](ADR-004e_Rust_Logging.md): `tracing`
-- [CLI argument parsing](ADR-004f_Rust_CLI_Argument_Parsing.md): `clap`
+- [CLI argument parsing](ADR-004f_Rust_CLI_Argument_Parsing.md): `clap` (built-in styling)
+
+Note: The `+` libraries (`rich`, `chalk`, `fatih/color`) provide colourful, well-formatted CLI output including styled `--help` text, progress bars, and terminal colours. They support TTY detection, `NO_COLOR`, and `--color=auto|always|never` flags.
 
 Note: Selecting any default tool above still requires an ADR that compares and assesses at least two or three popular alternatives using the [ADR template](./ADR-nnn_Any_Decision_Record_Template.md).
 
 ---
 
-> **Version**: 1.2.0
-> **Last Amended**: 2026-02-08
+> **Version**: 1.2.1
+> **Last Amended**: 2026-02-09

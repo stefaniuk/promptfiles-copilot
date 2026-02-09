@@ -102,6 +102,14 @@ Use it for context and evaluate each CLI against the CLI Contract Baseline:
 - Document exit codes and diagnostic behaviour in README and help output.
 - Describe mutually exclusive options, default value sources, and configuration precedence.
 
+### Modern `--help` expectations 🧾
+
+- Provide a structured layout: name + one-line summary, usage, commands, grouped options, examples, environment variables, config files, and exit codes.
+- Use subtle colour only as hints: headings and command names bold/bright, placeholders dim, one accent colour for required or warnings.
+- Keep typography readable: 2-space indentation, wrapped descriptions at 80–100 columns, clean alignment for narrow terminals.
+- Ensure colour is optional: detect TTY, respect `NO_COLOR` and `TERM=dumb`, and offer `--color=auto|always|never` (or `--no-color`).
+- Prefer examples that show common flows and safe dry-runs; include output format examples when applicable.
+
 ### Validation and errors 🚦
 
 - Validate inputs early and return clear, actionable errors.
@@ -173,6 +181,7 @@ Use it for context and evaluate each CLI against the CLI Contract Baseline:
    - [ ] Argument parsing and flag rules
    - [ ] Modern parser defaults
    - [ ] Help and documentation
+   - [ ] Modern `--help` expectations
    - [ ] Validation and errors
    - [ ] Stdout and stderr semantics
    - [ ] Developer ergonomics
@@ -184,5 +193,5 @@ Use it for context and evaluate each CLI against the CLI Contract Baseline:
 
 ---
 
-> **Version**: 1.0.3
-> **Last Amended**: 2026-02-08
+> **Version**: 1.0.4
+> **Last Amended**: 2026-02-09
