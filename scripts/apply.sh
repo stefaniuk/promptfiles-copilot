@@ -194,6 +194,7 @@ function main() {
   fi
 
   # Auto-enable rust, typescript, and reactjs if tauri is specified
+  # shellcheck disable=SC2034
   if is-arg-true "${tauri:-false}"; then
     rust=true
     typescript=true
@@ -255,6 +256,7 @@ function main() {
   copy-docs-prompts "${destination}"
   copy-workspace-file "${destination}"
   update-gitignore "${destination}"
+  update-vscode-settings "${destination}"
 
   echo
   echo "Done. Assets copied to ${destination}"
@@ -318,7 +320,7 @@ function wipe-directories() {
   for dir in "${dirs[@]}"; do
     if [[ -d "${dest}/${dir}" ]]; then
       print-info "Removing ${dest}/${dir}"
-      rm -rf "${dest}/${dir}"
+      rm -rf "${dest:?}/${dir}"
     fi
   done
 }
@@ -585,8 +587,6 @@ function copy-docs-prompts() {
 
   print-info "Copying docs/prompts to ${dest}/prompts"
   cp -R "${DOCS_PROMPTS}/." "${dest}/prompts/"
-  print-info "Creating docs/.gitignore"
-  echo "prompts" > "${dest}/.gitignore"
 }
 
 # Copy project.code-workspace to the destination if it does not already exist.
@@ -656,6 +656,178 @@ function update-gitignore() {
       } >> "${dest_gitignore}"
     fi
   fi
+
+  return 0
+}
+
+# Update .vscode/settings.json with promptfiles settings.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function update-vscode-settings() {
+
+  local dest="$1"
+  local settings_dir="${dest}/.vscode"
+  local settings_file="${settings_dir}/settings.json"
+
+  mkdir -p "${settings_dir}"
+
+  if [[ ! -f "${settings_file}" || ! -s "${settings_file}" ]]; then
+    print-info "Creating VS Code settings: ${settings_file}"
+    cat <<'EOF' > "${settings_file}"
+{
+  "chat.promptFilesRecommendations": {
+    "speckit.constitution": true,
+    "speckit.specify": true,
+    "speckit.plan": true,
+    "speckit.tasks": true,
+    "speckit.implement": true
+  },
+  "chat.tools.terminal.autoApprove": {
+    ".specify/scripts/bash/": true
+  }
+}
+EOF
+    return 0
+  fi
+
+  # Always remove existing sections before adding them back
+  remove-vscode-json-property "${settings_file}" "chat.promptFilesRecommendations"
+  remove-vscode-json-property "${settings_file}" "chat.tools.terminal.autoApprove"
+
+  # Prepare content to insert (always both sections)
+  local insert_file
+  insert_file=$(mktemp)
+
+  cat <<'EOF' >> "${insert_file}"
+  "chat.promptFilesRecommendations": {
+    "speckit.constitution": true,
+    "speckit.specify": true,
+    "speckit.plan": true,
+    "speckit.tasks": true,
+    "speckit.implement": true
+  },
+  "chat.tools.terminal.autoApprove": {
+    ".specify/scripts/bash/": true
+  }
+EOF
+
+  local last_brace_line
+  last_brace_line=$(awk '/}/ { line=NR } END { print line }' "${settings_file}")
+
+  if [[ -z "${last_brace_line}" ]]; then
+    rm -f "${insert_file}"
+    print-error "Invalid ${settings_file}: missing closing brace"
+  fi
+
+  local prev_line_num
+  prev_line_num=$(awk -v last="${last_brace_line}" 'NR < last { if ($0 ~ /[^[:space:]]/) { line=NR } } END { print line }' "${settings_file}")
+
+  local needs_comma=0
+  if [[ -n "${prev_line_num}" ]]; then
+    local prev_line
+    prev_line=$(sed -n "${prev_line_num}p" "${settings_file}")
+    if [[ "${prev_line}" =~ ^[[:space:]]*\{[[:space:]]*$ ]]; then
+      needs_comma=0
+    elif [[ "${prev_line}" =~ ,[[:space:]]*$ ]]; then
+      needs_comma=0
+    else
+      needs_comma=1
+    fi
+  fi
+
+  local temp_file
+  temp_file=$(mktemp)
+
+  awk -v insert_file="${insert_file}" -v insert_line="${last_brace_line}" -v prev_line="${prev_line_num}" -v needs_comma="${needs_comma}" '
+    NR == prev_line && needs_comma == 1 {
+      sub(/[[:space:]]*$/, "", $0)
+      print $0 ","
+      next
+    }
+    NR == insert_line {
+      while ((getline line < insert_file) > 0) { print line }
+      close(insert_file)
+      print $0
+      next
+    }
+    { print }
+  ' "${settings_file}" > "${temp_file}"
+
+  mv "${temp_file}" "${settings_file}"
+  rm -f "${insert_file}"
+
+  print-info "Updated VS Code settings: ${settings_file}"
+
+  return 0
+}
+
+# Remove a JSON property from a VS Code settings file.
+# Arguments (provided as function parameters):
+#   $1=[settings file path]
+#   $2=[property name without quotes]
+function remove-vscode-json-property() {
+
+  local file="$1"
+  local property="$2"
+
+  # If property doesn't exist, nothing to do
+  if ! grep -q "\"${property}\"" "$file" 2>/dev/null; then
+    return 0
+  fi
+
+  local temp_file
+  temp_file=$(mktemp)
+
+  awk -v prop="\"${property}\"" '
+    BEGIN { skip = 0; depth = 0; skip_comma = 0 }
+    {
+      # Check if this line starts the property we want to remove
+      if (!skip && match($0, prop "[[:space:]]*:[[:space:]]*\\{")) {
+        skip = 1
+        depth = 0
+        # Count braces on the same line
+        rest_of_line = substr($0, RSTART + RLENGTH)
+        for (i = 1; i <= length(rest_of_line); i++) {
+          c = substr(rest_of_line, i, 1)
+          if (c == "{") depth++
+          else if (c == "}") depth--
+        }
+        # If property closes on same line, stop skipping
+        if (depth < 0) {
+          skip = 0
+          skip_comma = 1
+        }
+        next
+      }
+
+      # While inside the property, track brace depth
+      if (skip) {
+        for (i = 1; i <= length($0); i++) {
+          c = substr($0, i, 1)
+          if (c == "{") depth++
+          else if (c == "}") depth--
+        }
+        # When depth goes negative, we have closed the property
+        if (depth < 0) {
+          skip = 0
+          skip_comma = 1
+        }
+        next
+      }
+
+      # Skip a trailing comma line if needed
+      if (skip_comma) {
+        skip_comma = 0
+        if ($0 ~ /^[[:space:]]*,[[:space:]]*$/) {
+          next
+        }
+      }
+
+      print
+    }
+  ' "$file" > "$temp_file"
+
+  mv "$temp_file" "$file"
 
   return 0
 }

@@ -79,6 +79,7 @@ function create-temp-directory() {
 # Clean up the temporary directory.
 # Arguments:
 #   $1=[path to temporary directory]
+# shellcheck disable=SC2329
 function cleanup-temp-directory() {
   local temp_dir="$1"
   if [[ -d "$temp_dir" ]]; then
@@ -476,7 +477,6 @@ function extract-extension-body() {
   local content="$1"
   local result=""
   local footer_start_line=""
-  local line_num=0
   local lines=()
 
   # Read content into array

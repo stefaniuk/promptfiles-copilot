@@ -15,10 +15,14 @@ lint-markdown-format: # Check markdown formatting @Quality
 lint-markdown-links: # Check markdown links @Quality
 	output=$$(check=all ./scripts/quality/check-markdown-links.sh 2>&1) && echo "markdown links: ok" || { echo "$$output"; exit 1; }
 
+lint-shell: # Check shell scripts @Quality
+	$(MAKE) check-shell-lint
+
 lint: # Run linter to check code style and errors @Quality
 	$(MAKE) lint-file-format
 	$(MAKE) lint-markdown-format
 	$(MAKE) lint-markdown-links
+	$(MAKE) lint-shell
 
 test: # Run all tests @Testing
 	# No tests required for this repository
@@ -78,6 +82,7 @@ ${VERBOSE}.SILENT: \
 	lint-file-format \
 	lint-markdown-format \
 	lint-markdown-links \
+	lint-shell \
 	patch-speckit \
 	specify \
 	test \
