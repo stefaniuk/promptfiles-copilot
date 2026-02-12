@@ -1,14 +1,5 @@
 # ==============================================================================
-# Prompt Files - Managed Assets
-# ==============================================================================
-# This .gitignore file lists all files and directories that are copied by the
-# apply.sh script from the promptfiles-copilot repository. These are managed
-# assets that should typically be excluded from version control in the
-# destination repository.
-#
-# To use: Copy this file to your repository root as .gitignore (or merge with
-# an existing .gitignore).
-# ==============================================================================
+# SEE: https://github.com/stefaniuk/promptfiles-copilot/blob/main/.gitignore.promptfiles
 
 # ------------------------------------------------------------------------------
 # GitHub Copilot configuration
