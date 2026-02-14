@@ -31,6 +31,8 @@ Describe the context and the problem statement. Is there a relationship to other
 
 Note that environmental limitations or restrictions (for example accepted technology standards, commonly recognised patterns, engineering and architecture principles, organisational policies, and governance) may narrow the options. This must be explicitly documented. This is a point-in-time decision, recorded so it can be understood, justified, and revisited when needed.
 
+Note that any technology choice — including languages, frameworks, libraries, and tooling — must be aligned with and work well alongside the [Tech Radar](./Tech_Radar.md). The Tech Radar defines the default tools for each language stack; deviations require explicit justification within this ADR.
+
 ## Decision ✅
 
 ### Assumptions 🧩
@@ -147,5 +149,5 @@ Use tags to link related ADRs by cross-cutting concern and quality attribute. Pr
 
 ---
 
-> **Version**: 1.5.0
-> **Last Amended**: 2026-02-12
+> **Version**: 1.5.1
+> **Last Amended**: 2026-02-14
