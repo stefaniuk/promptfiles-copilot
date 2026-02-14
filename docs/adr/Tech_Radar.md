@@ -38,6 +38,7 @@
 - [Testing](ADR-004d_Rust_Testing_Tooling.md): `cargo test`
 - [Logging](ADR-004e_Rust_Logging.md): `tracing`
 - [CLI argument parsing](ADR-004f_Rust_CLI_Argument_Parsing.md): `clap` (built-in styling)
+- [TUI framework](ADR-004g_Rust_TUI_Framework.md): `ratatui`
 
 Note: The `+` libraries (`rich`, `chalk`, `fatih/color`) provide colourful, well-formatted CLI output including styled `--help` text, progress bars, and terminal colours. They support TTY detection, `NO_COLOR`, and `--color=auto|always|never` flags.
 
@@ -45,5 +46,5 @@ Note: Selecting any default tool above still requires an ADR that compares and a
 
 ---
 
-> **Version**: 1.3.0
-> **Last Amended**: 2026-06-15
+> **Version**: 1.3.4
+> **Last Amended**: 2026-02-14
