@@ -43,9 +43,6 @@
 # ADR template
 docs/adr/ADR-nnn_Any_Decision_Record_Template.md
 
-# Codebase overview (placeholder)
-docs/architecture/.gitkeep
-
 # Prompts documentation
 docs/prompts/
 
