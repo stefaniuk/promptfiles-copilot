@@ -42,6 +42,7 @@
 
 # ADR template
 docs/adr/ADR-nnn_Any_Decision_Record_Template.md
+docs/adr/Tech_Radar.md
 
 # Prompts documentation
 docs/prompts/
