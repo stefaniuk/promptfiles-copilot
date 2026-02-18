@@ -11,7 +11,8 @@ set -euo pipefail
 #   destination-directory   Target directory (absolute or relative path)
 #
 # Options:
-#   wipe=true               # Remove destination .github/{agents,instructions,prompts,skills} before copying, default is 'false'
+#   clean=true              # Remove destination .github/{agents,instructions,prompts,skills} before copying, default is 'false'
+#   revert=true             # Remove all promptfiles-managed artifacts from destination and exit, default is 'false'
 #   VERBOSE=true            # Show all the executed commands, default is 'false'
 #
 # Technology switches (default is 'false' for all, set to 'true' to include):
@@ -59,6 +60,7 @@ set -euo pipefail
 #   $ all=true ./scripts/apply.sh ~/projects/my-app
 #   $ python=true playwright=true ./scripts/apply.sh ~/projects/my-app
 #   $ django=true ./scripts/apply.sh ~/projects/my-app  # auto-enables python
+#   $ revert=true ./scripts/apply.sh ~/projects/my-app  # remove all managed artifacts
 
 # ==============================================================================
 
@@ -240,8 +242,15 @@ function main() {
   print-enabled-technologies
   echo
 
-  if is-arg-true "${wipe:-false}"; then
-    wipe-directories "${destination}"
+  if is-arg-true "${revert:-false}"; then
+    revert-promptfiles "${destination}"
+    echo
+    echo "Done. Promptfiles artifacts reverted from ${destination}"
+    return 0
+  fi
+
+  if is-arg-true "${clean:-false}"; then
+    clean-directories "${destination}"
   fi
 
   copy-agents "${destination}"
@@ -311,10 +320,10 @@ function is-tech-enabled() {
   return 1
 }
 
-# Wipe target directories before copying.
+# Clean target directories before copying.
 # Arguments (provided as function parameters):
 #   $1=[destination directory path]
-function wipe-directories() {
+function clean-directories() {
 
   local dest="$1/.github"
   local dirs=("agents" "instructions" "prompts" "skills")
@@ -325,6 +334,91 @@ function wipe-directories() {
       rm -rf "${dest:?}/${dir}"
     fi
   done
+}
+
+# Remove all promptfiles-managed artifacts from the destination.
+# This undoes what a previous apply has done.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function revert-promptfiles() {
+
+  local dest="$1"
+
+  echo "Reverting prompt files from: ${dest}"
+  echo
+
+  # Remove .github directories
+  local github_dirs=("agents" "instructions" "prompts" "skills")
+  for dir in "${github_dirs[@]}"; do
+    if [[ -d "${dest}/.github/${dir}" ]]; then
+      print-info "Removing ${dest}/.github/${dir}"
+      rm -rf "${dest:?}/.github/${dir}"
+    fi
+  done
+
+  # Remove copilot-instructions.md
+  if [[ -f "${dest}/.github/copilot-instructions.md" ]]; then
+    print-info "Removing ${dest}/.github/copilot-instructions.md"
+    rm -f "${dest}/.github/copilot-instructions.md"
+  fi
+
+  # Remove .specify directory
+  if [[ -d "${dest}/.specify" ]]; then
+    print-info "Removing ${dest}/.specify"
+    rm -rf "${dest:?}/.specify"
+  fi
+
+  # Remove ADR template files
+  local adr_files=("ADR-nnn_Any_Decision_Record_Template.md" "Tech_Radar.md")
+  for file in "${adr_files[@]}"; do
+    if [[ -f "${dest}/docs/adr/${file}" ]]; then
+      print-info "Removing ${dest}/docs/adr/${file}"
+      rm -f "${dest}/docs/adr/${file}"
+    fi
+  done
+
+  # Remove docs/prompts directory
+  if [[ -d "${dest}/docs/prompts" ]]; then
+    print-info "Removing ${dest}/docs/prompts"
+    rm -rf "${dest:?}/docs/prompts"
+  fi
+
+  # Remove managed .gitignore section
+  if [[ -f "${dest}/.gitignore" ]] && grep -qF "${GITIGNORE_BEGIN_MARKER}" "${dest}/.gitignore"; then
+    print-info "Removing promptfiles managed content from .gitignore"
+    local temp_file
+    temp_file=$(mktemp)
+    awk -v begin="${GITIGNORE_BEGIN_MARKER}" -v end="${GITIGNORE_END_MARKER}" '
+      $0 == begin { skip = 1; next }
+      $0 == end { skip = 0; next }
+      !skip { print }
+    ' "${dest}/.gitignore" > "${temp_file}"
+    # Remove trailing blank lines
+    sed -i '' -e :a -e '/^\n*$/{$d;N;ba' -e '}' "${temp_file}" 2>/dev/null || sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "${temp_file}"
+    if [[ -s "${temp_file}" ]]; then
+      mv "${temp_file}" "${dest}/.gitignore"
+    else
+      rm -f "${temp_file}" "${dest}/.gitignore"
+      print-info "Removed empty .gitignore"
+    fi
+  fi
+
+  # Remove managed VS Code settings properties
+  if [[ -f "${dest}/.vscode/settings.json" ]]; then
+    print-info "Removing promptfiles properties from VS Code settings"
+    remove-vscode-json-property "${dest}/.vscode/settings.json" "chat.promptFilesRecommendations"
+    remove-vscode-json-property "${dest}/.vscode/settings.json" "chat.tools.terminal.autoApprove"
+  fi
+
+  # Clean up empty parent directories
+  for dir in "${dest}/.github" "${dest}/docs/adr" "${dest}/docs" "${dest}/.vscode"; do
+    if [[ -d "${dir}" ]] && [[ -z "$(ls -A "${dir}" 2>/dev/null)" ]]; then
+      print-info "Removing empty directory ${dir}"
+      rmdir "${dir}"
+    fi
+  done
+
+  return 0
 }
 
 # Copy agent files to the destination.
@@ -881,13 +975,15 @@ Technology switches (set to 'true' to include):
     fastapi=true            FastAPI skill (auto-enables python)
 
 Other options:
-    wipe=true               Remove destination directories before copying
+    clean=true              Remove destination directories before copying
+    revert=true             Remove all promptfiles-managed artifacts and exit
     VERBOSE=true            Show all executed commands
 
 Examples:
     $(basename "$0") /path/to/my-project
     python=true $(basename "$0") ../my-project
-    all=true wipe=true $(basename "$0") ~/projects/my-app
+    all=true clean=true $(basename "$0") ~/projects/my-app
+    revert=true $(basename "$0") ~/projects/my-app
     python=true playwright=true $(basename "$0") ~/projects/my-app
     django=true $(basename "$0") ~/projects/my-app  # auto-enables python
 EOF

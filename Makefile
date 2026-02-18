@@ -35,7 +35,7 @@ patch-speckit: # Fetch upstream spec-kit and apply local extensions @Operations
 
 specify: patch-speckit # Alias for patch-speckit (backwards compatibility) @Operations
 
-apply: # Copy prompt files assets to a destination repository; mandatory: dest=[path]; optional: wipe=[true|false], all|python|typescript|react|rust|terraform|tauri|playwright|django|fastapi=[true] @Operations
+apply: # Copy prompt files assets to a destination repository; mandatory: dest=[path]; optional: clean|revert=[true|false], all|python|typescript|react|rust|terraform|tauri|playwright|django|fastapi=[true] @Operations
 	if [ -z "$(dest)" ]; then
 		echo "Error: dest argument is required. Usage: make apply dest=/path/to/destination"
 		exit 1
