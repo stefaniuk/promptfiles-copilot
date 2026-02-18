@@ -185,8 +185,8 @@ make version-create-effective-file # Create .version from VERSION
 - `make env` — Set up project environment (placeholder)
 - `make deps` — Install project dependencies (placeholder)
 - `make format` — Auto-format code (placeholder)
-- `make lint-file-format`, `make lint-markdown-format`, `make lint-markdown-links` — Run individual checks
-- `make lint` — Runs the three lint targets above
+- `make lint-file-format`, `make lint-markdown-format`, `make lint-markdown-links`, `make lint-shell` — Run individual checks
+- `make lint` — Runs all four lint targets above
 - `make typecheck`, `make test`, `make build`, `make publish`, `make deploy` — Project-specific placeholders you implement
 
 **To adopt**:
@@ -204,21 +204,21 @@ make version-create-effective-file # Create .version from VERSION
 
 **Essential make targets from `init.mk`** (do not remove or modify):
 
-| Target                          | Purpose                                                     |
-| ------------------------------- | ----------------------------------------------------------- |
-| `help`                          | Self-documenting target list                                |
-| `config`                        | Base configuration (extended via `config::`)                |
-| `clean`                         | Base cleanup (extended via `clean::`)                       |
-| `scan-secrets`                  | Scan for secrets using the gitleaks wrapper                 |
-| `check-file-format`             | Check EditorConfig compliance                               |
-| `check-markdown-format`         | Check Markdown formatting                                   |
-| `check-markdown-links`          | Check Markdown links                                        |
-| `check-shell-lint`              | Lint shell scripts (reports issues without failing the run) |
-| `version-create-effective-file` | Create the `.version` file from `VERSION` placeholders      |
-| `_install-dependencies`         | Install all tools from `.tool-versions` via asdf            |
-| `_install-dependency`           | Install a single asdf tool                                  |
-| `githooks-config`               | Install pre-commit hooks                                    |
-| `githooks-run`                  | Run all pre-commit hooks                                    |
+| Target                          | Purpose                                                                                                    |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `help`                          | Self-documenting target list                                                                               |
+| `config`                        | Base configuration (extended via `config::`)                                                               |
+| `clean`                         | Base cleanup (extended via `clean::`)                                                                      |
+| `scan-secrets`                  | Scan for secrets using the gitleaks wrapper                                                                |
+| `check-file-format`             | Check EditorConfig compliance                                                                              |
+| `check-markdown-format`         | Check Markdown formatting                                                                                  |
+| `check-markdown-links`          | Check Markdown links                                                                                       |
+| `check-shell-lint`              | Lint shell scripts (fails on errors, excludes `.github/skills/repository-template/` and `.specify/` paths) |
+| `version-create-effective-file` | Create the `.version` file from `VERSION` placeholders                                                     |
+| `_install-dependencies`         | Install all tools from `.tool-versions` via asdf                                                           |
+| `_install-dependency`           | Install a single asdf tool                                                                                 |
+| `githooks-config`               | Install pre-commit hooks                                                                                   |
+| `githooks-run`                  | Run all pre-commit hooks                                                                                   |
 
 **Verification** (run after adoption):
 
@@ -667,7 +667,7 @@ lychee --config scripts/config/lychee.toml --no-progress --quiet "**/*.md"
 
 **Check modes**:
 
-- All scripts: `make check-shell-lint` (scans every `*.sh` in the repo)
+- All scripts: `make check-shell-lint` (scans every `*.sh` in the repo, excluding `.github/skills/repository-template/` and `.specify/` paths)
 - Single script: `file=path/to/script.sh ./scripts/quality/check-shell-lint.sh`
 
 **Extra options**:
