@@ -14,7 +14,7 @@ You **MUST** adhere to the following mandatory requirements when generating deve
 
 ## Show & Tell Sections (Mandatory)
 
-Each phase and user story in `tasks.md` must include a `### Show & Tell` subsection. Expand the outline from `plan.md` with specific executable steps:
+Each phase and user story in `tasks.md` must include a `Show & Tell` subsection. Expand the outline from `plan.md` with specific executable steps:
 
 - Terminal commands to run (with expected output)
 - Browser URLs to navigate (if applicable)
@@ -22,6 +22,17 @@ Each phase and user story in `tasks.md` must include a `### Show & Tell` subsect
 - Screenshots or expected visual state (described)
 
 These steps will be executed during implementation to verify each phase is complete.
+
+### GitHub Copilot Execution Requirement (Mandatory)
+
+GitHub Copilot **MUST** execute every Show & Tell step during `/speckit.implement` and validate that the expected result is achieved.
+
+- Do not allow placeholder or ambiguous steps
+- Every step must include explicit pass/fail criteria
+- If a step fails, update tasks and/or implementation, then re-run the step
+- Do not mark a phase or user story complete until all Show & Tell steps pass
+
+This requirement is non-optional and must not be skipped or missed.
 
 **Format example:**
 
@@ -49,8 +60,11 @@ Before marking `tasks.md` as complete, verify:
 - [ ] Test tasks are listed before their corresponding implementation tasks
 - [ ] Each phase and user story ends with a task that runs `make lint` and `make test`
 - [ ] Each phase and user story includes a `### Show & Tell` subsection with executable steps
+- [ ] GitHub Copilot executes every Show & Tell step during implementation
+- [ ] Every Show & Tell step has explicit expected output/state and clear pass/fail criteria
+- [ ] No phase or user story is marked complete if any Show & Tell step has not passed
 
 ---
 
-> **Version**: 1.5.1
-> **Last Amended**: 2026-01-21
+> **Version**: 1.5.2
+> **Last Amended**: 2026-02-20
