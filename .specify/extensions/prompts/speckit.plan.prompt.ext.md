@@ -45,12 +45,12 @@ Before marking `plan.md` as complete, verify:
   - [ ] Markdown Linting
   - [ ] Docker Support
   - [ ] Tool Version Management
-- [ ] Each phase and user story includes a `### Show & Tell` subsection
+- [ ] Each phase and user story includes a `Show & Tell` subsection
 - [ ] Show & Tell subsections are placed at the end of each phase or user story
 - [ ] Show & Tell steps are specific enough for GitHub Copilot to execute and validate without ambiguity
 - [ ] Show & Tell steps define explicit expected outcomes and pass/fail criteria
 
 ---
 
-> **Version**: 1.5.2
-> **Last Amended**: 2026-02-20
+> **Version**: 1.5.3
+> **Last Amended**: 2026-02-27

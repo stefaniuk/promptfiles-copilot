@@ -59,12 +59,12 @@ Before marking `tasks.md` as complete, verify:
 - [ ] TDD sequencing is applied: Red (write failing test), Green (implement to pass), Refactor
 - [ ] Test tasks are listed before their corresponding implementation tasks
 - [ ] Each phase and user story ends with a task that runs `make lint` and `make test`
-- [ ] Each phase and user story includes a `### Show & Tell` subsection with executable steps
+- [ ] Each phase and user story includes a `Show & Tell` subsection with executable steps
 - [ ] GitHub Copilot executes every Show & Tell step during implementation
 - [ ] Every Show & Tell step has explicit expected output/state and clear pass/fail criteria
 - [ ] No phase or user story is marked complete if any Show & Tell step has not passed
 
 ---
 
-> **Version**: 1.5.2
-> **Last Amended**: 2026-02-20
+> **Version**: 1.5.3
+> **Last Amended**: 2026-02-27
