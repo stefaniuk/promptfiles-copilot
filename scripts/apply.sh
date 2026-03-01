@@ -68,6 +68,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 CLAUDE_COMMANDS_DIR="${REPO_ROOT}/.claude/commands"
+CLAUDE_INSTRUCTIONS_MD_FILE="${REPO_ROOT}/.claude/CLAUDE.md"
 COPILOT_AGENTS_DIR="${REPO_ROOT}/.github/agents"
 COPILOT_INSTRUCTIONS_DIR="${REPO_ROOT}/.github/instructions"
 COPILOT_PROMPTS_DIR="${REPO_ROOT}/.github/prompts"
@@ -281,6 +282,7 @@ function claude-apply() {
     claude-clean-directories "${destination}"
   fi
   claude-copy-commands "${destination}"
+  claude-copy-instructions-md "${destination}"
   copy-shared-resources "${destination}"
   update-vscode-settings "${destination}"
 
@@ -440,6 +442,12 @@ function revert-claude() {
   if [[ -d "${dest}/.claude/commands" ]]; then
     print-info "Removing ${dest}/.claude/commands"
     rm -rf "${dest:?}/.claude/commands"
+  fi
+
+  # Remove CLAUDE.md
+  if [[ -f "${dest}/.claude/CLAUDE.md" ]]; then
+    print-info "Removing ${dest}/.claude/CLAUDE.md"
+    rm -f "${dest}/.claude/CLAUDE.md"
   fi
 
   # Clean up empty parent directories
@@ -702,6 +710,18 @@ function copilot-copy-skills() {
       fi
     fi
   done
+}
+
+# Copy CLAUDE.md to the destination.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function claude-copy-instructions-md() {
+
+  local dest="$1/.claude"
+  mkdir -p "${dest}"
+
+  print-info "Copying CLAUDE.md to ${dest}"
+  cp "${CLAUDE_INSTRUCTIONS_MD_FILE}" "${dest}/"
 }
 
 # Copy copilot-instructions.md to the destination.
