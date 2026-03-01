@@ -35,12 +35,10 @@ patch-speckit: # Fetch upstream spec-kit and apply local extensions @Operations
 
 specify: patch-speckit # Alias for patch-speckit (backwards compatibility) @Operations
 
-apply: # Copy prompt files assets to a destination repository; mandatory: dest=[path]; optional: clean|revert=[true|false], all|python|typescript|react|rust|terraform|tauri|playwright|django|fastapi=[true] @Operations
-	if [ -z "$(dest)" ]; then
-		echo "Error: dest argument is required. Usage: make apply dest=/path/to/destination"
-		exit 1
-	fi
-	./scripts/apply.sh "$(dest)"
+apply: # Copy prompt files assets to a destination repository; mandatory: dest=[path] ai=[copilot|claude]; optional: clean|revert=[true|false], all|python|typescript|react|rust|terraform|tauri|playwright|django|fastapi=[true] @Operations
+	$(if $(dest),,$(error dest is required. Usage: make apply dest=/path/to/destination ai=copilot|claude))
+	$(if $(ai),,$(error ai is required. Usage: make apply dest=/path/to/destination ai=copilot|claude))
+	./scripts/apply.sh "$(dest)" "$(ai)"
 
 count-tokens: # Count LLM tokens for key instruction packs; optional: args=[files/options] @Operations
 	uv run --with tiktoken python scripts/count-tokens.py \

@@ -67,15 +67,18 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
-AGENTS_DIR="${REPO_ROOT}/.github/agents"
-INSTRUCTIONS_DIR="${REPO_ROOT}/.github/instructions"
-PROMPTS_DIR="${REPO_ROOT}/.github/prompts"
-SKILLS_DIR="${REPO_ROOT}/.github/skills"
-COPILOT_INSTRUCTIONS="${REPO_ROOT}/.github/copilot-instructions.md"
-PULL_REQUEST_TEMPLATE="${REPO_ROOT}/.github/pull_request_template.md"
-CONSTITUTION="${REPO_ROOT}/.specify/memory/constitution.md"
+CLAUDE_COMMANDS_DIR="${REPO_ROOT}/.claude/commands"
+COPILOT_AGENTS_DIR="${REPO_ROOT}/.github/agents"
+COPILOT_INSTRUCTIONS_DIR="${REPO_ROOT}/.github/instructions"
+COPILOT_PROMPTS_DIR="${REPO_ROOT}/.github/prompts"
+COPILOT_SKILLS_DIR="${REPO_ROOT}/.github/skills"
+COPILOT_INSTRUCTIONS_MD_FILE="${REPO_ROOT}/.github/copilot-instructions.md"
+
+SPECIFY_MEMORY="${REPO_ROOT}/.specify/memory"
 SPECIFY_SCRIPTS_BASH="${REPO_ROOT}/.specify/scripts/bash"
 SPECIFY_TEMPLATES="${REPO_ROOT}/.specify/templates"
+
+PULL_REQUEST_TEMPLATE="${REPO_ROOT}/.github/pull_request_template.md"
 ADR_TEMPLATE="${REPO_ROOT}/docs/adr/ADR-nnn_Any_Decision_Record_Template.md"
 ADR_TECH_RADAR="${REPO_ROOT}/docs/adr/Tech_Radar.md"
 DOCS_ARCHITECTURE="${REPO_ROOT}/docs/architecture"
@@ -101,6 +104,84 @@ DEFAULT_SKILLS=("repository-template")
 
 # All technology switches (for iteration)
 ALL_TECHS=("python" "typescript" "go" "reactjs" "rust" "terraform" "tauri" "playwright" "django" "fastapi")
+
+# ==============================================================================
+
+# Main entry point for the script.
+function main() {
+
+  if [[ $# -ne 2 ]]; then
+    print-usage
+    exit 1
+  fi
+
+  # Validate destination argument
+  if [[ -z "$1" ]]; then
+    print-error "Destination directory cannot be empty."
+  fi
+
+  # Validate ai tool argument
+  local ai_tool="$2"
+  if [[ "${ai_tool}" != "copilot" && "${ai_tool}" != "claude" ]]; then
+    print-error "Invalid ai tool '${ai_tool}'. Must be 'copilot' or 'claude'."
+  fi
+
+  # Auto-enable rust, typescript, and reactjs if tauri is specified
+  # shellcheck disable=SC2034
+  if is-arg-true "${tauri:-false}"; then
+    rust=true
+    typescript=true
+    reactjs=true
+  fi
+
+  # Auto-enable python if django or fastapi is specified
+  if is-arg-true "${django:-false}" || is-arg-true "${fastapi:-false}"; then
+    python=true
+  fi
+
+  # Validate playwright requires python or typescript (unless all=true)
+  if is-arg-true "${playwright:-false}" && ! is-arg-true "${all:-false}"; then
+    if ! is-arg-true "${python:-false}" && ! is-arg-true "${typescript:-false}"; then
+      print-error "playwright=true requires either python=true or typescript=true to be set"
+    fi
+  fi
+
+  local destination="$1"
+
+  # Handle relative paths by converting to absolute
+  if [[ "${destination}" != /* ]]; then
+    destination="$(cd "$(pwd)" && cd "$(dirname "${destination}")" 2>/dev/null && pwd)/$(basename "${destination}")" || destination="$(pwd)/${destination}"
+  fi
+
+  # Expand ~ to home directory
+  destination="${destination/#\~/$HOME}"
+
+  # Create destination if it doesn't exist
+  if [[ ! -d "${destination}" ]]; then
+    print-info "Creating destination directory: ${destination}"
+    mkdir -p "${destination}"
+  fi
+
+  echo "Applying prompt files to: ${destination} (ai=${ai_tool})"
+  print-enabled-technologies
+  echo
+
+  if is-arg-true "${revert:-false}"; then
+    revert-promptfiles "${destination}" "${ai_tool}"
+    echo
+    echo "Done. Promptfiles artifacts reverted from ${destination}"
+    return 0
+  fi
+
+  if [[ "${ai_tool}" == "copilot" ]]; then
+    copilot-apply "${destination}"
+  elif [[ "${ai_tool}" == "claude" ]]; then
+    claude-apply "${destination}"
+  fi
+
+  echo
+  echo "Done. Assets copied to ${destination}"
+}
 
 # ==============================================================================
 
@@ -189,88 +270,62 @@ function get-tech-skill() {
 
 # ==============================================================================
 
-# Main entry point for the script.
-function main() {
-
-  if [[ $# -ne 1 ]]; then
-    print-usage
-    exit 1
-  fi
-
-  # Auto-enable rust, typescript, and reactjs if tauri is specified
-  # shellcheck disable=SC2034
-  if is-arg-true "${tauri:-false}"; then
-    rust=true
-    typescript=true
-    reactjs=true
-  fi
-
-  # Auto-enable python if django or fastapi is specified
-  if is-arg-true "${django:-false}" || is-arg-true "${fastapi:-false}"; then
-    python=true
-  fi
-
-  # Validate playwright requires python or typescript (unless all=true)
-  if is-arg-true "${playwright:-false}" && ! is-arg-true "${all:-false}"; then
-    if ! is-arg-true "${python:-false}" && ! is-arg-true "${typescript:-false}"; then
-      print-error "playwright=true requires either python=true or typescript=true to be set"
-    fi
-  fi
+# Apply claude-specific assets to the destination.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function claude-apply() {
 
   local destination="$1"
 
-  # Handle relative paths by converting to absolute
-  if [[ "${destination}" != /* ]]; then
-    destination="$(cd "$(pwd)" && cd "$(dirname "${destination}")" 2>/dev/null && pwd)/$(basename "${destination}")" || destination="$(pwd)/${destination}"
+  if is-arg-true "${clean:-false}"; then
+    claude-clean-directories "${destination}"
   fi
+  claude-copy-commands "${destination}"
+  copy-shared-resources "${destination}"
+  update-vscode-settings "${destination}"
 
-  # Expand ~ to home directory
-  destination="${destination/#\~/$HOME}"
+  return 0
+}
 
-  # Validate destination
-  if [[ -z "${destination}" ]]; then
-    print-error "Destination directory cannot be empty"
-  fi
+# Apply copilot-specific assets to the destination.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function copilot-apply() {
 
-  # Create destination if it doesn't exist
-  if [[ ! -d "${destination}" ]]; then
-    print-info "Creating destination directory: ${destination}"
-    mkdir -p "${destination}"
-  fi
-
-  echo "Applying prompt files to: ${destination}"
-  print-enabled-technologies
-  echo
-
-  if is-arg-true "${revert:-false}"; then
-    revert-promptfiles "${destination}"
-    echo
-    echo "Done. Promptfiles artifacts reverted from ${destination}"
-    return 0
-  fi
+  local destination="$1"
 
   if is-arg-true "${clean:-false}"; then
-    clean-directories "${destination}"
+    copilot-clean-directories "${destination}"
   fi
+  copilot-copy-agents "${destination}"
+  copilot-copy-instructions "${destination}"
+  copilot-copy-prompts "${destination}"
+  copilot-copy-skills "${destination}"
+  copilot-copy-instructions-md "${destination}"
+  copy-shared-resources "${destination}"
+  update-vscode-settings "${destination}"
 
-  copy-agents "${destination}"
-  copy-instructions "${destination}"
-  copy-prompts "${destination}"
-  copy-skills "${destination}"
-  copy-copilot-instructions "${destination}"
-  copy-pull-request-template "${destination}"
-  copy-constitution "${destination}"
+  return 0
+}
+
+# Copy shared resources common to all AI tools.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function copy-shared-resources() {
+
+  local destination="$1"
+
+  copy-specify-memory "${destination}"
   copy-specify-scripts-bash "${destination}"
   copy-specify-templates "${destination}"
+  copy-pull-request-template "${destination}"
   copy-adr-template "${destination}"
   copy-docs-architecture "${destination}"
   copy-docs-prompts "${destination}"
   copy-workspace-file "${destination}"
   update-gitignore "${destination}"
-  update-vscode-settings "${destination}"
 
-  echo
-  echo "Done. Assets copied to ${destination}"
+  return 0
 }
 
 # ==============================================================================
@@ -320,10 +375,23 @@ function is-tech-enabled() {
   return 1
 }
 
-# Clean target directories before copying.
+# Clean claude target directories before copying.
 # Arguments (provided as function parameters):
 #   $1=[destination directory path]
-function clean-directories() {
+function claude-clean-directories() {
+
+  if [[ -d "$1/.claude/commands" ]]; then
+    print-info "Removing $1/.claude/commands"
+    rm -rf "${1:?}/.claude/commands"
+  fi
+
+  return 0
+}
+
+# Clean copilot target directories before copying.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function copilot-clean-directories() {
 
   local dest="$1/.github"
   local dirs=("agents" "instructions" "prompts" "skills")
@@ -334,18 +402,61 @@ function clean-directories() {
       rm -rf "${dest:?}/${dir}"
     fi
   done
+
+  return 0
 }
 
 # Remove all promptfiles-managed artifacts from the destination.
 # This undoes what a previous apply has done.
 # Arguments (provided as function parameters):
 #   $1=[destination directory path]
+#   $2=[ai tool: 'copilot' or 'claude']
 function revert-promptfiles() {
 
   local dest="$1"
+  local ai_tool="$2"
 
-  echo "Reverting prompt files from: ${dest}"
+  echo "Reverting prompt files from: ${dest} (ai=${ai_tool})"
   echo
+
+  if [[ "${ai_tool}" == "claude" ]]; then
+    revert-claude "${dest}"
+  elif [[ "${ai_tool}" == "copilot" ]]; then
+    revert-copilot "${dest}"
+  fi
+  revert-shared-resources "${dest}"
+
+  return 0
+}
+
+# Remove claude-specific promptfiles-managed artifacts from the destination.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function revert-claude() {
+
+  local dest="$1"
+
+  # Remove .claude/commands directory
+  if [[ -d "${dest}/.claude/commands" ]]; then
+    print-info "Removing ${dest}/.claude/commands"
+    rm -rf "${dest:?}/.claude/commands"
+  fi
+
+  # Clean up empty parent directories
+  if [[ -d "${dest}/.claude" ]] && [[ -z "$(ls -A "${dest}/.claude" 2>/dev/null)" ]]; then
+    print-info "Removing empty directory ${dest}/.claude"
+    rmdir "${dest}/.claude"
+  fi
+
+  return 0
+}
+
+# Remove copilot-specific promptfiles-managed artifacts from the destination.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function revert-copilot() {
+
+  local dest="$1"
 
   # Remove .github directories
   local github_dirs=("agents" "instructions" "prompts" "skills")
@@ -361,6 +472,16 @@ function revert-promptfiles() {
     print-info "Removing ${dest}/.github/copilot-instructions.md"
     rm -f "${dest}/.github/copilot-instructions.md"
   fi
+
+  return 0
+}
+
+# Remove shared promptfiles-managed artifacts from the destination.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function revert-shared-resources() {
+
+  local dest="$1"
 
   # Remove .specify directory
   if [[ -d "${dest}/.specify" ]]; then
@@ -393,6 +514,13 @@ function revert-promptfiles() {
     rm -rf "${dest:?}/docs/prompts"
   fi
 
+  # Remove managed VS Code settings properties
+  if [[ -f "${dest}/.vscode/settings.json" ]]; then
+    print-info "Removing promptfiles properties from VS Code settings"
+    remove-vscode-json-property "${dest}/.vscode/settings.json" "chat.promptFilesRecommendations"
+    remove-vscode-json-property "${dest}/.vscode/settings.json" "chat.tools.terminal.autoApprove"
+  fi
+
   # Remove managed .gitignore section
   if [[ -f "${dest}/.gitignore" ]] && grep -qF "${GITIGNORE_BEGIN_MARKER}" "${dest}/.gitignore"; then
     print-info "Removing promptfiles managed content from .gitignore"
@@ -413,13 +541,6 @@ function revert-promptfiles() {
     fi
   fi
 
-  # Remove managed VS Code settings properties
-  if [[ -f "${dest}/.vscode/settings.json" ]]; then
-    print-info "Removing promptfiles properties from VS Code settings"
-    remove-vscode-json-property "${dest}/.vscode/settings.json" "chat.promptFilesRecommendations"
-    remove-vscode-json-property "${dest}/.vscode/settings.json" "chat.tools.terminal.autoApprove"
-  fi
-
   # Clean up empty parent directories
   for dir in "${dest}/.github" "${dest}/docs/adr" "${dest}/docs" "${dest}/.vscode"; do
     if [[ -d "${dir}" ]] && [[ -z "$(ls -A "${dir}" 2>/dev/null)" ]]; then
@@ -431,24 +552,24 @@ function revert-promptfiles() {
   return 0
 }
 
-# Copy agent files to the destination.
+# Copy copilot agent files to the destination.
 # All agents are spec-kit related and always copied.
 # Arguments (provided as function parameters):
 #   $1=[destination directory path]
-function copy-agents() {
+function copilot-copy-agents() {
 
   local dest_agents="$1/.github/agents"
   mkdir -p "${dest_agents}"
 
   print-info "Copying agent files to ${dest_agents}"
-  find "${AGENTS_DIR}" -maxdepth 1 -name "*.md" -type f -exec cp {} "${dest_agents}/" \;
+  find "${COPILOT_AGENTS_DIR}" -maxdepth 1 -name "*.md" -type f -exec cp {} "${dest_agents}/" \;
 }
 
-# Copy instruction files to the destination.
+# Copy copilot instruction files to the destination.
 # Copies default instructions always, technology-specific ones based on switches.
 # Arguments (provided as function parameters):
 #   $1=[destination directory path]
-function copy-instructions() {
+function copilot-copy-instructions() {
 
   local dest_instructions="$1/.github/instructions"
   mkdir -p "${dest_instructions}"
@@ -457,7 +578,7 @@ function copy-instructions() {
 
   # Copy default instruction files
   for instruction in "${DEFAULT_INSTRUCTIONS[@]}"; do
-    local file="${INSTRUCTIONS_DIR}/${instruction}.instructions.md"
+    local file="${COPILOT_INSTRUCTIONS_DIR}/${instruction}.instructions.md"
     if [[ -f "${file}" ]]; then
       cp "${file}" "${dest_instructions}/"
     fi
@@ -471,7 +592,7 @@ function copy-instructions() {
       if [[ -n "${instructions}" ]]; then
         # Handle space-separated list (for playwright)
         for instruction in ${instructions}; do
-          local file="${INSTRUCTIONS_DIR}/${instruction}.instructions.md"
+          local file="${COPILOT_INSTRUCTIONS_DIR}/${instruction}.instructions.md"
           if [[ -f "${file}" ]]; then
             cp "${file}" "${dest_instructions}/"
           fi
@@ -481,18 +602,18 @@ function copy-instructions() {
   done
 
   # Copy includes directory (always - shared baselines)
-  if [[ -d "${INSTRUCTIONS_DIR}/includes" ]]; then
+  if [[ -d "${COPILOT_INSTRUCTIONS_DIR}/includes" ]]; then
     mkdir -p "${dest_instructions}/includes"
-    cp -R "${INSTRUCTIONS_DIR}/includes/." "${dest_instructions}/includes/"
+    cp -R "${COPILOT_INSTRUCTIONS_DIR}/includes/." "${dest_instructions}/includes/"
   fi
 
   # Copy templates directory (selective)
-  if [[ -d "${INSTRUCTIONS_DIR}/templates" ]]; then
+  if [[ -d "${COPILOT_INSTRUCTIONS_DIR}/templates" ]]; then
     mkdir -p "${dest_instructions}/templates"
 
     # Copy default templates
     for template in "${DEFAULT_TEMPLATES[@]}"; do
-      local file="${INSTRUCTIONS_DIR}/templates/${template}"
+      local file="${COPILOT_INSTRUCTIONS_DIR}/templates/${template}"
       if [[ -f "${file}" ]]; then
         cp "${file}" "${dest_instructions}/templates/"
       fi
@@ -504,7 +625,7 @@ function copy-instructions() {
         local template
         template=$(get-tech-template "${tech}")
         if [[ -n "${template}" ]]; then
-          local file="${INSTRUCTIONS_DIR}/templates/${template}"
+          local file="${COPILOT_INSTRUCTIONS_DIR}/templates/${template}"
           if [[ -f "${file}" ]]; then
             cp "${file}" "${dest_instructions}/templates/"
           fi
@@ -514,11 +635,11 @@ function copy-instructions() {
   fi
 }
 
-# Copy prompt files to the destination.
+# Copy copilot prompt files to the destination.
 # Copies default prompts always, technology-specific ones based on switches.
 # Arguments (provided as function parameters):
 #   $1=[destination directory path]
-function copy-prompts() {
+function copilot-copy-prompts() {
 
   local dest_prompts="$1/.github/prompts"
   mkdir -p "${dest_prompts}"
@@ -528,7 +649,7 @@ function copy-prompts() {
   # Copy default prompt files using patterns
   for pattern in "${DEFAULT_PROMPT_PATTERNS[@]}"; do
     # Use find with -name to match patterns
-    find "${PROMPTS_DIR}" -maxdepth 1 -name "${pattern}.prompt.md" -type f -exec cp {} "${dest_prompts}/" \; 2>/dev/null || true
+    find "${COPILOT_PROMPTS_DIR}" -maxdepth 1 -name "${pattern}.prompt.md" -type f -exec cp {} "${dest_prompts}/" \; 2>/dev/null || true
   done
 
   # Copy technology-specific prompt files
@@ -539,7 +660,7 @@ function copy-prompts() {
       if [[ -n "${prompts}" ]]; then
         # Handle space-separated list (for playwright)
         for prompt in ${prompts}; do
-          local file="${PROMPTS_DIR}/${prompt}.prompt.md"
+          local file="${COPILOT_PROMPTS_DIR}/${prompt}.prompt.md"
           if [[ -f "${file}" ]]; then
             cp "${file}" "${dest_prompts}/"
           fi
@@ -549,11 +670,11 @@ function copy-prompts() {
   done
 }
 
-# Copy skills files to the destination.
+# Copy copilot skills files to the destination.
 # Copies default skills always, technology-specific ones based on switches.
 # Arguments (provided as function parameters):
 #   $1=[destination directory path]
-function copy-skills() {
+function copilot-copy-skills() {
 
   local dest_skills="$1/.github/skills"
   mkdir -p "${dest_skills}"
@@ -562,7 +683,7 @@ function copy-skills() {
 
   # Copy default skills
   for skill in "${DEFAULT_SKILLS[@]}"; do
-    local skill_dir="${SKILLS_DIR}/${skill}"
+    local skill_dir="${COPILOT_SKILLS_DIR}/${skill}"
     if [[ -d "${skill_dir}" ]]; then
       copy-directory-excluding-git "${skill_dir}" "${dest_skills}/${skill}"
     fi
@@ -574,7 +695,7 @@ function copy-skills() {
       local skill
       skill=$(get-tech-skill "${tech}")
       if [[ -n "${skill}" ]]; then
-        local skill_dir="${SKILLS_DIR}/${skill}"
+        local skill_dir="${COPILOT_SKILLS_DIR}/${skill}"
         if [[ -d "${skill_dir}" ]]; then
           copy-directory-excluding-git "${skill_dir}" "${dest_skills}/${skill}"
         fi
@@ -586,13 +707,13 @@ function copy-skills() {
 # Copy copilot-instructions.md to the destination.
 # Arguments (provided as function parameters):
 #   $1=[destination directory path]
-function copy-copilot-instructions() {
+function copilot-copy-instructions-md() {
 
   local dest="$1/.github"
   mkdir -p "${dest}"
 
   print-info "Copying copilot-instructions.md to ${dest}"
-  cp "${COPILOT_INSTRUCTIONS}" "${dest}/"
+  cp "${COPILOT_INSTRUCTIONS_MD_FILE}" "${dest}/"
 }
 
 # Copy pull_request_template.md to the destination if missing.
@@ -611,16 +732,32 @@ function copy-pull-request-template() {
   fi
 }
 
-# Copy constitution.md to the destination.
+# Copy .specify/memory directory to the destination.
 # Arguments (provided as function parameters):
 #   $1=[destination directory path]
-function copy-constitution() {
+function copy-specify-memory() {
 
   local dest="$1/.specify/memory"
   mkdir -p "${dest}"
 
-  print-info "Copying constitution.md to ${dest}"
-  cp "${CONSTITUTION}" "${dest}/"
+  print-info "Copying .specify/memory to ${dest}"
+  cp -R "${SPECIFY_MEMORY}/." "${dest}/"
+
+  return 0
+}
+
+# Copy .claude/commands directory to the destination.
+# Arguments (provided as function parameters):
+#   $1=[destination directory path]
+function claude-copy-commands() {
+
+  local dest="$1/.claude/commands"
+  mkdir -p "${dest}"
+
+  print-info "Copying .claude/commands to ${dest}"
+  cp -R "${CLAUDE_COMMANDS_DIR}/." "${dest}/"
+
+  return 0
 }
 
 # Copy .specify/scripts/bash directory to the destination.
@@ -965,14 +1102,15 @@ function copy-directory-excluding-git() {
 function print-usage() {
 
   cat <<EOF
-Usage: $(basename "$0") <destination-directory>
+Usage: $(basename "$0") <destination-directory> <ai-tool>
 
 Copy prompt files assets to a destination repository.
 
 Arguments:
     destination-directory   Target directory (absolute or relative path)
+    ai-tool                 AI tool to apply: 'copilot' or 'claude'
 
-Technology switches (set to 'true' to include):
+Technology switches (copilot only; set to 'true' to include):
     all=true                Include all technology-specific files
     python=true             Python instruction and prompt
     typescript=true         TypeScript instruction and prompt
@@ -985,17 +1123,19 @@ Technology switches (set to 'true' to include):
     fastapi=true            FastAPI skill (auto-enables python)
 
 Other options:
-    clean=true              Remove destination directories before copying
+    clean=true              Remove destination directories before copying (copilot only)
     revert=true             Remove all promptfiles-managed artifacts and exit
     VERBOSE=true            Show all executed commands
 
 Examples:
-    $(basename "$0") /path/to/my-project
-    python=true $(basename "$0") ../my-project
-    all=true clean=true $(basename "$0") ~/projects/my-app
-    revert=true $(basename "$0") ~/projects/my-app
-    python=true playwright=true $(basename "$0") ~/projects/my-app
-    django=true $(basename "$0") ~/projects/my-app  # auto-enables python
+    $(basename "$0") /path/to/my-project copilot
+    python=true $(basename "$0") ../my-project copilot
+    all=true clean=true $(basename "$0") ~/projects/my-app copilot
+    revert=true $(basename "$0") ~/projects/my-app copilot
+    python=true playwright=true $(basename "$0") ~/projects/my-app copilot
+    django=true $(basename "$0") ~/projects/my-app copilot  # auto-enables python
+    $(basename "$0") ~/projects/my-app claude
+    revert=true $(basename "$0") ~/projects/my-app claude
 EOF
 }
 
