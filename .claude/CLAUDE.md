@@ -31,21 +31,24 @@ When making architectural or significant technical decisions, document them as A
 
 This requirement is mandatory, especially during the spec-driven development cycle: `spec` → `plan` → `tasks` → `implement`.
 
+For any tech decisions and language choices consult the [Tech Radar](/docs/adr/Tech_Radar.md) first.
+
 ## Toolchain version
 
 - Use the latest stable language, runtime, and framework versions at the time of change, search the internet for the latest versions
 
-## Test-driven development
+## Test-driven development (mandatory)
 
 - Define tasks using a strict TDD approach
 - For each specified functionality, sequence tasks as Red (write failing test first), Green (implement to pass), then Refactor (improve code without changing behavior)
 - Ensure tests are always listed before implementation tasks
+- Use property-based testing (PBT) where applicable to maximise coverage and edge case validation
 
 ## Repository tooling
 
 - When you identify missing development capabilities (linting, CI/CD, Docker support, pre-commit hooks, etc.), consult the [repository-template skill](/.claude/skills/repository-template/SKILL.md) for standardised implementations.
 
-## Quality gates
+## Quality gates (mandatory)
 
 After any source code change:
 
@@ -56,5 +59,5 @@ After any source code change:
 
 ---
 
-> **Version**: 1.5.4
+> **Version**: 1.6.0
 > **Last Amended**: 2026-03-01
