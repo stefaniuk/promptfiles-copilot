@@ -25,7 +25,7 @@ lint: # Run linter to check code style and errors @Quality
 	$(MAKE) lint-shell
 
 test: # Run all tests @Testing
-	# No tests required for this repository
+	bash ./scripts/tests/apply.test.sh && echo "apply: ok"
 
 clone-rt: # Clone the repository template into .github/skills/repository-template @Operations
 	.github/skills/repository-template/scripts/git-clone-repository-template.sh

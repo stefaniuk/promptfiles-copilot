@@ -147,15 +147,8 @@ function main() {
     fi
   fi
 
-  local destination="$1"
-
-  # Handle relative paths by converting to absolute
-  if [[ "${destination}" != /* ]]; then
-    destination="$(cd "$(pwd)" && cd "$(dirname "${destination}")" 2>/dev/null && pwd)/$(basename "${destination}")" || destination="$(pwd)/${destination}"
-  fi
-
-  # Expand ~ to home directory
-  destination="${destination/#\~/$HOME}"
+  local destination
+  destination=$(normalise-destination-path "$1")
 
   # Create destination if it doesn't exist
   if [[ ! -d "${destination}" ]]; then
@@ -182,6 +175,41 @@ function main() {
 
   echo
   echo "Done. Assets copied to ${destination}"
+}
+
+# ==============================================================================
+
+# Normalise a destination path passed via make or the shell.
+# Converts common escaped spaces to literal spaces, expands a leading home
+# directory marker, and resolves relative paths against the current directory.
+# Arguments:
+#   $1=[destination directory path]
+function normalise-destination-path() {
+
+  local destination="$1"
+
+  destination="${destination//\\ / }"
+
+  if [[ "${destination}" == \~ ]]; then
+    destination="${HOME}"
+  elif [[ "${destination:0:2}" == \~/* ]]; then
+    destination="${HOME}/${destination:2}"
+  fi
+
+  if [[ "${destination}" != /* ]]; then
+    local destination_dir
+    local destination_dir_abs
+    destination_dir="$(dirname "${destination}")"
+    if destination_dir_abs=$(cd "$(pwd)" && cd "${destination_dir}" 2>/dev/null && pwd); then
+      destination="${destination_dir_abs}/$(basename "${destination}")"
+    else
+      destination="$(pwd)/${destination}"
+    fi
+  fi
+
+  printf '%s\n' "${destination}"
+
+  return 0
 }
 
 # ==============================================================================
