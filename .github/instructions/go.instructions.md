@@ -87,6 +87,8 @@ Repository defaults (unless the repository explicitly documents an alternative):
 
 - [GO-LCL-013] `gofmt` is mandatory for formatting (zero-config, non-negotiable).
 - [GO-LCL-014] `golangci-lint` is the mandatory meta-linter; configure `.golangci.yml` with a strict baseline.
+  - [GO-LCL-014a] Enable `depguard` for import-direction constraints (see [GO-CODE-009]).
+  - [GO-LCL-014b] Enable `gomodguard` for module allow/deny lists (see [GO-CODE-010]).
 - [GO-LCL-015] `staticcheck` is **mandatory** for static analysis; run in CI as a blocking gate.
 - [GO-LCL-016] `go test` with race detector (`-race`) for tests.
 
@@ -544,18 +546,31 @@ Per [constitution.md §7](../../.specify/memory/constitution.md#7-code-quality-g
 - [GO-CODE-003] Avoid package names like `util`, `common`, `helpers`, `misc` — they become dumping grounds.
 - [GO-CODE-004] Use `internal/` for code that should not be imported by other modules.
 
-### 11.2 Naming conventions
+### 11.2 Enforcing architectural boundaries with linter rules
+
+When a specification or architecture decision imposes import-direction or dependency constraints, **express them as linter configuration rather than custom Go test code**. Linter rules run on every `make lint`, produce clear error messages, and require no custom test maintenance.
+
+- [GO-CODE-009] Use `depguard` (in `.golangci.yml`) to enforce import restrictions between packages:
+  - [GO-CODE-009a] Define named rule groups scoping file patterns to allowed/denied import paths.
+  - [GO-CODE-009b] Include the requirement ID in the `desc` field so failures are self-documenting.
+  - [GO-CODE-009c] Typical patterns: pipeline isolation (no concrete rule/formatter imports), rule isolation (no sibling rule imports), logger discipline (no stdlib `log` outside the logger package).
+- [GO-CODE-010] Use `gomodguard` (in `.golangci.yml`) to enforce module-level bans:
+  - [GO-CODE-010a] Block deprecated or banned modules with a `reason` referencing the requirement ID.
+  - [GO-CODE-010b] Use for non-goal enforcement (e.g. banning AI/NLP libraries from an MVP).
+- [GO-CODE-011] **Only use custom Go architecture tests** (AST scanning, `go/packages`) for constraints that linter rules cannot express: call-order verification, banned function-call patterns within a package, interface signature checks, or cross-file structural invariants.
+
+### 11.3 Naming conventions
 
 - [GO-CODE-005] Use **MixedCaps** (exported) and **mixedCaps** (unexported). Do not use underscores in Go names.
 - [GO-CODE-006] Prefer short, descriptive names. In Go: `i` for loop index, `r` for reader, `w` for writer, `ctx` for context, `err` for error.
 - [GO-CODE-007] Avoid stuttering: `user.User` is fine, but `user.UserService` in package `user` should just be `Service`.
 - [GO-CODE-008] Acronyms should be all caps: `HTTP`, `URL`, `ID`, not `Http`, `Url`, `Id`.
 
-### 11.3 Struct organisation
+### 11.4 Struct organisation
 
-- [GO-CODE-009] Group struct fields logically. Put related fields together.
-- [GO-CODE-010] Order fields to minimise padding (largest alignment first), or use `fieldalignment` linter.
-- [GO-CODE-011] **Start enums at one, not zero**, unless zero has explicit meaning:
+- [GO-CODE-012] Group struct fields logically. Put related fields together.
+- [GO-CODE-013] Order fields to minimise padding (largest alignment first), or use `fieldalignment` linter.
+- [GO-CODE-014] **Start enums at one, not zero**, unless zero has explicit meaning:
 
   ```go
   type Status int
@@ -570,9 +585,9 @@ Per [constitution.md §7](../../.specify/memory/constitution.md#7-code-quality-g
 
   This ensures uninitialized values are distinguishable from valid values.
 
-### 11.4 Time handling
+### 11.5 Time handling
 
-- [GO-CODE-012] **Always use `time.Duration` for time periods**, never raw integers:
+- [GO-CODE-015] **Always use `time.Duration` for time periods**, never raw integers:
 
   ```go
   // Good
@@ -582,8 +597,8 @@ Per [constitution.md §7](../../.specify/memory/constitution.md#7-code-quality-g
   func Retry(attempts int, delay int) error
   ```
 
-- [GO-CODE-013] Store and transmit times in UTC. Convert to local time only for display.
-- [GO-CODE-014] Use `time.Time` for timestamps, not Unix epoch integers.
+- [GO-CODE-016] Store and transmit times in UTC. Convert to local time only for display.
+- [GO-CODE-017] Use `time.Time` for timestamps, not Unix epoch integers.
 
 ---
 
@@ -838,5 +853,5 @@ These patterns cause recurring issues in Go codebases. Avoid them unless an ADR 
 
 ---
 
-> **Version**: 1.0.0
-> **Last Amended**: 2026-02-08
+> **Version**: 1.1.0
+> **Last Amended**: 2026-04-26

@@ -16,7 +16,16 @@ Use this shared baseline for quality gate execution expectations. Domain-specifi
 - [QG-BASE-DEF-001] Iterate until all checks complete with **no errors or warnings**.
 - [QG-BASE-DEF-002] Treat warnings as defects unless explicitly waived in an ADR (with rationale and expiry).
 
+## 3. Mechanism selection 🎯
+
+When a specification or architecture decision imposes a constraint (e.g. "package X must not import package Y", "banned dependency Z"), choose the lightest enforcement mechanism that provides full confidence:
+
+- [QG-BASE-MECH-001] **Linter configuration first.** If the constraint can be expressed as a linter rule (import restrictions, module bans, naming conventions), implement it as linter config. Linter rules run automatically on every `make lint`, produce clear error messages, and need no custom test maintenance.
+- [QG-BASE-MECH-002] **Architecture tests second.** Use custom test code (AST scanning, dependency graph analysis) only for constraints that linter rules cannot express: call-order verification, banned function-call patterns within a package, interface signature checks, or cross-file structural invariants.
+- [QG-BASE-MECH-003] **Integration/behavioural tests for product behaviour.** Use integration tests for constraints that require running the compiled artefact: CLI exit codes, output formats, error recovery, performance thresholds.
+- [QG-BASE-MECH-004] **Do not double up.** If a constraint is enforced by linter config, do not also write a Go test for the same constraint. One mechanism per constraint.
+
 ---
 
-> **Version**: 1.0.1
-> **Last Amended**: 2026-01-17
+> **Version**: 1.1.0
+> **Last Amended**: 2026-04-26
