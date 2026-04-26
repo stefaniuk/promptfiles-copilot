@@ -33,7 +33,7 @@ clone-rt: # Clone the repository template into .github/skills/repository-templat
 specify: # Fetch upstream spec-kit and apply local extensions @Operations
 	./scripts/specify.sh
 
-apply: # Copy prompt files assets to a destination repository; mandatory: dest=[path] ai=[copilot|claude]; optional: clean|revert=[true|false], all|python|typescript|react|rust|terraform|tauri|playwright|django|fastapi=[true] @Operations
+apply: # Copy prompt files assets to a destination repository; mandatory: dest=[path] ai=[copilot|claude]; optional: clean|revert=[true|false], all|python|typescript|go|reactjs|rust|terraform|tauri|playwright|django|fastapi=[true] @Operations
 	$(if $(dest),,$(error dest is required. Usage: make apply dest=/path/to/destination ai=copilot|claude))
 	$(if $(ai),,$(error ai is required. Usage: make apply dest=/path/to/destination ai=copilot|claude))
 	./scripts/apply.sh "$(dest)" "$(ai)"
