@@ -29,7 +29,6 @@ EXTENSIONS_DIR="${REPO_ROOT}/.specify/extensions"
 MANIFEST_FILE="${EXTENSIONS_DIR}/manifest.yaml"
 
 # Target locations for patched files
-TARGET_COMMANDS="${REPO_ROOT}/.claude/commands"
 TARGET_AGENTS="${REPO_ROOT}/.github/agents"
 TARGET_PROMPTS="${REPO_ROOT}/.github/prompts"
 TARGET_TEMPLATES="${REPO_ROOT}/.specify/templates"
@@ -52,7 +51,6 @@ function main() {
   fetch-upstream-files "$TEMP_DIR"
 
   echo "==> Applying local extensions..."
-  patch-category "$TEMP_DIR" "claude" "commands" ".claude/commands" "${TARGET_COMMANDS}" "speckit.*.md"
   patch-category "$TEMP_DIR" "copilot" "agents" ".github/agents" "${TARGET_AGENTS}" "speckit.*.agent.md"
   patch-category "$TEMP_DIR" "copilot" "prompts" ".github/prompts" "${TARGET_PROMPTS}" "speckit.*.prompt.md"
   patch-category "$TEMP_DIR" "" "templates" ".specify/templates" "${TARGET_TEMPLATES}" "*-template.md"
@@ -91,27 +89,24 @@ function cleanup-temp-directory() {
 }
 
 # Fetch upstream spec-kit files using the specify CLI.
-# Runs specify init for both copilot and claude AI tools so that
-# all upstream artifacts are available for patching.
+# Runs specify init for copilot so that all upstream artifacts are
+# available for patching.
 # Arguments:
 #   $1=[path to temporary directory]
 function fetch-upstream-files() {
   local temp_dir="$1"
-  local ai_tools=("claude" "copilot")
 
-  for ai_tool in "${ai_tools[@]}"; do
-    (
-      cd "$temp_dir"
-      specify init \
-        --ai "${ai_tool}" \
-        --script sh \
-        --ignore-agent-tools \
-        --no-git \
-        --here \
-        --force \
-        > /dev/null 2>&1
-    )
-  done
+  (
+    cd "$temp_dir"
+    specify init \
+      --ai copilot \
+      --script sh \
+      --ignore-agent-tools \
+      --no-git \
+      --here \
+      --force \
+      > /dev/null 2>&1
+  )
 
   return 0
 }
@@ -119,8 +114,8 @@ function fetch-upstream-files() {
 # Patch a category of files (commands, agents, prompts, or templates).
 # Arguments:
 #   $1=[path to temporary directory]
-#   $2=[AI tool name: claude, copilot, or empty for shared categories]
-#   $3=[category name: commands, agents, prompts, or templates]
+#   $2=[AI tool name: copilot, or empty for shared categories]
+#   $3=[category name: agents, prompts, or templates]
 #   $4=[source subdirectory within temp dir]
 #   $5=[target directory for patched files]
 #   $6=[glob pattern for files to process]
@@ -187,8 +182,8 @@ function patch-category() {
 #   $2=[path to extension file]
 #   $3=[path to target file]
 #   $4=[filename for display]
-#   $5=[AI tool name: claude, copilot, or empty for shared categories]
-#   $6=[category name: commands, agents, prompts, or templates]
+#   $5=[AI tool name: copilot, or empty for shared categories]
+#   $6=[category name: agents, prompts, or templates]
 function patch-file() {
   local upstream_file="$1"
   local ext_file="$2"
@@ -265,8 +260,8 @@ function copy-file() {
 # Get the injection point for a file from the manifest.
 # Arguments:
 #   $1=[filename]
-#   $2=[AI tool name: claude, copilot, or empty for shared categories]
-#   $3=[category name: commands, agents, prompts, or templates]
+#   $2=[AI tool name: copilot, or empty for shared categories]
+#   $3=[category name: agents, prompts, or templates]
 # Returns:
 #   Injection point string (via stdout)
 function get-injection-point() {

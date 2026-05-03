@@ -11,7 +11,6 @@
 #
 # Usage:
 #   1. Create an extension file in the appropriate subdirectory:
-#      - .specify/extensions/claude/commands/speckit.<name>.ext.md
 #      - .specify/extensions/copilot/prompts/speckit.<name>.prompt.ext.md
 #      - .specify/extensions/templates/<name>-template.ext.md
 #
@@ -22,8 +21,6 @@
 
 # Default injection points per AI tool and category
 defaults:
-  claude:
-    commands: after-frontmatter
   copilot:
     prompts: after-frontmatter
   templates: after-frontmatter

@@ -25,6 +25,9 @@ function main() {
   test-import-suite-setup
   trap test-import-suite-teardown EXIT INT TERM
   local tests=( \
+    test-import-no-args-fails \
+    test-import-empty-source-fails \
+    test-import-nonexistent-source-fails \
     test-import-dry-run-shows-no-changes-for-fresh-apply \
     test-import-dry-run-detects-modified-instruction \
     test-import-dry-run-detects-new-file-in-destination \
@@ -32,11 +35,15 @@ function main() {
     test-import-force-copies-changed-file-back \
     test-import-force-does-not-copy-unchanged-file \
     test-import-new-true-imports-new-files \
+    test-import-new-false-does-not-import-new-files \
     test-import-detects-nested-file-in-recursive-tree \
     test-import-ignores-generated-skill-assets \
-    test-import-rejects-invalid-ai-tool \
-    test-import-claude-detects-changed-claude-md \
-    test-import-claude-detects-changed-command \
+    test-import-detects-modified-agent \
+    test-import-detects-modified-prompt \
+    test-import-detects-modified-shared-resource \
+    test-import-force-copies-multiple-changed-files \
+    test-import-dry-run-reports-changed-count \
+    test-import-dry-run-reports-new-count \
   )
   local status=0
   for test in "${tests[@]}"; do
@@ -155,23 +162,12 @@ function restore-tracked-repo-files() {
   return 0
 }
 
-# Helper: apply copilot assets to a temp destination and return the path.
+# Helper: apply assets to a temp destination and return the path.
 function helper-apply-copilot() {
 
   local dest="${TEMP_DIR}/$1"
   mkdir -p "${dest}"
-  ./scripts/apply.sh "${dest}" copilot > /dev/null 2>&1
-  echo "${dest}"
-
-  return 0
-}
-
-# Helper: apply claude assets to a temp destination and return the path.
-function helper-apply-claude() {
-
-  local dest="${TEMP_DIR}/$1"
-  mkdir -p "${dest}"
-  ./scripts/apply.sh "${dest}" claude > /dev/null 2>&1
+  ./scripts/apply.sh "${dest}" > /dev/null 2>&1
   echo "${dest}"
 
   return 0
@@ -187,7 +183,7 @@ function test-import-dry-run-shows-no-changes-for-fresh-apply() {
 
   # Act
   local output
-  output=$(./scripts/import.sh "${dest}" copilot 2>&1)
+  output=$(./scripts/import.sh "${dest}" 2>&1)
 
   # Assert
   # No changed or new files after a fresh apply
@@ -205,7 +201,7 @@ function test-import-dry-run-detects-modified-instruction() {
 
   # Act
   local output
-  output=$(./scripts/import.sh "${dest}" copilot 2>&1)
+  output=$(./scripts/import.sh "${dest}" 2>&1)
 
   # Assert
   echo "${output}" | grep -q "shell.instructions.md" || return 1
@@ -222,7 +218,7 @@ function test-import-dry-run-detects-new-file-in-destination() {
 
   # Act
   local output
-  output=$(./scripts/import.sh "${dest}" copilot 2>&1)
+  output=$(./scripts/import.sh "${dest}" 2>&1)
 
   # Assert
   echo "${output}" | grep -q "enforce.custom.prompt.md" || return 1
@@ -241,7 +237,7 @@ function test-import-dry-run-detects-new-singleton-file() {
 
   # Act
   local output
-  output=$(./scripts/import.sh "${dest}" copilot 2>&1)
+  output=$(./scripts/import.sh "${dest}" 2>&1)
 
   # Assert
   echo "${output}" | grep -q ".github/copilot-instructions.md" || return 1
@@ -260,7 +256,7 @@ function test-import-force-copies-changed-file-back() {
   echo "${marker}" >> "${dest}/.github/instructions/shell.instructions.md"
 
   # Act
-  force=true ./scripts/import.sh "${dest}" copilot > /dev/null 2>&1
+  force=true ./scripts/import.sh "${dest}" > /dev/null 2>&1
 
   # Assert
   grep -q "IMPORT-TEST-MARKER" "${REPO_ROOT}/.github/instructions/shell.instructions.md" || return 1
@@ -277,7 +273,7 @@ function test-import-force-does-not-copy-unchanged-file() {
   before_hash=$(shasum "${REPO_ROOT}/.github/instructions/shell.instructions.md" | cut -d' ' -f1)
 
   # Act
-  force=true ./scripts/import.sh "${dest}" copilot > /dev/null 2>&1
+  force=true ./scripts/import.sh "${dest}" > /dev/null 2>&1
 
   # Assert
   local after_hash
@@ -297,7 +293,7 @@ function test-import-new-true-imports-new-files() {
   echo "# Brand new prompt" > "${dest}/${new_file}"
 
   # Act
-  force=true new=true ./scripts/import.sh "${dest}" copilot > /dev/null 2>&1
+  force=true new=true ./scripts/import.sh "${dest}" > /dev/null 2>&1
 
   # Assert
   [[ -f "${REPO_ROOT}/${new_file}" ]] || return 1
@@ -316,7 +312,7 @@ function test-import-detects-nested-file-in-recursive-tree() {
 
   # Act
   local output
-  output=$(./scripts/import.sh "${dest}" copilot 2>&1)
+  output=$(./scripts/import.sh "${dest}" 2>&1)
 
   # Assert — nested file should appear as new
   echo "${output}" | grep -q "nested.md" || return 1
@@ -336,8 +332,8 @@ function test-import-ignores-generated-skill-assets() {
 
   # Act
   local output
-  output=$(./scripts/import.sh "${dest}" copilot 2>&1)
-  force=true new=true ./scripts/import.sh "${dest}" copilot > /dev/null 2>&1
+  output=$(./scripts/import.sh "${dest}" 2>&1)
+  force=true new=true ./scripts/import.sh "${dest}" > /dev/null 2>&1
 
   # Assert
   ! echo "${output}" | grep -q "${generated_file}" || return 1
@@ -346,52 +342,165 @@ function test-import-ignores-generated-skill-assets() {
   return 0
 }
 
-function test-import-rejects-invalid-ai-tool() {
+function test-import-no-args-fails() {
 
-  # Arrange
-  local dest
-  dest=$(helper-apply-copilot "invalid-ai")
-
-  # Act
+  # Arrange / Act
   local output
-  output=$(./scripts/import.sh "${dest}" "invalid" 2>&1) && return 1
+  output=$(./scripts/import.sh 2>&1) && return 1
 
-  # Assert - should have failed
-  echo "${output}" | grep -qi "invalid" || return 1
+  # Assert
+  echo "${output}" | grep -qi "usage" || return 1
 
   return 0
 }
 
-function test-import-claude-detects-changed-claude-md() {
+function test-import-empty-source-fails() {
 
-  # Arrange
-  local dest
-  dest=$(helper-apply-claude "claude-changed")
-  echo "# Modified CLAUDE.md" >> "${dest}/.claude/CLAUDE.md"
-
-  # Act
+  # Arrange / Act
   local output
-  output=$(./scripts/import.sh "${dest}" claude 2>&1)
+  output=$(./scripts/import.sh "" 2>&1) && return 1
 
   # Assert
-  echo "${output}" | grep -q "CLAUDE.md" || return 1
+  echo "${output}" | grep -qi "empty" || return 1
 
   return 0
 }
 
-function test-import-claude-detects-changed-command() {
+function test-import-nonexistent-source-fails() {
+
+  # Arrange / Act
+  local output
+  output=$(./scripts/import.sh "/nonexistent/path" 2>&1) && return 1
+
+  # Assert
+  echo "${output}" | grep -qi "does not exist" || return 1
+
+  return 0
+}
+
+function test-import-new-false-does-not-import-new-files() {
 
   # Arrange
   local dest
-  dest=$(helper-apply-claude "claude-cmd-changed")
-  echo "# Modified command" >> "${dest}/.claude/commands/speckit.implement.md"
+  dest=$(helper-apply-copilot "new-false")
+  local new_file=".github/prompts/enforce.brand-new-skip.prompt.md"
+  track-repo-file-state "${new_file}"
+  echo "# Brand new prompt" > "${dest}/${new_file}"
+
+  # Act — force=true but new=false (default)
+  force=true ./scripts/import.sh "${dest}" > /dev/null 2>&1
+
+  # Assert — new file should NOT have been imported
+  [[ ! -f "${REPO_ROOT}/${new_file}" ]] || return 1
+
+  return 0
+}
+
+function test-import-detects-modified-agent() {
+
+  # Arrange
+  local dest
+  dest=$(helper-apply-copilot "detect-agent")
+  echo "# Modified agent" >> "${dest}/.github/agents/speckit.plan.agent.md"
 
   # Act
   local output
-  output=$(./scripts/import.sh "${dest}" claude 2>&1)
+  output=$(./scripts/import.sh "${dest}" 2>&1)
 
   # Assert
-  echo "${output}" | grep -q "speckit.implement.md" || return 1
+  echo "${output}" | grep -q "speckit.plan.agent.md" || return 1
+
+  return 0
+}
+
+function test-import-detects-modified-prompt() {
+
+  # Arrange
+  local dest
+  dest=$(helper-apply-copilot "detect-prompt")
+  echo "# Modified prompt" >> "${dest}/.github/prompts/enforce.shell.prompt.md"
+
+  # Act
+  local output
+  output=$(./scripts/import.sh "${dest}" 2>&1)
+
+  # Assert
+  echo "${output}" | grep -q "enforce.shell.prompt.md" || return 1
+
+  return 0
+}
+
+function test-import-detects-modified-shared-resource() {
+
+  # Arrange
+  local dest
+  dest=$(helper-apply-copilot "detect-shared")
+  echo "# Modified constitution" >> "${dest}/.specify/memory/constitution.md"
+
+  # Act
+  local output
+  output=$(./scripts/import.sh "${dest}" 2>&1)
+
+  # Assert
+  echo "${output}" | grep -q "constitution.md" || return 1
+
+  return 0
+}
+
+function test-import-force-copies-multiple-changed-files() {
+
+  # Arrange
+  local dest
+  dest=$(helper-apply-copilot "force-multi")
+  track-repo-file-state ".github/instructions/shell.instructions.md"
+  track-repo-file-state ".github/instructions/docker.instructions.md"
+  local marker
+  marker="MULTI-IMPORT-MARKER-$(date +%s)"
+  echo "${marker}" >> "${dest}/.github/instructions/shell.instructions.md"
+  echo "${marker}" >> "${dest}/.github/instructions/docker.instructions.md"
+
+  # Act
+  force=true ./scripts/import.sh "${dest}" > /dev/null 2>&1
+
+  # Assert — both files should have the marker
+  grep -q "MULTI-IMPORT-MARKER" "${REPO_ROOT}/.github/instructions/shell.instructions.md" || return 1
+  grep -q "MULTI-IMPORT-MARKER" "${REPO_ROOT}/.github/instructions/docker.instructions.md" || return 1
+
+  return 0
+}
+
+function test-import-dry-run-reports-changed-count() {
+
+  # Arrange
+  local dest
+  dest=$(helper-apply-copilot "count-changed")
+  echo "# Modified 1" >> "${dest}/.github/instructions/shell.instructions.md"
+  echo "# Modified 2" >> "${dest}/.github/instructions/docker.instructions.md"
+
+  # Act
+  local output
+  output=$(./scripts/import.sh "${dest}" 2>&1)
+
+  # Assert — should report count of changed files
+  echo "${output}" | grep -q "Changed files (2)" || return 1
+
+  return 0
+}
+
+function test-import-dry-run-reports-new-count() {
+
+  # Arrange
+  local dest
+  dest=$(helper-apply-copilot "count-new")
+  echo "# New 1" > "${dest}/.github/prompts/enforce.new1.prompt.md"
+  echo "# New 2" > "${dest}/.github/prompts/enforce.new2.prompt.md"
+
+  # Act
+  local output
+  output=$(./scripts/import.sh "${dest}" 2>&1)
+
+  # Assert — should report count of new files
+  echo "${output}" | grep -q "New files in destination (2)" || return 1
 
   return 0
 }

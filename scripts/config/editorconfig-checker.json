@@ -1,6 +1,5 @@
 {
   "Exclude": [
-    "^\\.claude/commands/speckit\\..*\\.md$",
     "^\\.github/agents/speckit\\..*\\.agent\\.md$",
     "^\\.github/instructions/makefile\\.instructions\\.md$",
     "^\\.specify/scripts/bash/.*\\.sh$",

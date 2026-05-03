@@ -6,11 +6,10 @@ set -euo pipefail
 # This is the inverse of apply.sh — it pulls improvements made in a project back.
 #
 # Usage:
-#   $ [options] ./scripts/import.sh <source-directory> <ai-tool>
+#   $ [options] ./scripts/import.sh <source-directory>
 #
 # Arguments:
 #   source-directory        Project directory to import from (absolute or relative path)
-#   ai-tool                 AI tool configuration to import: 'copilot' or 'claude'
 #
 # Options:
 #   force=true              # Copy changed files without prompting, default is 'false'
@@ -22,10 +21,9 @@ set -euo pipefail
 #   1 - Missing or invalid arguments
 #
 # Examples:
-#   ./scripts/import.sh /path/to/my-project copilot
-#   force=true ./scripts/import.sh ~/projects/my-app copilot
-#   new=true force=true ./scripts/import.sh ~/projects/my-app copilot
-#   ./scripts/import.sh ~/projects/my-app claude
+#   ./scripts/import.sh /path/to/my-project
+#   force=true ./scripts/import.sh ~/projects/my-app
+#   new=true force=true ./scripts/import.sh ~/projects/my-app
 
 # ==============================================================================
 
@@ -41,18 +39,13 @@ NEW_FILES=()
 # Main entry point for the script.
 function main() {
 
-  if [[ $# -ne 2 ]]; then
+  if [[ $# -ne 1 ]]; then
     print-usage
     exit 1
   fi
 
   if [[ -z "$1" ]]; then
     print-error "Source directory cannot be empty."
-  fi
-
-  local ai_tool="$2"
-  if [[ "${ai_tool}" != "copilot" && "${ai_tool}" != "claude" ]]; then
-    print-error "Invalid ai tool '${ai_tool}'. Must be 'copilot' or 'claude'."
   fi
 
   local source_dir
@@ -62,10 +55,10 @@ function main() {
     print-error "Source directory does not exist: ${source_dir}"
   fi
 
-  echo "Importing prompt files from: ${source_dir} (ai=${ai_tool})"
+  echo "Importing prompt files from: ${source_dir}"
   echo
 
-  collect-changes "${source_dir}" "${ai_tool}"
+  collect-changes "${source_dir}"
   report-and-act "${source_dir}"
 
   return 0
@@ -106,25 +99,18 @@ function normalise-path() {
 
 # ==============================================================================
 
-# Collect changed and new files for a given AI tool.
+# Collect changed and new files.
 # Populates global CHANGED_FILES and NEW_FILES arrays.
 # Arguments:
 #   $1=[source directory]
-#   $2=[ai tool: 'copilot' or 'claude']
 function collect-changes() {
 
   local source_dir="$1"
-  local ai_tool="$2"
 
   CHANGED_FILES=()
   NEW_FILES=()
 
-  if [[ "${ai_tool}" == "copilot" ]]; then
-    collect-copilot-changes "${source_dir}"
-  elif [[ "${ai_tool}" == "claude" ]]; then
-    collect-claude-changes "${source_dir}"
-  fi
-
+  collect-copilot-changes "${source_dir}"
   collect-shared-changes "${source_dir}"
 
   return 0
@@ -145,20 +131,6 @@ function collect-copilot-changes() {
   compare-directory-files "${source_dir}" ".github/instructions/templates" "*"
   compare-directory-files "${source_dir}" ".github/prompts" "*.prompt.md"
   compare-directory-recursive "${source_dir}" ".github/skills"
-
-  return 0
-}
-
-# Collect changed and new claude files.
-# Appends to global CHANGED_FILES and NEW_FILES arrays.
-# Arguments:
-#   $1=[source directory]
-function collect-claude-changes() {
-
-  local source_dir="$1"
-
-  compare-file "${source_dir}" ".claude/CLAUDE.md"
-  compare-directory-files "${source_dir}" ".claude/commands" "*.md"
 
   return 0
 }
@@ -399,13 +371,12 @@ function copy-file-to-repo() {
 function print-usage() {
 
   cat <<EOF
-Usage: $(basename "$0") <source-directory> <ai-tool>
+Usage: $(basename "$0") <source-directory>
 
 Import changed prompt files from a project back to this source repository.
 
 Arguments:
     source-directory        Project directory to import from (absolute or relative path)
-    ai-tool                 AI tool configuration: 'copilot' or 'claude'
 
 Options:
     force=true              Copy changed files without prompting (default: dry-run)
@@ -413,10 +384,9 @@ Options:
     VERBOSE=true            Show all executed commands
 
 Examples:
-    $(basename "$0") /path/to/my-project copilot
-    force=true $(basename "$0") ~/projects/my-app copilot
-    new=true force=true $(basename "$0") ~/projects/my-app copilot
-    $(basename "$0") ~/projects/my-app claude
+    $(basename "$0") /path/to/my-project
+    force=true $(basename "$0") ~/projects/my-app
+    new=true force=true $(basename "$0") ~/projects/my-app
 EOF
 }
 

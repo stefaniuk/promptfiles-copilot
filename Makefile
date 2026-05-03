@@ -34,15 +34,13 @@ clone-rt: # Clone the repository template into .github/skills/repository-templat
 specify: # Fetch upstream spec-kit and apply local extensions @Operations
 	./scripts/specify.sh
 
-apply: # Copy prompt files assets to a destination repository; mandatory: dest=[path] ai=[copilot|claude]; optional: clean|revert=[true|false], all|python|typescript|go|reactjs|rust|terraform|tauri|playwright|django|fastapi=[true] @Operations
-	$(if $(dest),,$(error dest is required. Usage: make apply dest=/path/to/destination ai=copilot|claude))
-	$(if $(ai),,$(error ai is required. Usage: make apply dest=/path/to/destination ai=copilot|claude))
-	./scripts/apply.sh "$(dest)" "$(ai)"
+apply: # Copy prompt files assets to a destination repository; mandatory: dest=[path]; optional: clean|revert=[true|false], all|python|typescript|go|reactjs|rust|terraform|tauri|playwright|django|fastapi=[true] @Operations
+	$(if $(dest),,$(error dest is required. Usage: make apply dest=/path/to/destination))
+	./scripts/apply.sh "$(dest)"
 
-import: # Import changed prompt files from a destination repository; mandatory: dest=[path] ai=[copilot|claude]; optional: force|new=[true] @Operations
-	$(if $(dest),,$(error dest is required. Usage: make import dest=/path/to/destination ai=copilot|claude))
-	$(if $(ai),,$(error ai is required. Usage: make import dest=/path/to/destination ai=copilot|claude))
-	./scripts/import.sh "$(dest)" "$(ai)"
+import: # Import changed prompt files from a destination repository; mandatory: dest=[path]; optional: force|new=[true] @Operations
+	$(if $(dest),,$(error dest is required. Usage: make import dest=/path/to/destination))
+	./scripts/import.sh "$(dest)"
 
 count-tokens: # Count LLM tokens for key instruction packs; optional: args=[files/options] @Operations
 	uv run --with tiktoken python scripts/count-tokens.py \

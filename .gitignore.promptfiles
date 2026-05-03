@@ -2,16 +2,6 @@
 # SEE: https://github.com/stefaniuk/promptfiles-copilot/blob/main/.gitignore.promptfiles
 
 # ------------------------------------------------------------------------------
-# Claude Code configuration
-# ------------------------------------------------------------------------------
-
-# Commands (spec-kit)
-.claude/commands/speckit.*
-
-# Instructions file
-.claude/CLAUDE.md
-
-# ------------------------------------------------------------------------------
 # GitHub Copilot configuration
 # ------------------------------------------------------------------------------
 

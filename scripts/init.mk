@@ -21,7 +21,6 @@ check-markdown-links: # Check markdown links (set check=all|staged-changes|worki
 check-shell-lint: # Lint all shell scripts in this project @Quality
 	failed=0
 	for file in $$(find . -type f -name "*.sh" \
-		! -path "./.claude/skills/repository-template/*" \
 		! -path "./.github/skills/repository-template/*" \
 		! -path "./.specify/*"); do
 		if ! file=$${file} scripts/quality/check-shell-lint.sh; then
